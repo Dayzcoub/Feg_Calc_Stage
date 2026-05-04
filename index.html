@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
+
+<button id="installBtn" style="display:none" class="btn-primary">
+    Установить приложение
+</button>
 <head>
     <link rel="apple-touch-icon" href="icon-180.png">
     <link rel="manifest" href="manifest.json">
@@ -18,6 +22,55 @@
             padding: 0;
             box-sizing: border-box;
         }
+
+ <script>
+function isIOS() {
+  return /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+}
+
+if (isIOS()) {
+  const hint = document.createElement("div");
+  hint.innerHTML = "👉 Нажмите «Поделиться» → «На экран Домой»";
+  hint.style.position = "fixed";
+  hint.style.bottom = "20px";
+  hint.style.left = "50%";
+  hint.style.transform = "translateX(-50%)";
+  hint.style.background = "#000";
+  hint.style.color = "#fff";
+  hint.style.padding = "10px 16px";
+  hint.style.borderRadius = "20px";
+  hint.style.fontSize = "14px";
+  hint.style.zIndex = "999";
+
+  document.body.appendChild(hint);
+
+  setTimeout(() => hint.remove(), 6000);
+}
+</script>       
+<script>
+let deferredPrompt;
+
+const installBtn = document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = "block";
+});
+
+installBtn.addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+
+    if (outcome === "accepted") {
+        installBtn.style.display = "none";
+    }
+
+    deferredPrompt = null;
+});
+</script>
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
