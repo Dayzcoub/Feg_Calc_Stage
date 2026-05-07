@@ -1,4 +1,4 @@
-const CACHE_NAME = "feg-stage-v9";
+const CACHE_NAME = 'feg-stage-v12';
 
 const urlsToCache = [
   "/",

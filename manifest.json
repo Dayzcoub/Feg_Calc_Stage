@@ -3,8 +3,8 @@
   "short_name": "FEG Stage",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#080c10",
-  "theme_color": "#111820",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
   "icons": [
     {
       "src": "icon-192.png",
