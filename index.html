@@ -606,6 +606,177 @@
 
 
 
+
+
+        .client-pdf {
+            font-family: Inter, Arial, sans-serif;
+            color: #111820;
+            background: #ffffff;
+        }
+        .client-pdf .client-hero {
+            display: grid;
+            grid-template-columns: 1.25fr .75fr;
+            gap: 18px;
+            align-items: stretch;
+            background: linear-gradient(135deg, #111820 0%, #1f2933 58%, #3a2a20 100%);
+            color: #ffffff;
+            border-radius: 18px;
+            padding: 20px 22px;
+            margin-bottom: 14px;
+        }
+        .client-pdf .brand-title {
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: -0.7px;
+            line-height: 1.05;
+        }
+        .client-pdf .brand-title span { color: #c4a06f; }
+        .client-pdf .brand-subtitle {
+            margin-top: 8px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.78);
+            max-width: 540px;
+        }
+        .client-pdf .client-meta {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-size: 12px;
+            line-height: 1.55;
+        }
+        .client-pdf .client-main-grid {
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: 14px;
+            align-items: start;
+        }
+        .client-pdf .client-card {
+            border: 1px solid #d7dde3;
+            border-radius: 16px;
+            padding: 14px;
+            background: #ffffff;
+        }
+        .client-pdf .client-section-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            font-weight: 900;
+            color: #111820;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #c4a06f;
+        }
+        .client-pdf .client-scheme-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 230px;
+            background: #f3f0ea;
+            border-radius: 14px;
+            border: 1px solid #ded6ca;
+            padding: 12px;
+        }
+        .client-scheme-grid {
+            display: grid;
+            grid-template-columns: repeat(var(--client-grid-cols, 1), var(--client-cell-size, 28px));
+            gap: 2px;
+            width: max-content;
+        }
+        .client-scheme-cell {
+            width: var(--client-cell-size, 28px);
+            height: var(--client-cell-size, 28px);
+            border: 1px solid #cabaa7;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.48);
+        }
+        .client-scheme-cell.active {
+            background-color: #5a3f2f;
+            border-color: #2a1b14;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16);
+            background-image:
+                radial-gradient(circle at 28% 28%, rgba(255,255,255,0.16) 0 1px, transparent 1px),
+                linear-gradient(135deg, rgba(196,160,111,0.42), rgba(48,35,27,0.28)),
+                repeating-linear-gradient(45deg, rgba(255,255,255,0.09) 0 1px, transparent 1px 5px);
+        }
+        .client-pdf .client-params {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 12px;
+        }
+        .client-pdf .client-param {
+            background: #f7f4ef;
+            border-radius: 12px;
+            padding: 10px 12px;
+            border: 1px solid #e7dfd3;
+        }
+        .client-pdf .client-param span {
+            display: block;
+            color: #69727d;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            margin-bottom: 3px;
+        }
+        .client-pdf .client-param strong {
+            font-size: 15px;
+            color: #111820;
+        }
+        .client-pdf .client-price-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+            border-radius: 14px;
+            border: 1px solid #d7dde3;
+            font-size: 13px;
+        }
+        .client-pdf .client-price-table th,
+        .client-pdf .client-price-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #e3e7eb;
+            text-align: left;
+        }
+        .client-pdf .client-price-table th {
+            background: #111820;
+            color: #ffffff;
+            font-weight: 800;
+        }
+        .client-pdf .client-price-table td:last-child,
+        .client-pdf .client-price-table th:last-child {
+            text-align: right;
+            white-space: nowrap;
+        }
+        .client-pdf .client-price-table tr:last-child td { border-bottom: 0; }
+        .client-pdf .client-price-table .client-total-row td {
+            background: #c4a06f;
+            color: #111820;
+            font-weight: 900;
+            font-size: 16px;
+        }
+        .client-pdf .client-note {
+            margin-top: 12px;
+            font-size: 11px;
+            line-height: 1.45;
+            color: #5c6570;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 10px 12px;
+            border: 1px solid #e3e7eb;
+        }
+        .client-pdf .client-footer-line {
+            margin-top: 14px;
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            font-size: 11px;
+            color: #69727d;
+            border-top: 1px solid #d7dde3;
+            padding-top: 10px;
+        }
+
+
         .modal-backdrop {
             position: fixed;
             inset: 0;
@@ -654,6 +825,72 @@
             border: 0;
             background: #0e141a;
         }
+
+        .weights-modal {
+            width: min(680px, 100%);
+            max-height: 92vh;
+            background: #121a22;
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            box-shadow: 0 24px 80px rgba(15, 23, 42, 0.35);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .weights-modal-body {
+            padding: 16px;
+            overflow: auto;
+        }
+        .weights-grid {
+            display: grid;
+            grid-template-columns: 1fr 120px;
+            gap: 10px 12px;
+            align-items: center;
+        }
+        .weights-grid label {
+            color: var(--text);
+            text-transform: none;
+            letter-spacing: 0;
+            font-size: .92rem;
+        }
+        .weights-grid input,
+        .weights-grid select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 12px;
+        }
+        .weights-grid input { text-align: right; }
+        .settings-section-title {
+            margin: 14px 0 8px;
+            font-size: .78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--accent);
+        }
+        .settings-grid { margin-bottom: 8px; }
+        .clear-grid-top-button { white-space: nowrap; align-self: stretch; }
+        .edit-order-button { color: var(--accent); }
+        .edit-mode-pill {
+            display: none;
+            margin-top: 8px;
+            padding: 8px 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(196,160,111,.35);
+            background: rgba(196,160,111,.08);
+            color: var(--accent);
+            font-size: .82rem;
+            font-weight: 700;
+            text-align: center;
+        }
+        .edit-mode-pill.active { display: block; }
+        .weights-modal-note {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: .82rem;
+            line-height: 1.45;
+        }
+        .mobile-refresh-button { display: none; }
         .close-modal {
             width: 42px;
             height: 42px;
@@ -674,7 +911,7 @@
         }
         .orders-table {
             width: 100%;
-            min-width: 780px;
+            min-width: 860px;
             border-collapse: collapse;
             table-layout: fixed;
             color: var(--text);
@@ -923,6 +1160,7 @@
             .app-header { margin-bottom: 16px; }
             .canvas-meta-row { gap: 10px; align-items: stretch; }
             .grid-size-control { width: 100%; display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 8px; align-items: center; }
+            .clear-grid-top-button { width: 100%; }
             .grid-size-control input { width: 100%; min-width: 0; }
             .zoom-control.compact { width: 100%; min-width: 0; max-width: none; }
             .stage-grid-wrap { overflow: auto; border-radius: 8px; }
@@ -932,6 +1170,7 @@
             .params-grid { grid-template-columns: 1fr; }
             .template-field { grid-column: auto; }
             .stage-grid { gap: 0; }
+            .mobile-refresh-button { display: block; }
             .result-grid div { padding: 10px 12px; font-size: 0.9rem; }
             .order-card { flex-direction: column; align-items: flex-start; }
             .delete-order { align-self: flex-end; }
@@ -965,6 +1204,7 @@
                     <input id="gridZoom" type="range" min="50" max="250" value="100" step="5" aria-label="Масштаб сетки">
                     <output id="gridZoomValue">100%</output>
                 </div>
+                <button type="button" onclick="clearStageGridConfirm()" class="btn-secondary clear-grid-top-button">⌫ Очистить схему</button>
             </div>
 
             <div class="stage-grid-wrap">
@@ -1021,33 +1261,22 @@
                             <input id="depth" type="number" value="3" min="1" max="20" step="1" aria-label="Глубина шаблона">
                         </div>
                     </div>
-                    <div class="field small">
-                        <label>Столбы по высоте</label>
-                        <select id="columnType">
-                            <option value="low">Столб низкий</option>
-                            <option value="middle" selected>Столб средний</option>
-                            <option value="high">Столб высокий</option>
-                        </select>
-                    </div>
-                    <div class="field small">
-                        <label>Перекладины по высоте</label>
-                        <select id="frameType">
-                            <option value="low" selected>Перекладина низкая</option>
-                            <option value="high">Перекладина высокая</option>
-                        </select>
-                    </div>
                 </div>
                 <div class="module-size-note hardware-note">
                     <span>Шпильки и пятки</span>
                     <strong>по 1 шт на каждый столб</strong>
                 </div>
-                <div class="hint">Габариты сцены, опоры, рамки, шпильки и пятки считаются автоматически по выбранной форме.</div>
+                <div class="hint">Габариты сцены, опоры, рамки, шпильки и пятки считаются автоматически по выбранной форме. Типы столбов, перекладин и вес позиций — в настройках.</div>
             </section>
 
             <section class="side-card action-side-card">
                 <h3>Действия</h3>
-                <button onclick="saveOrder()" class="btn-success wide-button">▱ Сохранить заказ</button>
+                <button id="saveOrderBtn" onclick="saveOrder()" class="btn-success wide-button">▱ Сохранить заказ</button>
+                <div id="editModePill" class="edit-mode-pill">Редактируется сохранённый заказ</div>
                 <button onclick="openPdfPreview()" class="btn-secondary wide-button">▣ Технический PDF / отправить</button>
+                <button onclick="openClientPdfPreview()" class="btn-primary wide-button">◈ Смета клиенту PDF</button>
+                <button onclick="openSettingsModal()" class="btn-secondary wide-button">⚙ Настройки</button>
+                <button onclick="forceServerReload()" class="btn-secondary wide-button mobile-refresh-button">↻ Обновить с сервера</button>
                 <button id="installBtn" class="btn-primary wide-button" style="display:none">Установить приложение</button>
             </section>
         </aside>
@@ -1060,15 +1289,15 @@
 </div>
 
 <div id="pdfContent" style="display:none;">
-    <h2>ТЕХНИЧЕСКИЙ ЛИСТ СБОРКИ СЦЕНЫ</h2>
+    <h2 id="pdfTitle">ТЕХНИЧЕСКИЙ ЛИСТ СБОРКИ СЦЕНЫ</h2>
     <div id="pdfData"></div>
-    <p style="margin-top: 22px; font-size: 11px; color: #666;">FEG Stage PRO — технический лист для склада и площадки</p>
+    <p id="pdfFooter" style="margin-top: 22px; font-size: 11px; color: #666;">FEG Stage PRO — технический лист для склада и площадки</p>
 </div>
 
 <div id="pdfModal" class="modal-backdrop" aria-hidden="true">
     <div class="pdf-modal" role="dialog" aria-modal="true" aria-label="Предпросмотр PDF">
         <div class="pdf-modal-header">
-            <div class="pdf-modal-title">Предпросмотр технического листа (1 стр., альбом)</div>
+            <div id="pdfModalTitle" class="pdf-modal-title">Предпросмотр технического листа (1 стр., альбом)</div>
             <button type="button" class="close-modal" onclick="closePdfPreview()" aria-label="Закрыть">×</button>
         </div>
         <div class="pdf-modal-actions">
@@ -1077,6 +1306,66 @@
             <button type="button" class="btn-secondary" onclick="emailPreparedPdf()">Email</button>
         </div>
         <iframe id="pdfPreviewFrame" class="pdf-preview-frame" title="Предпросмотр PDF"></iframe>
+    </div>
+</div>
+
+<div id="weightsModal" class="modal-backdrop" aria-hidden="true">
+    <div class="weights-modal settings-modal" role="dialog" aria-modal="true" aria-label="Настройки">
+        <div class="pdf-modal-header">
+            <div class="pdf-modal-title">Настройки конструкции и веса</div>
+            <button type="button" class="close-modal" onclick="closeSettingsModal()" aria-label="Закрыть">×</button>
+        </div>
+        <div class="weights-modal-body">
+            <div class="settings-section-title">Типы комплектующих</div>
+            <div class="weights-grid settings-grid">
+                <label for="columnType">Столбы по высоте</label>
+                <select id="columnType">
+                    <option value="low">Столб низкий</option>
+                    <option value="middle" selected>Столб средний</option>
+                    <option value="high">Столб высокий</option>
+                </select>
+
+                <label for="frameType">Перекладины по высоте</label>
+                <select id="frameType">
+                    <option value="low" selected>Перекладина низкая</option>
+                    <option value="high">Перекладина высокая</option>
+                </select>
+
+                <label for="stageHeight">Высота сцены, см</label>
+                <input id="stageHeight" type="number" min="0" step="1" value="60">
+            </div>
+
+            <div class="settings-section-title">Вес позиций, кг/шт</div>
+            <div class="weights-grid">
+                <label for="weightSheet">Лист настила / модуль</label>
+                <input id="weightSheet" type="number" min="0" step="0.1" value="18">
+
+                <label for="weightColumnLow">Столб низкий</label>
+                <input id="weightColumnLow" type="number" min="0" step="0.1" value="0.6">
+
+                <label for="weightColumnMiddle">Столб средний</label>
+                <input id="weightColumnMiddle" type="number" min="0" step="0.1" value="2.6">
+
+                <label for="weightColumnHigh">Столб высокий</label>
+                <input id="weightColumnHigh" type="number" min="0" step="0.1" value="4.8">
+
+                <label for="weightFrameLow">Перекладина низкая</label>
+                <input id="weightFrameLow" type="number" min="0" step="0.1" value="3.5">
+
+                <label for="weightFrameHigh">Перекладина высокая</label>
+                <input id="weightFrameHigh" type="number" min="0" step="0.1" value="5">
+
+                <label for="weightStud">Шпилька регулировочная</label>
+                <input id="weightStud" type="number" min="0" step="0.1" value="1.5">
+            </div>
+            <div class="weights-modal-note">
+                Настройки сохраняются в браузере и используются в расчёте, сохранённых заказах и техническом PDF. Пятки пока считаются количеством, без веса.
+            </div>
+        </div>
+        <div class="pdf-modal-actions">
+            <button type="button" class="btn-primary" onclick="saveSettingsFromModal()">Сохранить настройки</button>
+            <button type="button" class="btn-secondary" onclick="resetWeightsToDefault()">Вес по умолчанию</button>
+        </div>
     </div>
 </div>
 
@@ -1091,6 +1380,7 @@
     const MODULE_WIDTH_M = 1.2;
     const MODULE_DEPTH_M = 1.2;
     const MODULE_SIZE_LABEL = '1.2×1.2 м';
+    const DEFAULT_STAGE_HEIGHT_M = 0.6;
     const COLUMN_TYPES = {
         low: 'Столб низкий',
         middle: 'Столб средний',
@@ -1100,6 +1390,17 @@
         low: 'Перекладина низкая',
         high: 'Перекладина высокая'
     };
+    const DEFAULT_WEIGHTS = {
+        sheet: 18,
+        column_low: 0.6,
+        column_middle: 2.6,
+        column_high: 4.8,
+        frame_low: 3.5,
+        frame_high: 5,
+        stud: 1.5
+    };
+    let itemWeights = loadWeights();
+    let stageHeightM = loadStageHeight();
     let selectedModules = new Set();
     let lastResult = null;
 
@@ -1115,21 +1416,30 @@
     const resultDiv = document.getElementById('result');
     const ordersDiv = document.getElementById('orders');
     const pdfDataDiv = document.getElementById('pdfData');
+    const pdfTitleEl = document.getElementById('pdfTitle');
+    const pdfFooterEl = document.getElementById('pdfFooter');
     const stageGrid = document.getElementById('stageGrid');
     const selectedCount = document.getElementById('selectedCount');
     const pdfModal = document.getElementById('pdfModal');
     const pdfPreviewFrame = document.getElementById('pdfPreviewFrame');
+    const pdfModalTitle = document.getElementById('pdfModalTitle');
     const gridZoom = document.getElementById('gridZoom');
     const gridZoomValue = document.getElementById('gridZoomValue');
     const gridColsInput = document.getElementById('gridCols');
     const gridRowsInput = document.getElementById('gridRows');
+    const weightsModal = document.getElementById('weightsModal');
+    const stageHeightInput = document.getElementById('stageHeight');
+    const saveOrderBtn = document.getElementById('saveOrderBtn');
+    const editModePill = document.getElementById('editModePill');
 
+    let editingOrderId = null;
     let isDrawing = false;
     let drawMode = 'add';
     let lastDrawnCell = null;
     let preparedPdfBlob = null;
     let preparedPdfUrl = null;
     let preparedPdfName = 'smeta.pdf';
+    let preparedPdfKind = 'tech';
 
     function moduleKey(x, y) {
         return `${x},${y}`;
@@ -1159,6 +1469,125 @@
     function metric(value) {
         const rounded = Math.round((Number(value) || 0) * 100) / 100;
         return rounded.toLocaleString('ru-RU', { maximumFractionDigits: 2 });
+    }
+
+    function kg(value) {
+        const rounded = Math.round((Number(value) || 0) * 10) / 10;
+        return rounded.toLocaleString('ru-RU', { maximumFractionDigits: 1 });
+    }
+
+    function loadWeights() {
+        try {
+            return { ...DEFAULT_WEIGHTS, ...(JSON.parse(localStorage.getItem('itemWeights') || '{}')) };
+        } catch (e) {
+            return { ...DEFAULT_WEIGHTS };
+        }
+    }
+
+    function loadStageHeight() {
+        const value = Number(localStorage.getItem('stageHeightM'));
+        return isNaN(value) || value < 0 ? DEFAULT_STAGE_HEIGHT_M : value;
+    }
+
+    function getStageHeightValue() {
+        const value = Number(stageHeightM);
+        return isNaN(value) || value < 0 ? 0 : value;
+    }
+
+    function getWeightValue(key) {
+        const value = Number(itemWeights[key]);
+        return isNaN(value) || value < 0 ? 0 : value;
+    }
+
+    function calculateWeightBreakdown(geometry, columnType, frameType, studs) {
+        const sheetUnit = getWeightValue('sheet');
+        const columnUnit = getWeightValue(`column_${columnType || 'middle'}`);
+        const frameUnit = getWeightValue(`frame_${frameType || 'low'}`);
+        const studUnit = getWeightValue('stud');
+        const sheetTotal = geometry.sheets * sheetUnit;
+        const columnTotal = geometry.columns * columnUnit;
+        const frameTotal = geometry.frames * frameUnit;
+        const studTotal = studs * studUnit;
+        return {
+            sheetUnit, columnUnit, frameUnit, studUnit,
+            sheetTotal, columnTotal, frameTotal, studTotal,
+            total: sheetTotal + columnTotal + frameTotal + studTotal
+        };
+    }
+
+    function syncWeightInputs() {
+        const map = {
+            weightSheet: 'sheet',
+            weightColumnLow: 'column_low',
+            weightColumnMiddle: 'column_middle',
+            weightColumnHigh: 'column_high',
+            weightFrameLow: 'frame_low',
+            weightFrameHigh: 'frame_high',
+            weightStud: 'stud'
+        };
+        Object.entries(map).forEach(([id, key]) => {
+            const input = document.getElementById(id);
+            if (input) input.value = getWeightValue(key);
+        });
+        if (stageHeightInput) stageHeightInput.value = Math.round(getStageHeightValue() * 100);
+    }
+
+    function readStageHeightFromInput() {
+        const valueCm = stageHeightInput ? Number(stageHeightInput.value) : stageHeightM * 100;
+        return isNaN(valueCm) || valueCm < 0 ? DEFAULT_STAGE_HEIGHT_M : valueCm / 100;
+    }
+
+    function readWeightsFromInputs() {
+        const map = {
+            sheet: 'weightSheet',
+            column_low: 'weightColumnLow',
+            column_middle: 'weightColumnMiddle',
+            column_high: 'weightColumnHigh',
+            frame_low: 'weightFrameLow',
+            frame_high: 'weightFrameHigh',
+            stud: 'weightStud'
+        };
+        const next = { ...DEFAULT_WEIGHTS };
+        Object.entries(map).forEach(([key, id]) => {
+            const input = document.getElementById(id);
+            const value = input ? Number(input.value) : DEFAULT_WEIGHTS[key];
+            next[key] = isNaN(value) || value < 0 ? 0 : value;
+        });
+        return next;
+    }
+
+    function openSettingsModal() {
+        syncWeightInputs();
+        weightsModal.classList.add('open');
+        weightsModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeSettingsModal() {
+        weightsModal.classList.remove('open');
+        weightsModal.setAttribute('aria-hidden', 'true');
+    }
+
+    function openWeightsModal() { openSettingsModal(); }
+    function closeWeightsModal() { closeSettingsModal(); }
+
+    function saveSettingsFromModal() {
+        itemWeights = readWeightsFromInputs();
+        stageHeightM = readStageHeightFromInput();
+        localStorage.setItem('itemWeights', JSON.stringify(itemWeights));
+        localStorage.setItem('stageHeightM', String(stageHeightM));
+        closeSettingsModal();
+        calc(false);
+        showToast('Настройки сохранены');
+    }
+
+    function saveWeightsFromModal() { saveSettingsFromModal(); }
+
+    function resetWeightsToDefault() {
+        itemWeights = { ...DEFAULT_WEIGHTS };
+        localStorage.setItem('itemWeights', JSON.stringify(itemWeights));
+        syncWeightInputs();
+        calc(false);
+        showToast('Вес сброшен');
     }
 
     function clampGridSize(value, fallback) {
@@ -1350,6 +1779,11 @@
         calc(false);
     }
 
+    function clearStageGridConfirm() {
+        if (selectedModules.size && !confirm('Очистить схему сцены?')) return;
+        clearStageGrid();
+    }
+
     function applyRectangle() {
         const w = parseInt(widthInput.value);
         const d = parseInt(depthInput.value);
@@ -1526,6 +1960,8 @@
         const frameTypeLabel = FRAME_TYPES[frameType] || FRAME_TYPES.low;
         const studs = geometry.columns;
         const feet = geometry.columns;
+        const weight = calculateWeightBreakdown(geometry, columnType, frameType, studs);
+        const stageHeight = getStageHeightValue();
 
         lastResult = {
             w: bounds.width,
@@ -1540,6 +1976,9 @@
             frameTypeLabel,
             studs,
             feet,
+            weight,
+            totalWeight: weight.total,
+            stageHeightM: stageHeight,
             components,
             modulesCost,
             installCost,
@@ -1551,12 +1990,14 @@
             depthMeters: bounds.depth * MODULE_DEPTH_M,
             areaMeters: geometry.sheets * MODULE_WIDTH_M * MODULE_DEPTH_M,
             gridCols: gridColsCount,
-            gridRows: gridRowsCount
+            gridRows: gridRowsCount,
+            weights: { ...itemWeights }
         };
 
         resultDiv.innerHTML = `
             <div class="result-grid">
                 <div>Габариты сцены</div><div>${metric(bounds.width * MODULE_WIDTH_M)} × ${metric(bounds.depth * MODULE_DEPTH_M)} м</div>
+                <div>Высота сцены</div><div>${metric(stageHeight * 100)} см</div>
                 <div>Габаритная зона по сетке</div><div>${bounds.width} × ${bounds.depth} мод.</div>
                 <div>Площадь настила</div><div>${metric(geometry.sheets * MODULE_WIDTH_M * MODULE_DEPTH_M)} м²</div>
                 <div>Листы настила</div><div>${geometry.sheets} шт</div>
@@ -1564,6 +2005,7 @@
                 <div>Перекладины / рамки</div><div>${geometry.frames} шт · ${escapeHtml(frameTypeLabel)}</div>
                 <div>Шпильки регулировочные</div><div>${studs} шт</div>
                 <div>Пятки опорные</div><div>${feet} шт</div>
+                <div>Вес комплекта</div><div>${kg(weight.total)} кг</div>
                 <div>Связность</div><div>${getDetachedNotice(components)}</div>
                 <div>Стоимость модулей</div><div>${money(modulesCost)} ₽</div>
                 <div>Монтаж</div><div>${money(installCost)} ₽</div>
@@ -1587,14 +2029,122 @@
         return html;
     }
 
-    function updatePdfContent() {
+
+
+    function createClientSchemeGrid() {
+        const modules = getSelectedModuleList();
+        if (!modules.length) return '<div style="font-size:12px;color:#69727d;">Схема не выбрана</div>';
+        const keys = new Set(modules.map(m => moduleKey(m.x, m.y)));
+        const xs = modules.map(m => m.x);
+        const ys = modules.map(m => m.y);
+        const minX = Math.min(...xs);
+        const maxX = Math.max(...xs);
+        const minY = Math.min(...ys);
+        const maxY = Math.max(...ys);
+        const cols = maxX - minX + 1;
+        const rows = maxY - minY + 1;
+        const cellSize = Math.max(12, Math.min(34, Math.floor(220 / Math.max(cols, rows, 1))));
+        let html = `<div class="client-scheme-grid" style="--client-grid-cols:${cols}; --client-cell-size:${cellSize}px;">`;
+        for (let y = minY; y <= maxY; y++) {
+            for (let x = minX; x <= maxX; x++) {
+                html += `<div class="client-scheme-cell ${keys.has(moduleKey(x, y)) ? 'active' : ''}"></div>`;
+            }
+        }
+        html += '</div>';
+        return html;
+    }
+
+    function updateClientPdfContent() {
+        if (pdfTitleEl) pdfTitleEl.textContent = 'КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ';
+        if (pdfFooterEl) pdfFooterEl.textContent = 'FEG Stage PRO — коммерческое предложение для клиента';
         if (!lastResult) {
             pdfDataDiv.innerHTML = '<p>Нет расчёта. Выберите модули на сетке.</p>';
             return;
         }
         const clientName = clientSelect.value || 'Клиент не выбран';
         const project = projectNameInput.value.trim() || 'Без названия';
-        const { w, d, modules, sheets, columns, frames, columnTypeLabel, frameTypeLabel, studs, feet, components, widthMeters, depthMeters, areaMeters } = lastResult;
+        const now = new Date();
+        const dateText = now.toLocaleDateString('ru-RU');
+        const validUntil = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('ru-RU');
+        const { sheets, widthMeters, depthMeters, areaMeters, stageHeightM, modulesCost, installCost, total } = lastResult;
+
+        pdfDataDiv.innerHTML = `
+            <div class="client-pdf">
+                <div class="client-hero">
+                    <div>
+                        <div class="brand-title"><span>FEG</span> Stage PRO</div>
+                        <div class="brand-subtitle">Аренда и монтаж сценической конструкции под мероприятие. Смета подготовлена по выбранной конфигурации сцены.</div>
+                    </div>
+                    <div class="client-meta">
+                        <div><strong>Проект:</strong> ${escapeHtml(project)}</div>
+                        <div><strong>Клиент:</strong> ${escapeHtml(clientName)}</div>
+                        <div><strong>Дата:</strong> ${dateText}</div>
+                        <div><strong>Действительно до:</strong> ${validUntil}</div>
+                    </div>
+                </div>
+
+                <div class="client-main-grid">
+                    <div class="client-card">
+                        <div class="client-section-title">Схема сцены</div>
+                        <div class="client-scheme-wrap">${createClientSchemeGrid()}</div>
+                        <div class="client-note">Схема показывает форму настила. Нижняя часть схемы соответствует переднему краю сцены.</div>
+                    </div>
+
+                    <div>
+                        <div class="client-card" style="margin-bottom:14px;">
+                            <div class="client-section-title">Основные параметры</div>
+                            <div class="client-params">
+                                <div class="client-param"><span>Габариты</span><strong>${metric(widthMeters)} × ${metric(depthMeters)} м</strong></div>
+                                <div class="client-param"><span>Высота сцены</span><strong>${metric(stageHeightM * 100)} см</strong></div>
+                                <div class="client-param"><span>Площадь настила</span><strong>${metric(areaMeters)} м²</strong></div>
+                                <div class="client-param"><span>Модулей / листов</span><strong>${sheets} шт</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="client-card">
+                            <div class="client-section-title">Стоимость</div>
+                            <table class="client-price-table">
+                                <thead>
+                                    <tr><th>Позиция</th><th>Стоимость</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Прокат сценической конструкции</td>
+                                        <td>${money(modulesCost)} ₽</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Монтаж / демонтаж</td>
+                                        <td>${money(installCost)} ₽</td>
+                                    </tr>
+                                    <tr class="client-total-row">
+                                        <td>Итого к оплате</td>
+                                        <td>${money(total)} ₽</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="client-note">Итоговая стоимость указана для выбранной конфигурации. Доставка, дополнительные работы, ограждения, лестницы и прочие опции добавляются отдельно при необходимости.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="client-footer-line">
+                    <div>FEG Stage PRO</div>
+                    <div>Коммерческое предложение без технической комплектации</div>
+                </div>
+            </div>
+        `;
+    }
+
+    function updatePdfContent() {
+        if (pdfTitleEl) pdfTitleEl.textContent = 'ТЕХНИЧЕСКИЙ ЛИСТ СБОРКИ СЦЕНЫ';
+        if (pdfFooterEl) pdfFooterEl.textContent = 'FEG Stage PRO — технический лист для склада и площадки';
+        if (!lastResult) {
+            pdfDataDiv.innerHTML = '<p>Нет расчёта. Выберите модули на сетке.</p>';
+            return;
+        }
+        const clientName = clientSelect.value || 'Клиент не выбран';
+        const project = projectNameInput.value.trim() || 'Без названия';
+        const { w, d, modules, sheets, columns, frames, columnTypeLabel, frameTypeLabel, studs, feet, components, widthMeters, depthMeters, areaMeters, weight, stageHeightM } = lastResult;
         const now = new Date();
         const dateText = now.toLocaleDateString('ru-RU');
         const timeText = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
@@ -1612,6 +2162,7 @@
                         <div><strong>Документ:</strong> технический лист для склада и площадки</div>
                         <div><strong>Размер модуля:</strong> ${moduleSize}</div>
                         <div><strong>Габариты сцены:</strong> ${metric(widthMeters)} × ${metric(depthMeters)} м</div>
+                        <div><strong>Высота сцены:</strong> ${metric(stageHeightM * 100)} см</div>
                         <div><strong>Габаритная зона по сетке:</strong> ${w} × ${d} мод.</div>
                     </div>
                 </div>
@@ -1635,8 +2186,10 @@
                             <tr><td>Отдельные конструкции</td><td class="qty">${components}</td></tr>
                             <tr><td>Размер листа / модуля</td><td class="qty">${moduleSize}</td></tr>
                             <tr><td>Габариты сцены</td><td class="qty">${metric(widthMeters)}×${metric(depthMeters)} м</td></tr>
+                            <tr><td>Высота сцены</td><td class="qty">${metric(stageHeightM * 100)} см</td></tr>
                             <tr><td>Габаритная зона</td><td class="qty">${w}×${d} мод.</td></tr>
                             <tr><td>Площадь настила</td><td class="qty">${metric(areaMeters)} м²</td></tr>
+                            <tr><td>Вес комплекта</td><td class="qty">${kg(weight.total)} кг</td></tr>
                         </table>
                         <p style="margin-top:10px;"><strong>Важно:</strong> отдельные группы модулей считать отдельными конструкциями при погрузке и сборке.</p>
                     </div>
@@ -1648,9 +2201,11 @@
                         <tr>
                             <th style="width:38px; text-align:center;">№</th>
                             <th>Наименование</th>
-                            <th style="width:120px;">Примечание</th>
+                            <th style="width:110px;">Примечание</th>
                             <th class="qty">Кол-во</th>
-                            <th style="width:70px; text-align:center;">Ед.</th>
+                            <th style="width:60px; text-align:center;">Ед.</th>
+                            <th style="width:70px; text-align:center;">кг/шт</th>
+                            <th style="width:82px; text-align:center;">Вес, кг</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1660,6 +2215,8 @@
                             <td>${moduleSize}</td>
                             <td class="qty">${sheets}</td>
                             <td style="text-align:center;">шт</td>
+                            <td style="text-align:center;">${kg(weight.sheetUnit)}</td>
+                            <td style="text-align:center; font-weight:800;">${kg(weight.sheetTotal)}</td>
                         </tr>
                         <tr>
                             <td style="text-align:center;">2</td>
@@ -1667,6 +2224,8 @@
                             <td>по уникальным узлам</td>
                             <td class="qty">${columns}</td>
                             <td style="text-align:center;">шт</td>
+                            <td style="text-align:center;">${kg(weight.columnUnit)}</td>
+                            <td style="text-align:center; font-weight:800;">${kg(weight.columnTotal)}</td>
                         </tr>
                         <tr>
                             <td style="text-align:center;">3</td>
@@ -1674,6 +2233,8 @@
                             <td>по уникальным сторонам</td>
                             <td class="qty">${frames}</td>
                             <td style="text-align:center;">шт</td>
+                            <td style="text-align:center;">${kg(weight.frameUnit)}</td>
+                            <td style="text-align:center; font-weight:800;">${kg(weight.frameTotal)}</td>
                         </tr>
                         <tr>
                             <td style="text-align:center;">4</td>
@@ -1681,6 +2242,8 @@
                             <td>для нивелировки покрытия</td>
                             <td class="qty">${studs}</td>
                             <td style="text-align:center;">шт</td>
+                            <td style="text-align:center;">${kg(weight.studUnit)}</td>
+                            <td style="text-align:center; font-weight:800;">${kg(weight.studTotal)}</td>
                         </tr>
                         <tr>
                             <td style="text-align:center;">5</td>
@@ -1688,13 +2251,19 @@
                             <td>защита покрытия</td>
                             <td class="qty">${feet}</td>
                             <td style="text-align:center;">шт</td>
+                            <td style="text-align:center;">—</td>
+                            <td style="text-align:center;">—</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" style="text-align:right; font-weight:800;">ИТОГО ВЕС КОМПЛЕКТА</td>
+                            <td colspan="2" style="text-align:center; font-weight:900;">${kg(weight.total)} кг</td>
                         </tr>
                     </tbody>
                 </table>
 
                 <div class="section-title">3. Инструкции для сборки</div>
                 <div class="notes">
-                    <p>1. Разложить модули по схеме. Нижняя часть схемы соответствует переднему краю сцены.</p>
+                    <p>1. Разложить модули по схеме. Нижняя часть схемы соответствует переднему краю сцены. Расчётная высота сцены: <strong>${metric(stageHeightM * 100)} см</strong>.</p>
                     <p>2. Столбы устанавливать в каждом уникальном углу модуля. Если модули соприкасаются углом, используется общий столб.</p>
                     <p>3. Перекладины / рамки ставить по уникальным сторонам модулей. Общая сторона соседних модулей считается один раз.</p>
                     <p>4. В каждый столб установить регулировочную шпильку и опорную пятку: <strong>${studs} шпилек</strong> и <strong>${feet} пяток</strong>.</p>
@@ -1707,6 +2276,52 @@
                 </div>
             </div>
         `;
+    }
+
+    function updateSaveOrderMode() {
+        if (saveOrderBtn) {
+            saveOrderBtn.textContent = editingOrderId ? '↻ Сохранить изменения' : '▱ Сохранить заказ';
+        }
+        if (editModePill) {
+            editModePill.classList.toggle('active', !!editingOrderId);
+        }
+    }
+
+    function buildOrderSnapshot(id) {
+        const project = projectNameInput.value.trim();
+        return {
+            id: id || Date.now(),
+            client: clientSelect.value,
+            name: project || 'Без названия',
+            w: lastResult.w,
+            d: lastResult.d,
+            modules: lastResult.modules,
+            sheets: lastResult.sheets,
+            columns: lastResult.columns,
+            frames: lastResult.frames,
+            columnType: lastResult.columnType,
+            columnTypeLabel: lastResult.columnTypeLabel,
+            frameType: lastResult.frameType,
+            frameTypeLabel: lastResult.frameTypeLabel,
+            studs: lastResult.studs,
+            feet: lastResult.feet,
+            weight: lastResult.weight,
+            totalWeight: lastResult.totalWeight,
+            weights: lastResult.weights,
+            stageHeightM: lastResult.stageHeightM,
+            components: lastResult.components,
+            modulesCost: lastResult.modulesCost,
+            installCost: lastResult.installCost,
+            total: lastResult.total,
+            priceModule: lastResult.priceModule,
+            shape: lastResult.shape,
+            widthMeters: lastResult.widthMeters,
+            depthMeters: lastResult.depthMeters,
+            areaMeters: lastResult.areaMeters,
+            gridCols: lastResult.gridCols,
+            gridRows: lastResult.gridRows,
+            date: new Date().toISOString()
+        };
     }
 
     function saveOrder() {
@@ -1723,40 +2338,30 @@
         if (!project && !confirm('Название проекта не заполнено. Сохранить заказ без названия?')) return;
 
         let orders = JSON.parse(localStorage.getItem('orders') || '[]');
-        const newOrder = {
-            id: Date.now(),
-            client,
-            name: project || 'Без названия',
-            w: lastResult.w,
-            d: lastResult.d,
-            modules: lastResult.modules,
-            sheets: lastResult.sheets,
-            columns: lastResult.columns,
-            frames: lastResult.frames,
-            columnType: lastResult.columnType,
-            columnTypeLabel: lastResult.columnTypeLabel,
-            frameType: lastResult.frameType,
-            frameTypeLabel: lastResult.frameTypeLabel,
-            studs: lastResult.studs,
-            feet: lastResult.feet,
-            components: lastResult.components,
-            modulesCost: lastResult.modulesCost,
-            installCost: lastResult.installCost,
-            total: lastResult.total,
-            priceModule: lastResult.priceModule,
-            shape: lastResult.shape,
-            widthMeters: lastResult.widthMeters,
-            depthMeters: lastResult.depthMeters,
-            areaMeters: lastResult.areaMeters,
-            gridCols: lastResult.gridCols,
-            gridRows: lastResult.gridRows,
-            date: new Date().toISOString()
-        };
+        if (editingOrderId) {
+            const idx = orders.findIndex(o => String(o.id || o._id) === String(editingOrderId));
+            if (idx >= 0) {
+                const updated = buildOrderSnapshot(orders[idx].id || editingOrderId);
+                updated.createdAt = orders[idx].createdAt || orders[idx].date;
+                updated.updatedAt = new Date().toISOString();
+                orders[idx] = updated;
+                localStorage.setItem('orders', JSON.stringify(orders));
+                renderOrders();
+                showToast('Изменения сохранены в заказ!');
+                updateSaveOrderMode();
+                return;
+            }
+            editingOrderId = null;
+        }
+
+        const newOrder = buildOrderSnapshot(Date.now());
+        newOrder.createdAt = newOrder.date;
         orders.unshift(newOrder);
         if (orders.length > 100) orders = orders.slice(0, 100);
         localStorage.setItem('orders', JSON.stringify(orders));
         renderOrders();
         showToast('Заказ сохранён!');
+        updateSaveOrderMode();
     }
 
     function showToast(text) {
@@ -1795,10 +2400,13 @@
                     <td class="num">${order.columns}</td>
                     <td class="num">${order.frames}</td>
                     <td class="num">${order.components || 1}</td>
+                    <td class="num">${order.totalWeight !== undefined ? kg(order.totalWeight) : '—'}</td>
                     <td class="money-cell">${money(order.total)} ₽</td>
                     <td>
                         <div class="orders-table-actions">
-                            <button class="pdf-order-button" data-id="${orderId}" title="Открыть PDF заказа">▣</button>
+                            <button class="edit-order-button" data-id="${orderId}" title="Открыть для правки">✎</button>
+                            <button class="pdf-order-button" data-id="${orderId}" title="Открыть технический PDF">▣</button>
+                            <button class="client-pdf-order-button" data-id="${orderId}" title="Открыть клиентскую смету PDF">КП</button>
                             <button class="delete-order" data-id="${orderId}" title="Удалить заказ">🗑</button>
                         </div>
                     </td>
@@ -1819,6 +2427,7 @@
                             <th class="num">Столбы</th>
                             <th class="num">Рамки</th>
                             <th class="num">Констр.</th>
+                            <th class="num">Вес, кг</th>
                             <th>Стоимость</th>
                             <th>Действия</th>
                         </tr>
@@ -1827,6 +2436,21 @@
                 </table>
             </div>
         `;
+
+        document.querySelectorAll('.edit-order-button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const idRaw = btn.getAttribute('data-id');
+                const ordersArr = JSON.parse(localStorage.getItem('orders') || '[]');
+                let order = ordersArr.find(o => String(o.id || o._id) === String(idRaw));
+                if (!order) {
+                    const idx = parseInt(idRaw);
+                    if (!isNaN(idx)) order = ordersArr[idx];
+                }
+                if (!order) return;
+                loadSavedOrderForEdit(order);
+            });
+        });
 
         document.querySelectorAll('.pdf-order-button').forEach(btn => {
             btn.addEventListener('click', async (e) => {
@@ -1840,6 +2464,21 @@
                 }
                 if (!order) return;
                 openSavedOrderPdf(order);
+            });
+        });
+
+        document.querySelectorAll('.client-pdf-order-button').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const idRaw = btn.getAttribute('data-id');
+                const ordersArr = JSON.parse(localStorage.getItem('orders') || '[]');
+                let order = ordersArr.find(o => String(o.id || o._id) === String(idRaw));
+                if (!order) {
+                    const idx = parseInt(idRaw);
+                    if (!isNaN(idx)) order = ordersArr[idx];
+                }
+                if (!order) return;
+                openSavedOrderClientPdf(order);
             });
         });
 
@@ -1857,12 +2496,16 @@
                     ordersArr = filtered;
                 }
                 localStorage.setItem('orders', JSON.stringify(ordersArr));
+                if (String(editingOrderId) === String(idRaw)) {
+                    editingOrderId = null;
+                    updateSaveOrderMode();
+                }
                 renderOrders();
             });
         });
     }
 
-    function openSavedOrderPdf(order) {
+    function applyOrderToEditor(order) {
         if (!order) return;
         if (order.gridCols || order.gridRows) {
             setGridDimensions(order.gridCols || gridColsCount, order.gridRows || gridRowsCount, false);
@@ -1886,16 +2529,46 @@
         if (order.installCost !== undefined) installInput.value = order.installCost;
         if (order.columnType && columnTypeSelect) columnTypeSelect.value = order.columnType;
         if (order.frameType && frameTypeSelect) frameTypeSelect.value = order.frameType;
+        if (order.weights) {
+            itemWeights = { ...DEFAULT_WEIGHTS, ...order.weights };
+            localStorage.setItem('itemWeights', JSON.stringify(itemWeights));
+        }
+        if (order.stageHeightM !== undefined) {
+            stageHeightM = Number(order.stageHeightM);
+            if (isNaN(stageHeightM) || stageHeightM < 0) stageHeightM = DEFAULT_STAGE_HEIGHT_M;
+            localStorage.setItem('stageHeightM', String(stageHeightM));
+        }
+        syncWeightInputs();
         calc(false);
+    }
+
+    function loadSavedOrderForEdit(order) {
+        applyOrderToEditor(order);
+        editingOrderId = String(order.id || order._id);
+        updateSaveOrderMode();
+        showToast('Заказ открыт для правки');
+    }
+
+    function openSavedOrderPdf(order) {
+        applyOrderToEditor(order);
         openPdfPreview();
     }
 
-    async function createPdfBlob() {
+    function openSavedOrderClientPdf(order) {
+        applyOrderToEditor(order);
+        openClientPdfPreview();
+    }
+
+    async function createPdfBlob(kind = 'tech') {
         if (!lastResult) {
             alert('Нет активного расчёта. Выберите модули на сетке перед созданием PDF.');
             return null;
         }
-        updatePdfContent();
+        if (kind === 'client') {
+            updateClientPdfContent();
+        } else {
+            updatePdfContent();
+        }
 
         const pdfContainer = document.getElementById('pdfContent');
         if (!pdfContainer) return null;
@@ -1932,7 +2605,10 @@
             const y = (pageHeight - renderHeight) / 2;
             doc.addImage(imgData, 'PNG', x, y, renderWidth, renderHeight, undefined, 'FAST');
             const safeName = (projectNameInput.value.trim() || 'stage').replace(/[\/:*?"<>|]/g, '_');
-            preparedPdfName = `tech_stage_${safeName}_${Date.now()}.pdf`;
+            preparedPdfKind = kind;
+            preparedPdfName = kind === 'client'
+                ? `kp_stage_${safeName}_${Date.now()}.pdf`
+                : `tech_stage_${safeName}_${Date.now()}.pdf`;
             return doc.output('blob');
         } catch (err) {
             console.error(err);
@@ -1945,11 +2621,24 @@
     }
 
     async function openPdfPreview() {
-        const blob = await createPdfBlob();
+        const blob = await createPdfBlob('tech');
         if (!blob) return;
         preparedPdfBlob = blob;
         if (preparedPdfUrl) URL.revokeObjectURL(preparedPdfUrl);
         preparedPdfUrl = URL.createObjectURL(blob);
+        if (pdfModalTitle) pdfModalTitle.textContent = 'Предпросмотр технического листа (1 стр., альбом)';
+        pdfPreviewFrame.src = preparedPdfUrl;
+        pdfModal.classList.add('open');
+        pdfModal.setAttribute('aria-hidden', 'false');
+    }
+
+    async function openClientPdfPreview() {
+        const blob = await createPdfBlob('client');
+        if (!blob) return;
+        preparedPdfBlob = blob;
+        if (preparedPdfUrl) URL.revokeObjectURL(preparedPdfUrl);
+        preparedPdfUrl = URL.createObjectURL(blob);
+        if (pdfModalTitle) pdfModalTitle.textContent = 'Предпросмотр клиентской сметы';
         pdfPreviewFrame.src = preparedPdfUrl;
         pdfModal.classList.add('open');
         pdfModal.setAttribute('aria-hidden', 'false');
@@ -1974,8 +2663,8 @@
         if (!preparedPdfBlob) return;
         const file = new File([preparedPdfBlob], preparedPdfName, { type: 'application/pdf' });
         const shareData = {
-            title: 'FEG Stage PRO — технический лист',
-            text: 'Технический лист сборки FEG Stage PRO',
+            title: preparedPdfKind === 'client' ? 'FEG Stage PRO — коммерческое предложение' : 'FEG Stage PRO — технический лист',
+            text: preparedPdfKind === 'client' ? 'Коммерческое предложение FEG Stage PRO' : 'Технический лист сборки FEG Stage PRO',
             files: [file]
         };
         try {
@@ -1997,8 +2686,10 @@
     }
 
     function emailPreparedPdf() {
-        const subject = encodeURIComponent('Коммерческое предложение FEG Stage PRO');
-        const body = encodeURIComponent('Здравствуйте!\n\nВо вложении коммерческое предложение. Если файл не прикрепился автоматически, я отправлю PDF отдельным сообщением.\n\n');
+        const subject = encodeURIComponent(preparedPdfKind === 'client' ? 'Коммерческое предложение FEG Stage PRO' : 'Технический лист FEG Stage PRO');
+        const body = encodeURIComponent(preparedPdfKind === 'client'
+            ? 'Здравствуйте!\n\nВо вложении коммерческое предложение. Если файл не прикрепился автоматически, я отправлю PDF отдельным сообщением.\n\n'
+            : 'Здравствуйте!\n\nВо вложении технический лист. Если файл не прикрепился автоматически, я отправлю PDF отдельным сообщением.\n\n');
         window.location.href = `mailto:?subject=${subject}&body=${body}`;
         showToast('Почта открыта. PDF можно приложить из загрузок');
     }
@@ -2006,6 +2697,11 @@
     if (pdfModal) {
         pdfModal.addEventListener('click', (event) => {
             if (event.target === pdfModal) closePdfPreview();
+        });
+    }
+    if (weightsModal) {
+        weightsModal.addEventListener('click', (event) => {
+            if (event.target === weightsModal) closeWeightsModal();
         });
     }
 
@@ -2084,6 +2780,7 @@
         if (frameTypeSelect) frameTypeSelect.addEventListener('change', () => calc(false));
         widthInput.addEventListener('change', applyRectangle);
         depthInput.addEventListener('change', applyRectangle);
+        updateSaveOrderMode();
         showIosHint();
     }
 
