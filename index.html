@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>FEG Stage PRO — Калькулятор сцены</title>
+    <title>FEG Stage PRO 2.0 — Калькулятор сцены</title>
 
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#111820">
     <link rel="apple-touch-icon" href="icon-180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 
     <!-- Библиотеки для PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -388,6 +389,27 @@
             color: var(--muted);
             font-size: 0.8rem;
             flex-wrap: wrap;
+        }
+
+        .canvas-template-card {
+            margin-top: 12px;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(22,31,39,.94), rgba(14,20,26,.96));
+        }
+        .template-inline {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .canvas-template-card .field {
+            min-width: 0;
+        }
+        .canvas-template-card .module-size-note {
+            padding: 0 0 10px;
+            border-bottom: 1px solid rgba(255,255,255,.075);
         }
 
         .result-card {
@@ -1074,42 +1096,51 @@
             letter-spacing: .04em;
         }
         .result-side-card { padding-bottom: 0; }
-        .result-card { margin: 0 -16px 0; border-left: 0; border-right: 0; border-radius: 0 0 10px 10px; border-bottom: 0; }
+        .result-card {
+            margin: 0 -16px 0;
+            border-left: 0;
+            border-right: 0;
+            border-radius: 0 0 10px 10px;
+            border-bottom: 0;
+            background: rgba(11,16,21,.72);
+        }
         .result-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
+            grid-template-columns: minmax(0, 1fr) minmax(116px, 45%);
             gap: 0;
             align-items: stretch;
         }
         .result-grid div {
             display: flex;
             align-items: center;
-            min-height: 42px;
-            padding: 9px 16px;
+            min-height: 32px;
+            padding: 6px 11px;
             background: transparent !important;
-            border-bottom: 1px solid rgba(255,255,255,.085);
-            font-size: .82rem;
-            line-height: 1.25;
+            border-bottom: 1px solid rgba(255,255,255,.12);
+            font-size: .72rem;
+            line-height: 1.18;
+            overflow-wrap: anywhere;
+            word-break: normal;
         }
         .result-grid div:nth-child(odd) {
             color: var(--muted);
-            font-weight: 650;
-            border-right: 1px solid rgba(255,255,255,.055);
+            font-weight: 620;
+            border-right: 1px solid rgba(255,255,255,.11);
         }
         .result-grid div:nth-child(even) {
             justify-content: flex-end;
             color: var(--accent);
-            font-size: .96rem;
-            font-weight: 800;
+            font-size: .78rem;
+            font-weight: 760;
             text-align: right;
-            white-space: nowrap;
+            white-space: normal;
         }
         .result-grid div:nth-last-child(1), .result-grid div:nth-last-child(2) {
             border-bottom: none;
-            min-height: 48px;
+            min-height: 38px;
         }
         .result-grid div:nth-last-child(2),
-        .result-grid div:nth-last-child(1) { background: rgba(196,160,111,.055) !important; }
+        .result-grid div:nth-last-child(1) { background: rgba(196,160,111,.07) !important; }
         .quick-client-row { display: grid; grid-template-columns: 1fr 48px; gap: 8px; margin-top: 8px; }
         .quick-client-row button { padding: 0; border-radius: 12px; }
         .compact-row { gap: 10px; margin-bottom: 12px; }
@@ -1154,6 +1185,172 @@
             .logo img { width: 132px; }
         }
 
+
+
+        /* Light theme: строгая классическая палитра */
+        body.theme-light {
+            --bg: #f3f0ea;
+            --panel: #ffffff;
+            --panel-2: #f7f4ee;
+            --panel-3: #ede8df;
+            --line: #d4c9bb;
+            --line-soft: rgba(46, 41, 35, 0.12);
+            --text: #201c17;
+            --ink: #201c17;
+            --muted: #6d6255;
+            --muted-2: #8a8075;
+            --accent: #8b6842;
+            --accent-dark: #5b432d;
+            --accent-soft: rgba(139,104,66,0.12);
+            --danger: #b91c1c;
+            --success: #5f7939;
+            background: radial-gradient(circle at top left, rgba(139,104,66,0.10), transparent 28%), linear-gradient(135deg, #f4f1eb 0%, #e8e1d6 52%, #f8f6f2 100%);
+            color: var(--text);
+        }
+        body.theme-light .app-container {
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(246,242,236,0.98));
+            border-color: rgba(91,67,45,0.16);
+            box-shadow: 0 24px 70px rgba(70, 53, 34, 0.18);
+        }
+        body.theme-light .logo img {
+            border-color: rgba(139,104,66,0.28);
+            box-shadow: 0 14px 34px rgba(70,53,34,0.16);
+        }
+        body.theme-light input,
+        body.theme-light select {
+            background: #fffdf8;
+            border-color: var(--line);
+            color: var(--text);
+        }
+        body.theme-light input:focus,
+        body.theme-light select:focus {
+            background: #ffffff;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(139,104,66,0.18);
+        }
+        body.theme-light button {
+            background: #f8f5ef;
+            border-color: #d1c5b7;
+            color: var(--text);
+        }
+        body.theme-light button:hover {
+            background: #efe8dd;
+            border-color: var(--accent);
+        }
+        body.theme-light .btn-primary {
+            background: linear-gradient(135deg, #9b784e, #5f4934);
+            border-color: #8b6842;
+            color: #fff;
+        }
+        body.theme-light .btn-primary:hover {
+            background: linear-gradient(135deg, #a98558, #6a5138);
+            border-color: #9b784e;
+        }
+        body.theme-light .btn-secondary {
+            background: #f5f1ea;
+            border-color: #d1c5b7;
+            color: var(--text);
+        }
+        body.theme-light .btn-success {
+            background: linear-gradient(135deg, #77924e, #526934);
+            border-color: #77924e;
+            color: #fff;
+        }
+        body.theme-light .btn-danger {
+            background: rgba(185,28,28,0.08);
+            border-color: rgba(185,28,28,0.22);
+            color: #991b1b;
+        }
+        body.theme-light .client-area,
+        body.theme-light .stage-editor-card,
+        body.theme-light .side-card,
+        body.theme-light .weights-modal,
+        body.theme-light .pdf-modal {
+            background: linear-gradient(180deg, #ffffff, #f6f1e8);
+            border-color: rgba(91,67,45,0.18);
+            box-shadow: 0 12px 30px rgba(70,53,34,0.10), inset 0 1px 0 rgba(255,255,255,0.75);
+        }
+        body.theme-light .stage-grid-wrap {
+            background: #e7dfd4;
+            border-color: #cfc2b2;
+        }
+        body.theme-light .stage-cell {
+            background: rgba(255,255,255,0.46);
+            border-color: rgba(88,73,55,0.18);
+        }
+        body.theme-light .stage-cell:hover {
+            border-color: var(--accent);
+        }
+        body.theme-light .stage-cell.active {
+            background-color: #6f553c;
+            border-color: rgba(139,104,66,0.78);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.20), inset 0 -3px 5px rgba(67,44,25,0.25), 0 0 8px rgba(139,104,66,0.16);
+        }
+        body.theme-light .stage-cell.origin {
+            outline-color: rgba(79,70,55,0.38);
+        }
+        body.theme-light .zoom-control,
+        body.theme-light .canvas-template-card,
+        body.theme-light .result-card,
+        body.theme-light .orders-table-wrap,
+        body.theme-light .pdf-preview-frame {
+            background: #f4eee5;
+            border-color: #d4c9bb;
+        }
+        body.theme-light .canvas-template-card {
+            background: linear-gradient(180deg, #fbf8f2, #f0e9df);
+        }
+        body.theme-light .module-size-note {
+            border-bottom-color: rgba(91,67,45,0.15);
+        }
+        body.theme-light .result-card {
+            background: #f7f2ea;
+        }
+        body.theme-light .result-grid div {
+            border-bottom-color: rgba(91,67,45,0.16);
+        }
+        body.theme-light .result-grid div:nth-child(odd) {
+            color: #6d6255;
+            border-right-color: rgba(91,67,45,0.16);
+        }
+        body.theme-light .result-grid div:nth-child(even),
+        body.theme-light .orders-table .money-cell,
+        body.theme-light .pdf-order-button,
+        body.theme-light .edit-order-button {
+            color: #7a5732;
+        }
+        body.theme-light .result-grid div:nth-last-child(2),
+        body.theme-light .result-grid div:nth-last-child(1) {
+            background: rgba(139,104,66,.08) !important;
+        }
+        body.theme-light .orders-table th {
+            background: #e5dbce;
+            color: #5b432d;
+            border-right-color: rgba(91,67,45,0.16);
+        }
+        body.theme-light .orders-table td {
+            background: #fbf8f2;
+            color: var(--text);
+            border-right-color: rgba(91,67,45,0.14);
+            border-bottom-color: rgba(91,67,45,0.14);
+        }
+        body.theme-light .orders-table tr:hover td {
+            background: #f0e7da;
+        }
+        body.theme-light .hardware-note,
+        body.theme-light .edit-mode-pill {
+            background: rgba(139,104,66,0.08);
+            border-color: rgba(139,104,66,0.22);
+            color: var(--accent);
+        }
+        body.theme-light select option {
+            background: #fffdf8;
+            color: #201c17;
+        }
+        body.theme-light .close-modal {
+            background: #f8f5ef;
+        }
+
         @media (max-width: 560px) {
             body { padding: 8px; }
             .app-container { padding: 14px 12px 22px; border-radius: 18px; }
@@ -1171,7 +1368,7 @@
             .template-field { grid-column: auto; }
             .stage-grid { gap: 0; }
             .mobile-refresh-button { display: block; }
-            .result-grid div { padding: 10px 12px; font-size: 0.9rem; }
+            .result-grid div { padding: 6px 9px; font-size: .7rem; min-height: 30px; }
             .order-card { flex-direction: column; align-items: flex-start; }
             .delete-order { align-self: flex-end; }
         }
@@ -1182,7 +1379,7 @@
 <div class="app-container app-shell">
     <div class="app-header">
         <div class="logo">
-            <img src="icon-192.png" alt="FEG Stage PRO">
+            <img src="icon-192.png" alt="FEG Stage PRO 2.0">
         </div>
         <div class="app-title">
             <h1><span>FEG</span> Stage PRO</h1>
@@ -1215,6 +1412,23 @@
                 <span>ⓘ Рисуйте мышкой или пальцем. Отдельные группы модулей считаются как отдельные конструкции.</span>
                 <span id="selectedCount">Выбрано модулей: 0</span>
             </div>
+
+            <div class="canvas-template-card">
+                <div class="module-size-note">
+                    <span>Размер настила / листа</span>
+                    <strong>1.2 × 1.2 м</strong>
+                </div>
+                <div class="template-inline">
+                    <div class="field small template-field">
+                        <label>Шаблон Ш×Г</label>
+                        <div class="template-size-row">
+                            <input id="width" type="number" value="4" min="1" max="20" step="1" aria-label="Ширина шаблона">
+                            <input id="depth" type="number" value="3" min="1" max="20" step="1" aria-label="Глубина шаблона">
+                        </div>
+                    </div>
+                </div>
+                <div class="hint">Шаблон быстро заполняет прямоугольную сцену. Нестандартную форму можно дорисовать или стереть прямо на схеме.</div>
+            </div>
         </main>
 
         <aside class="side-panel">
@@ -1237,36 +1451,6 @@
                     <input id="clientName" type="text" placeholder="Новый клиент">
                     <button onclick="addClient()" class="btn-secondary">+</button>
                 </div>
-            </section>
-
-            <section class="side-card module-params-card">
-                <h3>Параметры модуля</h3>
-                <div class="module-size-note">
-                    <span>Размер настила / листа</span>
-                    <strong>1.2 × 1.2 м</strong>
-                </div>
-                <div class="params-grid">
-                    <div class="field small">
-                        <label>Цена за модуль</label>
-                        <input id="priceModule" type="number" value="850" step="50">
-                    </div>
-                    <div class="field small">
-                        <label>Монтаж</label>
-                        <input id="install" type="number" value="3500" step="500">
-                    </div>
-                    <div class="field small template-field">
-                        <label>Шаблон Ш×Г</label>
-                        <div class="template-size-row">
-                            <input id="width" type="number" value="4" min="1" max="20" step="1" aria-label="Ширина шаблона">
-                            <input id="depth" type="number" value="3" min="1" max="20" step="1" aria-label="Глубина шаблона">
-                        </div>
-                    </div>
-                </div>
-                <div class="module-size-note hardware-note">
-                    <span>Шпильки и пятки</span>
-                    <strong>по 1 шт на каждый столб</strong>
-                </div>
-                <div class="hint">Габариты сцены, опоры, рамки, шпильки и пятки считаются автоматически по выбранной форме. Типы столбов, перекладин и вес позиций — в настройках.</div>
             </section>
 
             <section class="side-card action-side-card">
@@ -1312,10 +1496,28 @@
 <div id="weightsModal" class="modal-backdrop" aria-hidden="true">
     <div class="weights-modal settings-modal" role="dialog" aria-modal="true" aria-label="Настройки">
         <div class="pdf-modal-header">
-            <div class="pdf-modal-title">Настройки конструкции и веса</div>
+            <div class="pdf-modal-title">Настройки интерфейса, стоимости, конструкции и веса</div>
             <button type="button" class="close-modal" onclick="closeSettingsModal()" aria-label="Закрыть">×</button>
         </div>
         <div class="weights-modal-body">
+            <div class="settings-section-title">Интерфейс</div>
+            <div class="weights-grid settings-grid">
+                <label for="appTheme">Тема оформления</label>
+                <select id="appTheme">
+                    <option value="dark" selected>Тёмная</option>
+                    <option value="light">Светлая строгая</option>
+                </select>
+            </div>
+
+            <div class="settings-section-title">Стоимость</div>
+            <div class="weights-grid settings-grid">
+                <label for="priceModule">Цена за модуль, ₽</label>
+                <input id="priceModule" type="number" min="0" value="850" step="50">
+
+                <label for="install">Монтаж, ₽</label>
+                <input id="install" type="number" min="0" value="3500" step="500">
+            </div>
+
             <div class="settings-section-title">Типы комплектующих</div>
             <div class="weights-grid settings-grid">
                 <label for="columnType">Столбы по высоте</label>
@@ -1333,6 +1535,24 @@
 
                 <label for="stageHeight">Высота сцены, см</label>
                 <input id="stageHeight" type="number" min="0" step="1" value="60">
+            </div>
+
+            <div class="settings-section-title">Транспорт</div>
+            <div class="weights-grid settings-grid">
+                <label for="transportType">Тип доставки</label>
+                <select id="transportType">
+                    <option value="city" selected>По городу</option>
+                    <option value="intercity">Межгород</option>
+                </select>
+
+                <label for="transportCityPrice">По городу, фикс. цена ₽</label>
+                <input id="transportCityPrice" type="number" min="0" step="500" value="0">
+
+                <label for="transportKmPrice">Межгород, ₽ за 1 км</label>
+                <input id="transportKmPrice" type="number" min="0" step="10" value="0">
+
+                <label for="transportKm">Межгород, количество км</label>
+                <input id="transportKm" type="number" min="0" step="1" value="0">
             </div>
 
             <div class="settings-section-title">Вес позиций, кг/шт</div>
@@ -1359,7 +1579,7 @@
                 <input id="weightStud" type="number" min="0" step="0.1" value="1.5">
             </div>
             <div class="weights-modal-note">
-                Настройки сохраняются в браузере и используются в расчёте, сохранённых заказах и техническом PDF. Пятки пока считаются количеством, без веса.
+                Настройки сохраняются в браузере и используются в расчёте, сохранённых заказах, техническом PDF и клиентской смете. Тема оформления применяется только к интерфейсу приложения. Пятки пока считаются количеством, без веса.
             </div>
         </div>
         <div class="pdf-modal-actions">
@@ -1381,6 +1601,17 @@
     const MODULE_DEPTH_M = 1.2;
     const MODULE_SIZE_LABEL = '1.2×1.2 м';
     const DEFAULT_STAGE_HEIGHT_M = 0.6;
+    const DEFAULT_PRICING = {
+        priceModule: 850,
+        installCost: 3500
+    };
+    const DEFAULT_TRANSPORT_SETTINGS = {
+        type: 'city',
+        cityPrice: 0,
+        kmPrice: 0,
+        km: 0
+    };
+    const DEFAULT_APP_THEME = 'dark';
     const COLUMN_TYPES = {
         low: 'Столб низкий',
         middle: 'Столб средний',
@@ -1401,6 +1632,9 @@
     };
     let itemWeights = loadWeights();
     let stageHeightM = loadStageHeight();
+    let pricingSettings = loadPricingSettings();
+    let transportSettings = loadTransportSettings();
+    let appTheme = loadAppTheme();
     let selectedModules = new Set();
     let lastResult = null;
 
@@ -1428,7 +1662,12 @@
     const gridColsInput = document.getElementById('gridCols');
     const gridRowsInput = document.getElementById('gridRows');
     const weightsModal = document.getElementById('weightsModal');
+    const appThemeSelect = document.getElementById('appTheme');
     const stageHeightInput = document.getElementById('stageHeight');
+    const transportTypeSelect = document.getElementById('transportType');
+    const transportCityPriceInput = document.getElementById('transportCityPrice');
+    const transportKmPriceInput = document.getElementById('transportKmPrice');
+    const transportKmInput = document.getElementById('transportKm');
     const saveOrderBtn = document.getElementById('saveOrderBtn');
     const editModePill = document.getElementById('editModePill');
 
@@ -1476,6 +1715,28 @@
         return rounded.toLocaleString('ru-RU', { maximumFractionDigits: 1 });
     }
 
+    function loadAppTheme() {
+        const saved = localStorage.getItem('appTheme');
+        return saved === 'light' ? 'light' : DEFAULT_APP_THEME;
+    }
+
+    function applyAppTheme(theme) {
+        const normalized = theme === 'light' ? 'light' : 'dark';
+        appTheme = normalized;
+        document.body.classList.toggle('theme-light', normalized === 'light');
+        document.body.classList.toggle('theme-dark', normalized === 'dark');
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', normalized === 'light' ? '#f3f0ea' : '#111820');
+    }
+
+    function syncThemeInput() {
+        if (appThemeSelect) appThemeSelect.value = appTheme === 'light' ? 'light' : 'dark';
+    }
+
+    function readThemeFromInput() {
+        return appThemeSelect && appThemeSelect.value === 'light' ? 'light' : 'dark';
+    }
+
     function loadWeights() {
         try {
             return { ...DEFAULT_WEIGHTS, ...(JSON.parse(localStorage.getItem('itemWeights') || '{}')) };
@@ -1487,6 +1748,93 @@
     function loadStageHeight() {
         const value = Number(localStorage.getItem('stageHeightM'));
         return isNaN(value) || value < 0 ? DEFAULT_STAGE_HEIGHT_M : value;
+    }
+
+    function normalizePricingSettings(raw) {
+        const source = raw && typeof raw === 'object' ? raw : {};
+        const priceModule = Number(source.priceModule);
+        const installCost = Number(source.installCost);
+        return {
+            priceModule: isNaN(priceModule) || priceModule < 0 ? DEFAULT_PRICING.priceModule : priceModule,
+            installCost: isNaN(installCost) || installCost < 0 ? DEFAULT_PRICING.installCost : installCost
+        };
+    }
+
+    function loadPricingSettings() {
+        try {
+            const parsed = JSON.parse(localStorage.getItem('pricingSettings') || 'null');
+            return normalizePricingSettings(parsed || DEFAULT_PRICING);
+        } catch (err) {
+            return { ...DEFAULT_PRICING };
+        }
+    }
+
+    function syncPricingInputs() {
+        const normalized = normalizePricingSettings(pricingSettings);
+        if (priceModuleInput) priceModuleInput.value = normalized.priceModule;
+        if (installInput) installInput.value = normalized.installCost;
+    }
+
+    function readPricingFromInputs() {
+        return normalizePricingSettings({
+            priceModule: priceModuleInput ? Number(priceModuleInput.value) : pricingSettings.priceModule,
+            installCost: installInput ? Number(installInput.value) : pricingSettings.installCost
+        });
+    }
+
+    function normalizeTransportSettings(raw) {
+        const source = raw && typeof raw === 'object' ? raw : {};
+        const type = source.type === 'intercity' ? 'intercity' : 'city';
+        const cityPrice = Number(source.cityPrice);
+        const kmPrice = Number(source.kmPrice);
+        const km = Number(source.km);
+        return {
+            type,
+            cityPrice: isNaN(cityPrice) || cityPrice < 0 ? DEFAULT_TRANSPORT_SETTINGS.cityPrice : cityPrice,
+            kmPrice: isNaN(kmPrice) || kmPrice < 0 ? DEFAULT_TRANSPORT_SETTINGS.kmPrice : kmPrice,
+            km: isNaN(km) || km < 0 ? DEFAULT_TRANSPORT_SETTINGS.km : km
+        };
+    }
+
+    function loadTransportSettings() {
+        try {
+            const parsed = JSON.parse(localStorage.getItem('transportSettings') || 'null');
+            return normalizeTransportSettings(parsed || DEFAULT_TRANSPORT_SETTINGS);
+        } catch (err) {
+            return { ...DEFAULT_TRANSPORT_SETTINGS };
+        }
+    }
+
+    function calculateTransportCost(settings) {
+        const normalized = normalizeTransportSettings(settings || transportSettings);
+        return normalized.type === 'intercity'
+            ? normalized.kmPrice * normalized.km
+            : normalized.cityPrice;
+    }
+
+    function getTransportLabel(settings) {
+        const normalized = normalizeTransportSettings(settings || transportSettings);
+        if (normalized.type === 'intercity') {
+            return `Межгород · ${metric(normalized.km)} км × ${money(normalized.kmPrice)} ₽/км`;
+        }
+        return 'По городу · фиксированная стоимость';
+    }
+
+    function syncTransportInputs() {
+        const normalized = normalizeTransportSettings(transportSettings);
+        if (transportTypeSelect) transportTypeSelect.value = normalized.type;
+        if (transportCityPriceInput) transportCityPriceInput.value = normalized.cityPrice;
+        if (transportKmPriceInput) transportKmPriceInput.value = normalized.kmPrice;
+        if (transportKmInput) transportKmInput.value = normalized.km;
+    }
+
+    function readTransportFromInputs() {
+        return normalizeTransportSettings({
+            type: transportTypeSelect ? transportTypeSelect.value : transportSettings.type,
+            cityPrice: transportCityPriceInput ? Number(transportCityPriceInput.value) : transportSettings.cityPrice,
+            kmPrice: transportKmPriceInput ? Number(transportKmPriceInput.value) : transportSettings.kmPrice,
+            km: transportKmInput ? Number(transportKmInput.value) : transportSettings.km
+        });
     }
 
     function getStageHeightValue() {
@@ -1516,6 +1864,7 @@
     }
 
     function syncWeightInputs() {
+        syncThemeInput();
         const map = {
             weightSheet: 'sheet',
             weightColumnLow: 'column_low',
@@ -1530,6 +1879,8 @@
             if (input) input.value = getWeightValue(key);
         });
         if (stageHeightInput) stageHeightInput.value = Math.round(getStageHeightValue() * 100);
+        syncPricingInputs();
+        syncTransportInputs();
     }
 
     function readStageHeightFromInput() {
@@ -1573,8 +1924,15 @@
     function saveSettingsFromModal() {
         itemWeights = readWeightsFromInputs();
         stageHeightM = readStageHeightFromInput();
+        pricingSettings = readPricingFromInputs();
+        transportSettings = readTransportFromInputs();
+        appTheme = readThemeFromInput();
+        applyAppTheme(appTheme);
         localStorage.setItem('itemWeights', JSON.stringify(itemWeights));
         localStorage.setItem('stageHeightM', String(stageHeightM));
+        localStorage.setItem('pricingSettings', JSON.stringify(pricingSettings));
+        localStorage.setItem('transportSettings', JSON.stringify(transportSettings));
+        localStorage.setItem('appTheme', appTheme);
         closeSettingsModal();
         calc(false);
         showToast('Настройки сохранены');
@@ -1953,7 +2311,10 @@
         const components = calculateConnectedComponents(modulesList);
         const bounds = getStageBounds(modulesList);
         const modulesCost = geometry.sheets * price;
-        const total = modulesCost + installCost;
+        const activeTransportSettings = normalizeTransportSettings(transportSettings);
+        const transportCost = calculateTransportCost(activeTransportSettings);
+        const transportLabel = getTransportLabel(activeTransportSettings);
+        const total = modulesCost + installCost + transportCost;
         const columnType = columnTypeSelect ? columnTypeSelect.value : 'middle';
         const frameType = frameTypeSelect ? frameTypeSelect.value : 'low';
         const columnTypeLabel = COLUMN_TYPES[columnType] || COLUMN_TYPES.middle;
@@ -1982,6 +2343,9 @@
             components,
             modulesCost,
             installCost,
+            transportCost,
+            transportLabel,
+            transportSettings: { ...activeTransportSettings },
             total,
             priceModule: price,
             shape: Array.from(selectedModules),
@@ -1998,17 +2362,18 @@
             <div class="result-grid">
                 <div>Габариты сцены</div><div>${metric(bounds.width * MODULE_WIDTH_M)} × ${metric(bounds.depth * MODULE_DEPTH_M)} м</div>
                 <div>Высота сцены</div><div>${metric(stageHeight * 100)} см</div>
-                <div>Габаритная зона по сетке</div><div>${bounds.width} × ${bounds.depth} мод.</div>
+                <div>Зона по сетке</div><div>${bounds.width} × ${bounds.depth} мод.</div>
                 <div>Площадь настила</div><div>${metric(geometry.sheets * MODULE_WIDTH_M * MODULE_DEPTH_M)} м²</div>
                 <div>Листы настила</div><div>${geometry.sheets} шт</div>
                 <div>Столбы-опоры</div><div>${geometry.columns} шт · ${escapeHtml(columnTypeLabel)}</div>
-                <div>Перекладины / рамки</div><div>${geometry.frames} шт · ${escapeHtml(frameTypeLabel)}</div>
-                <div>Шпильки регулировочные</div><div>${studs} шт</div>
-                <div>Пятки опорные</div><div>${feet} шт</div>
+                <div>Перекладины</div><div>${geometry.frames} шт · ${escapeHtml(frameTypeLabel)}</div>
+                <div>Шпильки</div><div>${studs} шт</div>
+                <div>Пятки</div><div>${feet} шт</div>
                 <div>Вес комплекта</div><div>${kg(weight.total)} кг</div>
                 <div>Связность</div><div>${getDetachedNotice(components)}</div>
-                <div>Стоимость модулей</div><div>${money(modulesCost)} ₽</div>
+                <div>Прокат сцены</div><div>${money(modulesCost)} ₽</div>
                 <div>Монтаж</div><div>${money(installCost)} ₽</div>
+                <div>Транспорт</div><div>${money(transportCost)} ₽ · ${escapeHtml(transportLabel)}</div>
                 <div><b>ИТОГО</b></div><div><b>${money(total)} ₽</b></div>
             </div>
         `;
@@ -2066,7 +2431,7 @@
         const now = new Date();
         const dateText = now.toLocaleDateString('ru-RU');
         const validUntil = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('ru-RU');
-        const { sheets, widthMeters, depthMeters, areaMeters, stageHeightM, modulesCost, installCost, total } = lastResult;
+        const { sheets, widthMeters, depthMeters, areaMeters, stageHeightM, modulesCost, installCost, transportCost = 0, transportLabel = 'По городу · фиксированная стоимость', total } = lastResult;
 
         pdfDataDiv.innerHTML = `
             <div class="client-pdf">
@@ -2116,13 +2481,17 @@
                                         <td>Монтаж / демонтаж</td>
                                         <td>${money(installCost)} ₽</td>
                                     </tr>
+                                    <tr>
+                                        <td>Транспорт <span style="font-size:10px;color:#69727d;">(${escapeHtml(transportLabel)})</span></td>
+                                        <td>${money(transportCost)} ₽</td>
+                                    </tr>
                                     <tr class="client-total-row">
                                         <td>Итого к оплате</td>
                                         <td>${money(total)} ₽</td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <div class="client-note">Итоговая стоимость указана для выбранной конфигурации. Доставка, дополнительные работы, ограждения, лестницы и прочие опции добавляются отдельно при необходимости.</div>
+                            <div class="client-note">Итоговая стоимость указана для выбранной конфигурации с учётом выбранного параметра транспорта. Дополнительные работы, ограждения, лестницы и прочие опции добавляются отдельно при необходимости.</div>
                         </div>
                     </div>
                 </div>
@@ -2144,7 +2513,7 @@
         }
         const clientName = clientSelect.value || 'Клиент не выбран';
         const project = projectNameInput.value.trim() || 'Без названия';
-        const { w, d, modules, sheets, columns, frames, columnTypeLabel, frameTypeLabel, studs, feet, components, widthMeters, depthMeters, areaMeters, weight, stageHeightM } = lastResult;
+        const { w, d, modules, sheets, columns, frames, columnTypeLabel, frameTypeLabel, studs, feet, components, widthMeters, depthMeters, areaMeters, weight, stageHeightM, transportCost = 0, transportLabel = 'По городу · фиксированная стоимость' } = lastResult;
         const now = new Date();
         const dateText = now.toLocaleDateString('ru-RU');
         const timeText = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
@@ -2163,6 +2532,7 @@
                         <div><strong>Размер модуля:</strong> ${moduleSize}</div>
                         <div><strong>Габариты сцены:</strong> ${metric(widthMeters)} × ${metric(depthMeters)} м</div>
                         <div><strong>Высота сцены:</strong> ${metric(stageHeightM * 100)} см</div>
+                        <div><strong>Транспорт:</strong> ${escapeHtml(transportLabel)} · ${money(transportCost)} ₽</div>
                         <div><strong>Габаритная зона по сетке:</strong> ${w} × ${d} мод.</div>
                     </div>
                 </div>
@@ -2312,6 +2682,9 @@
             components: lastResult.components,
             modulesCost: lastResult.modulesCost,
             installCost: lastResult.installCost,
+            transportCost: lastResult.transportCost,
+            transportLabel: lastResult.transportLabel,
+            transportSettings: lastResult.transportSettings,
             total: lastResult.total,
             priceModule: lastResult.priceModule,
             shape: lastResult.shape,
@@ -2525,8 +2898,14 @@
             clientSelect.value = order.client;
         }
         projectNameInput.value = order.name || '';
-        if (order.priceModule) priceModuleInput.value = order.priceModule;
-        if (order.installCost !== undefined) installInput.value = order.installCost;
+        if (order.priceModule !== undefined || order.installCost !== undefined) {
+            pricingSettings = normalizePricingSettings({
+                priceModule: order.priceModule !== undefined ? order.priceModule : pricingSettings.priceModule,
+                installCost: order.installCost !== undefined ? order.installCost : pricingSettings.installCost
+            });
+            localStorage.setItem('pricingSettings', JSON.stringify(pricingSettings));
+            syncPricingInputs();
+        }
         if (order.columnType && columnTypeSelect) columnTypeSelect.value = order.columnType;
         if (order.frameType && frameTypeSelect) frameTypeSelect.value = order.frameType;
         if (order.weights) {
@@ -2538,6 +2917,14 @@
             if (isNaN(stageHeightM) || stageHeightM < 0) stageHeightM = DEFAULT_STAGE_HEIGHT_M;
             localStorage.setItem('stageHeightM', String(stageHeightM));
         }
+        if (order.transportSettings) {
+            transportSettings = normalizeTransportSettings(order.transportSettings);
+        } else if (order.transportCost !== undefined) {
+            transportSettings = normalizeTransportSettings({ type: 'city', cityPrice: Number(order.transportCost) || 0 });
+        } else {
+            transportSettings = { ...DEFAULT_TRANSPORT_SETTINGS };
+        }
+        localStorage.setItem('transportSettings', JSON.stringify(transportSettings));
         syncWeightInputs();
         calc(false);
     }
@@ -2756,13 +3143,13 @@
     }
 
     function init() {
+        applyAppTheme(appTheme);
         renderClients();
         setGridDimensions(DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS, false);
         renderOrders();
         if (!widthInput.value) widthInput.value = 4;
         if (!depthInput.value) depthInput.value = 3;
-        if (!priceModuleInput.value) priceModuleInput.value = 850;
-        if (!installInput.value) installInput.value = 3500;
+        syncWeightInputs();
         if (gridZoom) {
             setGridZoom(gridZoom.value);
             gridZoom.addEventListener('input', () => setGridZoom(gridZoom.value));
@@ -2774,12 +3161,11 @@
             new ResizeObserver(fitGridToScreen).observe(stageGrid.parentElement);
         }
         applyRectangle();
-        priceModuleInput.addEventListener('input', () => calc(false));
-        installInput.addEventListener('input', () => calc(false));
         if (columnTypeSelect) columnTypeSelect.addEventListener('change', () => calc(false));
         if (frameTypeSelect) frameTypeSelect.addEventListener('change', () => calc(false));
         widthInput.addEventListener('change', applyRectangle);
         depthInput.addEventListener('change', applyRectangle);
+        syncTransportInputs();
         updateSaveOrderMode();
         showIosHint();
     }

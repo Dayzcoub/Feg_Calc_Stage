@@ -1,5 +1,5 @@
-const CACHE_NAME = 'feg-stage-pro-v18';
-const RUNTIME_CACHE = 'feg-stage-runtime-v18';
+const CACHE_NAME = 'feg-stage-pro-v22-final';
+const RUNTIME_CACHE = 'feg-stage-runtime-v22-final';
 
 const CORE_ASSETS = [
   './',

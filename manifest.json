@@ -1,11 +1,16 @@
 {
-  "name": "FEG Stage PRO",
-  "short_name": "FEG Stage",
+  "name": "FEG Stage PRO 2.0",
+  "short_name": "FEG PRO 2.0",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
+  "background_color": "#080c10",
+  "theme_color": "#111820",
   "icons": [
+    {
+      "src": "icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
     {
       "src": "icon-192.png",
       "sizes": "192x192",
@@ -16,5 +21,6 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "description": "Калькулятор сценических модулей FEG Stage PRO 2.0"
 }
