@@ -406,11 +406,18 @@ body.v4-only-body :where(.v4-grid-2, .v4-grid-4) {
   grid-template-columns:repeat(auto-fit, minmax(min(160px, 100%), 1fr)) !important;
   gap:10px !important;
 }
+body.v4-only-body .v4-truss-template-panel,
+body.v4-only-body .v4-truss-template-split,
+body.v4-only-body .v4-truss-template-card {
+  min-width:0 !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+}
 body.v4-only-body .v4-truss-template-split {
   display:grid !important;
-  grid-template-columns:repeat(auto-fit, minmax(min(260px, 100%), 1fr)) !important;
+  grid-template-columns:minmax(240px, .82fr) minmax(360px, 1.18fr) minmax(280px, .95fr) !important;
   gap:10px !important;
-  align-items:start !important;
+  align-items:stretch !important;
 }
 body.v4-only-body .v4-truss-template-card {
   display:grid !important;
@@ -419,6 +426,17 @@ body.v4-only-body .v4-truss-template-card {
   background:#0f1011 !important;
   border:1px solid var(--line-soft) !important;
   border-radius:var(--radius-md) !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  overflow:hidden !important;
+}
+body.v4-only-body .v4-truss-template-card :where(.v4-field, label, input, select, textarea, button) {
+  min-width:0 !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+}
+body.v4-only-body .v4-truss-template-card :where(input, select, textarea) {
+  width:100% !important;
 }
 body.v4-only-body .v4-truss-template-card-head {
   display:flex !important;
@@ -438,10 +456,35 @@ body.v4-only-body .v4-truss-template-card-head span {
   letter-spacing:.03em !important;
 }
 body.v4-only-body .v4-truss-stool-grid {
-  grid-template-columns:repeat(4, minmax(120px, 1fr)) !important;
+  display:grid !important;
+  grid-template-columns:repeat(4, minmax(0, 1fr)) !important;
+  gap:10px !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  overflow:hidden !important;
+}
+body.v4-only-body .v4-truss-template-card--pricing {
+  min-width:0 !important;
+  max-width:100% !important;
+  align-self:stretch !important;
+}
+body.v4-only-body .v4-truss-template-card--pricing small,
+body.v4-only-body .v4-truss-template-card[data-truss-template-card="stool"] small {
+  max-width:100% !important;
+  min-width:0 !important;
+  overflow-wrap:anywhere !important;
+}
+@media (max-width: 1220px) {
+  body.v4-only-body .v4-truss-template-split { grid-template-columns:repeat(2, minmax(0, 1fr)) !important; }
+  body.v4-only-body .v4-truss-template-card[data-truss-template-card="stool"] { grid-column:1 / -1 !important; }
+  body.v4-only-body .v4-truss-stool-grid { grid-template-columns:repeat(4, minmax(0, 1fr)) !important; }
 }
 @media (max-width: 920px) {
-  body.v4-only-body .v4-truss-template-split,
+  body.v4-only-body .v4-truss-template-split { grid-template-columns:1fr !important; }
+  body.v4-only-body .v4-truss-template-card[data-truss-template-card="stool"] { grid-column:auto !important; }
+  body.v4-only-body .v4-truss-stool-grid { grid-template-columns:repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 560px) {
   body.v4-only-body .v4-truss-stool-grid { grid-template-columns:1fr !important; }
 }
 
@@ -599,7 +642,7 @@ body.v4-only-body .v4-visual-stage-grid {
   background-image:
     linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px) !important;
-  background-size:24px 24px !important;
+  background-size:var(--stage-cell-px, 24px) var(--stage-cell-px, 24px) !important;
   border-color:var(--line-soft) !important;
   border-radius:var(--radius-md) !important;
   gap:3px !important;
@@ -1812,7 +1855,7 @@ body.v4-only-body .v4-project-crew-row .btn-secondary {
     if (!style) {
       style = document.createElement('style');
       style.id = STYLE_ID;
-      style.setAttribute('data-feg-version', '3.17.45');
+      style.setAttribute('data-feg-version', '3.17.56-field-desktop-layout-fix');
       style.textContent = css;
       document.head.appendChild(style);
       return;
@@ -1835,7 +1878,7 @@ body.v4-only-body .v4-project-crew-row .btn-secondary {
   observer.observe(document.head, { childList: true });
 
   window.FEG_DESIGN_SYSTEM = {
-    version: '3.17.45',
+    version: '3.17.56-field-desktop-layout-fix',
     theme: 'linear-reference-compact-dark-light-v4-safe-technical-canvases',
     darkTheme: 'linear-reference-compact-flat-dark-v4-safe-technical-canvases',
     lightTheme: 'linear-reference-compact-flat-light-v4-safe-technical-canvases',

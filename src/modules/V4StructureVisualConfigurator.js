@@ -399,7 +399,11 @@
       lastSupportKey:supportKey,
       lastSection:null,
       lastWarnings:[],
-      preserveGridCoordinates:shouldPreserveStagePlanCoordinates(source)
+      preserveGridCoordinates:shouldPreserveStagePlanCoordinates(source),
+      baseCellPx:Math.max(24, Math.min(72, Math.round(num(source.baseCellPx || source.stageBaseCellPx || source.cellPx, 40)))),
+      zoom:clampStageZoom(source.zoom || source.stageZoom || 100),
+      autoFit:source.autoFit === false || source.stageAutoFit === false ? false : true,
+      pendingCenter:false
     };
     const normalized = normalizeStageInputModules(modules, state, source);
     state.selected = stageSetFromModules(normalized, calc);
@@ -479,10 +483,37 @@
             <button type="button" class="btn-secondary danger v4-stage-clear-action" data-stage-action="clear">Очистить</button>
           </div>
         </div>
-        <div class="v4-stage-canvas-wrap"><div class="v4-visual-stage-grid" data-stage-grid></div></div>
+        ${compactQuote ? '' : `<div class="v4-truss-zoom-panel v4-stage-zoom-panel" data-stage-zoom-panel>
+          <div><b>Масштаб поля</b><span data-stage-zoom-value>100%</span></div>
+          <div class="v4-truss-zoom-controls v4-stage-zoom-controls">
+            <button type="button" class="v4-icon-btn" data-stage-zoom-action="out" title="Уменьшить масштаб" aria-label="Уменьшить масштаб">−</button>
+            <input data-stage-zoom type="range" min="35" max="220" step="5" value="100" aria-label="Масштаб поля сцены">
+            <button type="button" class="v4-icon-btn" data-stage-zoom-action="in" title="Увеличить масштаб" aria-label="Увеличить масштаб">+</button>
+            <button type="button" class="btn-secondary" data-stage-zoom-action="fit">По размеру</button>
+            <button type="button" class="btn-secondary" data-stage-zoom-action="center">Центр</button>
+            <label class="v4-truss-autofit v4-stage-autofit"><input data-stage-autofit type="checkbox" checked> авто-fit</label>
+          </div>
+        </div>`}
+        <div class="v4-stage-canvas-wrap" data-stage-canvas-wrap><div class="v4-visual-stage-grid" data-stage-grid></div></div>
         <div data-stage-summary></div>
       </div>`;
     root.querySelectorAll('[data-stage-action]').forEach(btn => btn.addEventListener('click', () => handleStageAction(root, btn.getAttribute('data-stage-action'))));
+    root.querySelectorAll('[data-stage-zoom-action]').forEach(btn => btn.addEventListener('click', () => handleStageZoomAction(root, btn.getAttribute('data-stage-zoom-action'))));
+    root.querySelectorAll('[data-stage-zoom]').forEach(input => input.addEventListener('input', () => {
+      const st = root._v4StructureVisual && root._v4StructureVisual.state;
+      if (!st) return;
+      st.autoFit = false;
+      st.zoom = clampStageZoom(input.value);
+      renderStageState(root);
+    }));
+    root.querySelectorAll('[data-stage-autofit]').forEach(input => input.addEventListener('change', () => {
+      const st = root._v4StructureVisual && root._v4StructureVisual.state;
+      if (!st) return;
+      st.autoFit = !!input.checked;
+      if (st.autoFit) fitStageCanvasToViewport(root, 'manual');
+      st.pendingCenter = true;
+      renderStageState(root);
+    }));
     root.querySelectorAll('[data-stage-template]').forEach(btn => btn.addEventListener('click', () => {
       const [w, d] = String(btn.getAttribute('data-stage-template') || '').split('x').map(Number);
       buildStagePreset(root, w || 4, d || 3);
@@ -524,6 +555,118 @@
     return root;
   }
 
+
+  function clampStageZoom(value) {
+    const raw = Math.round(num(value, 100));
+    return Math.max(35, Math.min(220, raw || 100));
+  }
+
+  function getStageBaseCellPx(state) {
+    if (!state) return 40;
+    const base = Math.max(24, Math.min(72, Math.round(num(state.baseCellPx || state.cellPx, 40))));
+    state.baseCellPx = base;
+    return base;
+  }
+
+  function getStageZoom(state) {
+    if (!state) return 100;
+    state.zoom = clampStageZoom(state.zoom || 100);
+    return state.zoom;
+  }
+
+  function getStageRenderCellPx(state) {
+    return Math.max(14, Math.round(getStageBaseCellPx(state) * getStageZoom(state) / 100));
+  }
+
+  function getStageContentBounds(state) {
+    const points = getStagePlanPoints(state);
+    if (!points.length) return { minX:0, minY:0, maxX:Math.max(1, Number(state && state.gridCols || DEFAULT_STAGE_GRID_COLS)) - 1, maxY:Math.max(1, Number(state && state.gridRows || DEFAULT_STAGE_GRID_ROWS)) - 1, columns:Math.max(1, Number(state && state.gridCols || DEFAULT_STAGE_GRID_COLS)), rows:Math.max(1, Number(state && state.gridRows || DEFAULT_STAGE_GRID_ROWS)), empty:true };
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    points.forEach(point => {
+      const x = Math.max(0, Math.round(num(point && point.x, 0)));
+      const y = Math.max(0, Math.round(num(point && point.y, 0)));
+      minX = Math.min(minX, x); minY = Math.min(minY, y);
+      maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
+    });
+    return { minX, minY, maxX, maxY, columns:Math.max(1, maxX - minX + 1), rows:Math.max(1, maxY - minY + 1), empty:false };
+  }
+
+  function fitStageCanvasToViewport(root, reason) {
+    const ctx = root && root._v4StructureVisual;
+    const state = ctx && ctx.state;
+    if (!state || !root || !root.querySelector) return false;
+    const wrap = root.querySelector('[data-stage-canvas-wrap]') || root.querySelector('.v4-stage-canvas-wrap');
+    const basePx = getStageBaseCellPx(state);
+    const content = getStageContentBounds(state);
+    if (content.empty) {
+      const current = getStageZoom(state);
+      if (reason === 'manual' && current !== 100) { state.zoom = 100; return true; }
+      return false;
+    }
+    const availableW = Math.max(260, Math.floor(num(wrap && wrap.clientWidth, 760) - 28));
+    const availableH = Math.max(240, Math.floor(num(wrap && wrap.clientHeight, 520) - 28));
+    const contentW = Math.max(1, (Number(content.columns || 1) + 3) * basePx);
+    const contentH = Math.max(1, (Number(content.rows || 1) + 3) * basePx);
+    const target = clampStageZoom(Math.floor(Math.min(220, 100, availableW / contentW * 100, availableH / contentH * 100)));
+    const current = getStageZoom(state);
+    if (reason === 'manual' || Math.abs(current - target) >= 2) {
+      state.zoom = target;
+      return true;
+    }
+    return false;
+  }
+
+  function syncStageZoomControls(root) {
+    const state = root && root._v4StructureVisual && root._v4StructureVisual.state;
+    if (!state) return;
+    const zoom = getStageZoom(state);
+    root.querySelectorAll('[data-stage-zoom-value]').forEach(el => { el.textContent = `${zoom}%`; });
+    root.querySelectorAll('[data-stage-zoom]').forEach(input => { if ('value' in input) input.value = String(zoom); });
+    root.querySelectorAll('[data-stage-autofit]').forEach(input => { if ('checked' in input) input.checked = state.autoFit !== false; });
+  }
+
+  function centerStageViewport(root) {
+    const ctx = root && root._v4StructureVisual;
+    const state = ctx && ctx.state;
+    const wrap = root && root.querySelector && (root.querySelector('[data-stage-canvas-wrap]') || root.querySelector('.v4-stage-canvas-wrap'));
+    if (!state || !wrap) return;
+    const bounds = getStageContentBounds(state);
+    if (bounds.empty) { wrap.scrollLeft = 0; wrap.scrollTop = 0; return; }
+    const cellPx = getStageRenderCellPx(state);
+    const gap = 4;
+    const centerX = (bounds.minX + bounds.columns / 2) * (cellPx + gap);
+    const centerY = (bounds.minY + bounds.rows / 2) * (cellPx + gap);
+    const maxLeft = Math.max(0, wrap.scrollWidth - wrap.clientWidth);
+    const maxTop = Math.max(0, wrap.scrollHeight - wrap.clientHeight);
+    wrap.scrollLeft = Math.max(0, Math.min(maxLeft, Math.round(centerX - wrap.clientWidth / 2)));
+    wrap.scrollTop = Math.max(0, Math.min(maxTop, Math.round(centerY - wrap.clientHeight / 2)));
+  }
+
+  function handleStageZoomAction(root, action) {
+    const state = root && root._v4StructureVisual && root._v4StructureVisual.state;
+    if (!state) return;
+    if (action === 'fit') {
+      state.autoFit = true;
+      fitStageCanvasToViewport(root, 'manual');
+      state.pendingCenter = true;
+    } else if (action === 'center') {
+      state.pendingCenter = true;
+    } else if (action === 'in') {
+      state.autoFit = false;
+      state.zoom = clampStageZoom(getStageZoom(state) + 10);
+      state.pendingCenter = true;
+    } else if (action === 'out') {
+      state.autoFit = false;
+      state.zoom = clampStageZoom(getStageZoom(state) - 10);
+      state.pendingCenter = true;
+    } else if (action === 'reset') {
+      state.autoFit = false;
+      state.zoom = 100;
+      state.pendingCenter = true;
+    }
+    renderStageState(root);
+  }
+
   function ensureStageGridForShape(state, width, depth, padding) {
     if (!state) return;
     const w = Math.max(1, Math.round(num(width, 1)));
@@ -557,6 +700,7 @@
     state.selected = stageSetFromModules(modules, calc);
     state.stairs = new Set();
     ensureStageCanvasFits(state, modules, 2);
+    state.pendingCenter = true;
     renderStageState(root);
   }
 
@@ -605,6 +749,7 @@
     const grid = root.querySelector('[data-stage-grid]');
     if (!state || !calc || !grid || !svc) return;
     ensureStageCanvasFits(state, getStagePlanPoints(state), 2);
+    if (state.autoFit !== false) fitStageCanvasToViewport(root, 'auto');
     renderStageToolState(root);
     const drawLabel = root.querySelector('[data-stage-draw-label]');
     if (drawLabel) drawLabel.textContent = state.activeTool === 'stair' ? 'Клик / протяжка: лестница' : 'Клик / протяжка: настил';
@@ -615,8 +760,11 @@
     const heightNote = root.querySelector('[data-stage-height-default-note]');
     if (heightNote) heightNote.textContent = `${stageHeightDefaultText(supportEl && supportEl.value || state.lastSupportKey)}${state.stageHeightAutoForSupport ? '' : ' · сейчас вручную скорректировано'}`;
     const cfg = currentStageConfig(root);
-    grid.style.gridTemplateColumns = `repeat(${state.gridCols}, 40px)`;
+    const renderCellPx = getStageRenderCellPx(state);
+    grid.style.gridTemplateColumns = `repeat(${state.gridCols}, ${renderCellPx}px)`;
+    grid.style.setProperty('--stage-cell-px', `${renderCellPx}px`);
     grid.style.setProperty('--stage-cell-ratio', `${num(cfg.moduleWidthM, 1.2)} / ${num(cfg.moduleDepthM, 1.2)}`);
+    grid.style.backgroundSize = `${renderCellPx}px ${renderCellPx}px`;
     grid.innerHTML = '';
     for (let y = 0; y < state.gridRows; y += 1) {
       for (let x = 0; x < state.gridCols; x += 1) {
@@ -629,6 +777,10 @@
         btn.dataset.stageKey = key;
         btn.dataset.x = String(x);
         btn.dataset.y = String(y);
+        btn.style.width = `${renderCellPx}px`;
+        btn.style.minWidth = `${renderCellPx}px`;
+        btn.style.height = `${renderCellPx}px`;
+        btn.style.minHeight = `${renderCellPx}px`;
         btn.style.aspectRatio = `${num(cfg.moduleWidthM, 1.2)} / ${num(cfg.moduleDepthM, 1.2)}`;
         btn.innerHTML = hasStair ? '<span class="v4-stage-stair-icon" aria-hidden="true">▰</span>' : '';
         btn.title = `${x + 1}:${y + 1} · ${hasStair ? 'лестница' : (selected ? 'настил' : 'пусто')} · клик/протяжка`;
@@ -672,6 +824,13 @@
       <div class="v4-note">${esc(section.summary || 'Сцена готова к сохранению.')}</div>`;
     if (ROOT.QuickPdfExport && ROOT.QuickPdfExport.bindAction) {
       ROOT.QuickPdfExport.bindAction(summary, { kind:'stage', title:'Быстрый технический расчёт сцены', getSection:() => readStageSection(root) });
+    }
+    syncStageZoomControls(root);
+    if (state.pendingCenter) {
+      state.pendingCenter = false;
+      const centerNow = () => centerStageViewport(root);
+      if (typeof requestAnimationFrame === 'function') requestAnimationFrame(centerNow);
+      else setTimeout(centerNow, 0);
     }
     if (typeof opts.onChange === 'function') opts.onChange(section, input);
   }
@@ -784,7 +943,7 @@
     state.stageHeightM = stageHeightM;
     const edgeEnabled = !!(root.querySelector('[data-stage-edge-enabled]') && root.querySelector('[data-stage-edge-enabled]').checked);
     const edgeTypeEl = root.querySelector('[data-stage-edge-type]');
-    return { modules, explicitEmpty: modules.length === 0, gridCols:state.gridCols, gridRows:state.gridRows, mode:'toggle', coordinateMode:'grid-preserve', preserveGridCoordinates:true, stageDraftMode:'grid-preserve', stageDraftVersion:'3.16.13-stage-coordinate-preserve', deckKey:cfg.deckKey, supportKey:cfg.supportKey, frameKey:cfg.frameKey, frameDependency:clone(cfg.frameDependency || {}), moduleWidthM:cfg.moduleWidthM, moduleDepthM:cfg.moduleDepthM, stageHeightM, stairs:getStageStairs(state), edgeClosureEnabled:edgeEnabled, edgeClosureType:edgeTypeEl && edgeTypeEl.value || 'fabric_skirt', quickPricing:readStageQuickPricing(root, ctx && ctx.options || {}) }; 
+    return { modules, explicitEmpty: modules.length === 0, gridCols:state.gridCols, gridRows:state.gridRows, zoom:state.zoom, stageZoom:state.zoom, autoFit:state.autoFit !== false, stageAutoFit:state.autoFit !== false, baseCellPx:state.baseCellPx, stageBaseCellPx:state.baseCellPx, mode:'toggle', coordinateMode:'grid-preserve', preserveGridCoordinates:true, stageDraftMode:'grid-preserve', stageDraftVersion:'3.16.13-stage-coordinate-preserve', deckKey:cfg.deckKey, supportKey:cfg.supportKey, frameKey:cfg.frameKey, frameDependency:clone(cfg.frameDependency || {}), moduleWidthM:cfg.moduleWidthM, moduleDepthM:cfg.moduleDepthM, stageHeightM, stairs:getStageStairs(state), edgeClosureEnabled:edgeEnabled, edgeClosureType:edgeTypeEl && edgeTypeEl.value || 'fabric_skirt', quickPricing:readStageQuickPricing(root, ctx && ctx.options || {}) }; 
   }
 
   function readStageSection(target) {

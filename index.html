@@ -2545,7 +2545,7 @@
         .v4-truss-workspace { min-width:0; }
         .v4-truss-zoom-panel { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px; padding:8px 10px; border:1px solid rgba(148,163,184,.24); border-radius:14px; background:rgba(15,23,42,.72); color:#e5edf7; }
         .v4-truss-zoom-panel > div:first-child { display:flex; flex-direction:column; gap:2px; }
-        .v4-truss-zoom-panel [data-truss-zoom-value] { color:#94a3b8; font-size:12px; font-weight:800; }
+        .v4-truss-zoom-panel [data-truss-zoom-value], .v4-truss-zoom-panel [data-stage-zoom-value], .v4-truss-zoom-panel [data-led-zoom-value] { color:#94a3b8; font-size:12px; font-weight:800; }
         .v4-truss-zoom-controls { display:flex; align-items:center; justify-content:flex-end; gap:8px; flex-wrap:wrap; }
         .v4-truss-zoom-controls input[type="range"] { width:min(220px, 34vw); }
         .v4-truss-autofit { display:inline-flex; align-items:center; gap:6px; color:#94a3b8; font-size:12px; font-weight:800; white-space:nowrap; }
@@ -2997,6 +2997,529 @@
   .quick-standalone-body .v4-quick-grid { grid-template-columns:1fr; gap:12px; }
   .quick-standalone-body .v4-quick-tile { min-height:112px; border-radius:22px; }
 }
+
+
+/* --- Standalone mobile field edition: phone-first overrides, logic untouched. --- */
+:root {
+  --field-hit: 48px;
+  --field-hit-lg: 56px;
+  --field-gap: 10px;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+.quick-standalone-body {
+  min-height: 100svh;
+  overscroll-behavior-y: none;
+}
+.quick-standalone-body *,
+.quick-standalone-body *::before,
+.quick-standalone-body *::after {
+  -webkit-tap-highlight-color: rgba(201,164,107,.18);
+}
+.quick-standalone-body button,
+.quick-standalone-body input,
+.quick-standalone-body select,
+.quick-standalone-body textarea,
+.quick-standalone-body summary,
+.quick-standalone-body [role="button"] {
+  touch-action: manipulation;
+}
+.quick-standalone-body input,
+.quick-standalone-body select,
+.quick-standalone-body textarea {
+  font-size: 16px;
+}
+.quick-standalone-body input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.quick-standalone-body input[type="number"]::-webkit-outer-spin-button,
+.quick-standalone-body input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Full-screen mobile modals for field work. */
+@media (max-width: 860px), (pointer: coarse) and (max-width: 1024px) {
+  body.v4-only-body.quick-standalone-body {
+    padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+    background: #070b10;
+  }
+  .quick-standalone-body .v4-shell {
+    min-height: calc(100svh - max(16px, env(safe-area-inset-top) + env(safe-area-inset-bottom)));
+  }
+  .quick-standalone-body #quickStandaloneMount {
+    width: min(440px, 100%);
+  }
+  .quick-standalone-body .v4-quick-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+  .quick-standalone-body .v4-quick-tile {
+    min-height: 118px;
+    border-radius: 24px;
+    padding: 20px;
+    font-size: 1.1rem;
+  }
+  .quick-standalone-body .v4-quick-tile b {
+    font-size: clamp(1.25rem, 7vw, 1.7rem);
+  }
+
+  .v4-quick-modal-backdrop.open {
+    align-items: stretch !important;
+    justify-content: stretch !important;
+    padding: 0 !important;
+    background: #05070b;
+    backdrop-filter: none;
+  }
+  .v4-quick-modal {
+    width: 100vw !important;
+    height: 100svh !important;
+    max-height: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: linear-gradient(180deg, #08111f 0%, #05070b 100%) !important;
+  }
+  .v4-quick-modal-head {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    align-items: center !important;
+    padding: max(10px, env(safe-area-inset-top)) 12px 10px !important;
+    min-height: 62px;
+    background: rgba(8,17,31,.98);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(201,164,107,.18) !important;
+  }
+  .v4-quick-modal-head .v4-kicker {
+    display: none;
+  }
+  .v4-quick-modal-head h3 {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    font-size: clamp(1rem, 4.6vw, 1.25rem);
+    line-height: 1.15;
+    color: #f8fafc;
+  }
+  .v4-quick-modal-head .close-modal,
+  .v4-quick-modal-head [data-v4-quick-modal-close] {
+    flex: 0 0 var(--field-hit);
+    width: var(--field-hit) !important;
+    height: var(--field-hit) !important;
+    min-width: var(--field-hit) !important;
+    min-height: var(--field-hit) !important;
+    border-radius: 16px !important;
+    font-size: 1.65rem !important;
+    color: #fff !important;
+    background: rgba(239,68,68,.16) !important;
+    border-color: rgba(239,68,68,.38) !important;
+  }
+  .v4-quick-modal-body {
+    flex: 1 1 auto;
+    height: auto;
+    overflow: auto !important;
+    padding: 10px 10px calc(18px + env(safe-area-inset-bottom)) !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .v4-quick-modal-body .v4-card-head,
+  .v4-structure-toolbar,
+  .v4-led-grid-head,
+  .v4-stage-template-panel .v4-truss-template-head,
+  .v4-truss-template-head,
+  .v4-truss-load-header,
+  .v4-dashboard-head {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 8px !important;
+    align-items: stretch !important;
+  }
+  .v4-quick-modal-body h3,
+  .v4-quick-modal-body h4 {
+    font-size: 1rem;
+    line-height: 1.22;
+  }
+  .v4-quick-modal-body .v4-kicker,
+  .v4-quick-modal-body .v4-muted,
+  .v4-quick-modal-body small,
+  .v4-quick-modal-body .v4-note {
+    line-height: 1.35;
+  }
+
+  .v4-quick-modal-body button,
+  .v4-quick-modal-body .btn-secondary,
+  .v4-quick-modal-body .btn-primary,
+  .v4-quick-modal-body .btn-success,
+  .v4-quick-modal-body .btn-danger,
+  .v4-quick-modal-body .v4-mode-btn,
+  .v4-quick-modal-body .v4-icon-btn,
+  .v4-quick-modal-body .v4-truss-group-body button,
+  .v4-quick-modal-body .v4-led-template-grid button,
+  .v4-quick-modal-body .v4-stage-tool-buttons button {
+    min-height: var(--field-hit) !important;
+    border-radius: 16px;
+  }
+  .v4-quick-modal-body .v4-icon-btn {
+    width: var(--field-hit) !important;
+    height: var(--field-hit) !important;
+    min-width: var(--field-hit) !important;
+    padding: 0 !important;
+  }
+  .v4-quick-modal-body label,
+  .v4-quick-modal-body .v4-field {
+    min-width: 0 !important;
+  }
+  .v4-quick-modal-body .v4-field,
+  .v4-quick-modal-body label.v4-field {
+    display: grid;
+    gap: 7px;
+  }
+  .v4-quick-modal-body input,
+  .v4-quick-modal-body select,
+  .v4-quick-modal-body textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: var(--field-hit) !important;
+    padding: 12px 14px !important;
+    border-radius: 16px !important;
+  }
+  .v4-quick-modal-body input[type="checkbox"] {
+    width: 22px !important;
+    height: 22px !important;
+    min-height: 22px !important;
+    padding: 0 !important;
+  }
+  .v4-quick-modal-body input[type="range"] {
+    min-height: 36px !important;
+    padding: 0 !important;
+  }
+
+  .v4-grid-3,
+  .v4-grid-4,
+  .v4-dashboard-grid,
+  .v4-summary-grid,
+  .v4-scope-grid,
+  .v4-stage-controls-layout,
+  .v4-stage-secondary-layout,
+  .v4-truss-template-split,
+  .v4-truss-stool-grid,
+  .v4-truss-side-grid,
+  .v4-bom-summary-grid,
+  .v4-led-constructor .v4-grid-3,
+  .v4-visual-led-placement-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--field-gap) !important;
+  }
+  .v4-stage-control-stack,
+  .v4-truss-template-card,
+  .v4-stage-template-panel,
+  .v4-led-panel-block,
+  .v4-led-canvas-panel,
+  .v4-led-construction-report,
+  .v4-truss-load-panel,
+  .v4-truss-template-panel {
+    border-radius: 18px !important;
+    padding: 12px !important;
+  }
+
+  /* Stage: крупнее клетки и удобный скролл холста. */
+  .v4-stage-polish .v4-stage-template-panel {
+    margin: 0;
+  }
+  .v4-stage-tool-buttons,
+  .v4-stage-mode-actions,
+  .v4-stage-main-actions,
+  .v4-template-actions,
+  .v4-structure-toolbar-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px !important;
+  }
+  .v4-stage-tool-buttons button,
+  .v4-stage-mode-actions button,
+  .v4-stage-main-actions button,
+  .v4-template-actions button,
+  .v4-structure-toolbar-actions button {
+    width: 100% !important;
+  }
+  .v4-stage-canvas-wrap {
+    max-height: min(58svh, 560px);
+    border-radius: 18px !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .v4-stage-polish .v4-visual-stage-grid {
+    gap: 4px !important;
+    padding: 10px !important;
+    touch-action: none;
+  }
+  .v4-stage-polish .v4-stage-cell {
+    min-width: var(--stage-cell-px, 38px) !important;
+    width: var(--stage-cell-px, 38px) !important;
+    min-height: var(--stage-cell-px, 38px) !important;
+    height: var(--stage-cell-px, 38px) !important;
+    border-radius: 9px !important;
+  }
+
+  /* Truss: library/toolbelt on top, canvas underneath, all wide tables scroll. */
+  .v4-truss-layout {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .v4-truss-sidebar {
+    display: grid !important;
+    gap: 8px !important;
+    align-content: start;
+  }
+  .v4-truss-library {
+    max-height: 38svh !important;
+    overflow: auto !important;
+    padding: 8px !important;
+    border-radius: 16px !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .v4-truss-library .block-object-group summary,
+  .v4-truss-group summary {
+    min-height: var(--field-hit);
+    font-size: .86rem !important;
+  }
+  .v4-truss-library .block-object-group-body,
+  .v4-truss-group-body {
+    grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .v4-truss-library .block-object-group-body button,
+  .v4-truss-group-body button {
+    width: 100% !important;
+    height: 56px !important;
+    min-width: 0 !important;
+    min-height: 56px !important;
+    border-radius: 15px !important;
+  }
+  .v4-truss-edit-tools {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px !important;
+    padding: 8px !important;
+    border-radius: 16px !important;
+    background: rgba(8,17,31,.96) !important;
+    backdrop-filter: blur(12px);
+  }
+  .v4-truss-edit-row,
+  .v4-truss-mode-actions {
+    display: contents !important;
+  }
+  .v4-truss-mode-actions .v4-mode-btn {
+    grid-column: span 3;
+    width: 100% !important;
+  }
+  .v4-truss-zoom-panel,
+  .v4-stage-zoom-panel,
+  .v4-led-zoom-panel {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    align-items: stretch !important;
+    gap: 8px !important;
+    border-radius: 16px !important;
+  }
+  .v4-truss-zoom-controls,
+  .v4-stage-zoom-controls,
+  .v4-led-zoom-controls {
+    display: grid !important;
+    grid-template-columns: var(--field-hit) 1fr var(--field-hit);
+    gap: 8px !important;
+    align-items: center !important;
+  }
+  .v4-truss-zoom-controls input[type="range"],
+  .v4-stage-zoom-controls input[type="range"],
+  .v4-led-zoom-controls input[type="range"] {
+    width: 100% !important;
+  }
+  .v4-truss-autofit,
+  .v4-stage-autofit,
+  .v4-led-autofit {
+    grid-column: 1 / -1;
+    justify-content: center;
+    min-height: 38px;
+  }
+  .v4-truss-field-wrap {
+    height: min(56svh, 580px) !important;
+    min-height: 340px !important;
+    padding: 8px !important;
+    border-radius: 18px !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .v4-structure-truss .block-load-sections,
+  .v4-structure-truss .block-load-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .v4-structure-truss .v4-load-indicator {
+    min-width: 0 !important;
+  }
+  .v4-truss-load-dialog {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100svh !important;
+    max-height: 100svh !important;
+    border-radius: 0 !important;
+  }
+  .v4-truss-load-dialog-card {
+    min-height: 100svh !important;
+    max-height: 100svh !important;
+    border-radius: 0 !important;
+    padding: max(12px, env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* LED: controls top, canvas scrollable, cells remain finger-sized. */
+  .v4-led-workbench {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    overflow: visible !important;
+  }
+  .v4-led-template-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .v4-led-side-panel {
+    gap: 10px !important;
+  }
+  .v4-led-grid-head {
+    gap: 8px !important;
+  }
+  .v4-led-grid-note {
+    width: 100%;
+    white-space: normal !important;
+    border-radius: 14px !important;
+    line-height: 1.25;
+  }
+  .v4-led-grid-wrap {
+    max-height: min(58svh, 600px) !important;
+    padding: 10px !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  .v4-led-grid {
+    --led-cell-size: var(--led-cell-size, 34px);
+    gap: 4px !important;
+    touch-action: none;
+  }
+  .v4-led-cell {
+    border-radius: 8px !important;
+  }
+  .v4-led-parts-list {
+    grid-template-columns: 1fr;
+  }
+  .v4-led-part-chip {
+    min-height: var(--field-hit);
+    border-radius: 16px !important;
+  }
+
+  /* PDF/preview modals and tables: usable on phones. */
+  .modal-backdrop.open {
+    align-items: stretch !important;
+    justify-content: stretch !important;
+    padding: 0 !important;
+  }
+  .pdf-modal,
+  .weights-modal {
+    width: 100vw !important;
+    height: 100svh !important;
+    max-height: 100svh !important;
+    border-radius: 0 !important;
+  }
+  .pdf-modal-header,
+  .pdf-modal-actions {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  .pdf-modal-actions {
+    display: grid !important;
+    grid-template-columns: 1fr;
+  }
+  .pdf-preview-frame {
+    height: 100% !important;
+    min-height: 60svh;
+  }
+  .v4-table-wrap,
+  .orders-table-wrap,
+  .truss-project-table-wrap,
+  .client-table-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 14px !important;
+  }
+  .v4-table,
+  .orders-table,
+  .truss-project-table,
+  .client-table,
+  .block-calc-table,
+  .block-bom {
+    font-size: .8rem !important;
+  }
+  .v4-table th,
+  .v4-table td,
+  .orders-table th,
+  .orders-table td,
+  .truss-project-table th,
+  .truss-project-table td {
+    padding: 9px 8px !important;
+  }
+  .v4-doc-actions,
+  .action-group,
+  .tool-row,
+  .truss-toolbar,
+  .v4-visual-preview-actions {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 8px !important;
+  }
+  .v4-doc-actions button,
+  .action-group button,
+  .tool-row button,
+  .truss-toolbar button,
+  .v4-visual-preview-actions button {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .v4-stage-polish .v4-stage-cell {
+    min-width: var(--stage-cell-px, 34px) !important;
+    width: var(--stage-cell-px, 34px) !important;
+    min-height: var(--stage-cell-px, 34px) !important;
+    height: var(--stage-cell-px, 34px) !important;
+  }
+  .v4-led-grid {
+    gap: 3px !important;
+  }
+  .v4-truss-field-wrap {
+    min-height: 300px !important;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .v4-quick-modal-head {
+    min-height: 52px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+  .v4-quick-modal-body {
+    padding-top: 8px !important;
+  }
+  .v4-stage-canvas-wrap,
+  .v4-led-grid-wrap,
+  .v4-truss-field-wrap {
+    max-height: 66svh !important;
+  }
+}
+
 </style>
 </head>
 <body class="v4-only-body quick-standalone-body">

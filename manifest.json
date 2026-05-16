@@ -1,6 +1,6 @@
 {
-  "name": "FEG Quick Constructors Standalone",
-  "short_name": "FEG Quick",
+  "name": "FEG Quick Constructors Mobile Field",
+  "short_name": "FEG Field",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#080c10",
@@ -22,7 +22,7 @@
       "type": "image/png"
     }
   ],
-  "description": "FEG Stage PRO v4-only shell with quick PDF constructor scheme snapshots and readable dark PDF text",
-  "version": "3.17.54",
+  "description": "Mobile field standalone quick constructors: Stage, Truss, LED with PDF export",
+  "version": "3.17.54-mobile-field",
   "scope": "./"
 }

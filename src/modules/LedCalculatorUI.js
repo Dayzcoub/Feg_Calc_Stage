@@ -142,7 +142,18 @@
               </div>
               <div class="v4-led-grid-note" data-led-grid-note></div>
             </div>
-            <div class="v4-led-grid-wrap">
+            <div class="v4-truss-zoom-panel v4-led-zoom-panel" data-led-zoom-panel>
+              <div><b>Масштаб поля</b><span data-led-zoom-value>100%</span></div>
+              <div class="v4-truss-zoom-controls v4-led-zoom-controls">
+                <button type="button" class="v4-icon-btn" data-led-zoom-action="out" title="Уменьшить масштаб" aria-label="Уменьшить масштаб">−</button>
+                <input data-led-zoom type="range" min="35" max="220" step="5" value="100" aria-label="Масштаб поля LED">
+                <button type="button" class="v4-icon-btn" data-led-zoom-action="in" title="Увеличить масштаб" aria-label="Увеличить масштаб">+</button>
+                <button type="button" class="btn-secondary" data-led-zoom-action="fit">По размеру</button>
+                <button type="button" class="btn-secondary" data-led-zoom-action="center">Центр</button>
+                <label class="v4-truss-autofit v4-led-autofit"><input data-led-autofit type="checkbox" checked> авто-fit</label>
+              </div>
+            </div>
+            <div class="v4-led-grid-wrap" data-led-grid-wrap>
               <div class="v4-led-grid" data-led-grid></div>
             </div>
           </div>
@@ -172,7 +183,11 @@
         rows,
         activeId: savedParts[0].id,
         nextId: savedParts.length + 2,
-        parts: savedParts
+        parts: savedParts,
+        baseCellPx: normalizeLedBaseCellPx(baseState.baseCellPx || baseState.ledBaseCellPx || baseState.cellPx || 34),
+        zoom: clampLedZoom(baseState.zoom || baseState.ledZoom || 100),
+        autoFit: baseState.autoFit === false || baseState.ledAutoFit === false ? false : true,
+        pendingCenter: false
       };
     }
     const calc = ROOT.LedCalculator;
@@ -189,7 +204,11 @@
       rows: GRID_ROWS,
       activeId: 'main',
       nextId: 2,
-      parts: [makeRectPart('main', 'Основной экран', 'main', x0, y0, columns, rows, 0)]
+      parts: [makeRectPart('main', 'Основной экран', 'main', x0, y0, columns, rows, 0)],
+      baseCellPx: normalizeLedBaseCellPx(baseState.baseCellPx || baseState.ledBaseCellPx || baseState.cellPx || 34),
+      zoom: clampLedZoom(baseState.zoom || baseState.ledZoom || 100),
+      autoFit: baseState.autoFit === false || baseState.ledAutoFit === false ? false : true,
+      pendingCenter: false
     };
   }
 
@@ -261,6 +280,22 @@
     root.querySelectorAll('[data-led-template]').forEach(btn => btn.addEventListener('click', () => {
       handleTemplate(root, btn.getAttribute('data-led-template'));
       renderLedState(root);
+    }));
+    root.querySelectorAll('[data-led-zoom-action]').forEach(btn => btn.addEventListener('click', () => handleLedZoomAction(root, btn.getAttribute('data-led-zoom-action'))));
+    root.querySelectorAll('[data-led-zoom]').forEach(input => input.addEventListener('input', () => {
+      const state = root._v4LedState;
+      if (!state) return;
+      state.autoFit = false;
+      state.zoom = clampLedZoom(input.value);
+      renderLedGrid(root);
+    }));
+    root.querySelectorAll('[data-led-autofit]').forEach(input => input.addEventListener('change', () => {
+      const state = root._v4LedState;
+      if (!state) return;
+      state.autoFit = !!input.checked;
+      if (state.autoFit) fitLedCanvasToViewport(root, 'manual');
+      state.pendingCenter = true;
+      renderLedGrid(root);
     }));
     const activeSelect = root.querySelector('[data-led-active]');
     if (activeSelect) activeSelect.addEventListener('change', () => {
@@ -355,6 +390,7 @@
     state.parts = [main].concat(rest);
     state.activeId = 'main';
     normalizeGridBounds(state, 2);
+    state.pendingCenter = true;
   }
 
   function handleTemplate(root, action) {
@@ -375,6 +411,7 @@
       state.parts.push(part);
       state.activeId = id;
       normalizeGridBounds(state, 2);
+      state.pendingCenter = true;
       return;
     }
     const main = getMainPart(state) || state.parts[0];
@@ -398,6 +435,7 @@
     state.parts.push(part);
     state.activeId = id;
     normalizeGridBounds(state, 2);
+    state.pendingCenter = true;
   }
 
   function handleAction(root, action) {
@@ -424,11 +462,118 @@
       state.parts.push(copy);
       state.activeId = id;
       normalizeGridBounds(state, 2);
+      state.pendingCenter = true;
     }
     if (action === 'rename' && active) {
       const next = window.prompt('Название LED-конструкции', active.name || 'LED конструкция');
       if (next != null && String(next).trim()) active.name = String(next).trim();
     }
+  }
+
+
+  function clampLedZoom(value) {
+    const raw = Math.round(Number(value || 100));
+    return Math.max(35, Math.min(220, raw || 100));
+  }
+
+  function normalizeLedBaseCellPx(value) {
+    return Math.max(24, Math.min(72, Math.round(Number(value || 34))));
+  }
+
+  function getLedBaseCellPx(state) {
+    if (!state) return 34;
+    state.baseCellPx = normalizeLedBaseCellPx(state.baseCellPx || 34);
+    return state.baseCellPx;
+  }
+
+  function getLedZoom(state) {
+    if (!state) return 100;
+    state.zoom = clampLedZoom(state.zoom || 100);
+    return state.zoom;
+  }
+
+  function getLedRenderCellPx(state) {
+    return Math.max(14, Math.round(getLedBaseCellPx(state) * getLedZoom(state) / 100));
+  }
+
+  function getLedContentBounds(state) {
+    const bounds = getAllBounds(state);
+    if (!bounds) return { minX:0, minY:0, maxX:Math.max(1, Number(state && state.cols || GRID_COLS)) - 1, maxY:Math.max(1, Number(state && state.rows || GRID_ROWS)) - 1, columns:Math.max(1, Number(state && state.cols || GRID_COLS)), rows:Math.max(1, Number(state && state.rows || GRID_ROWS)), empty:true };
+    return Object.assign({}, bounds, { empty:false });
+  }
+
+  function fitLedCanvasToViewport(root, reason) {
+    const state = root && root._v4LedState;
+    const wrap = root && root.querySelector && (root.querySelector('[data-led-grid-wrap]') || root.querySelector('.v4-led-grid-wrap'));
+    if (!state || !wrap) return false;
+    const basePx = getLedBaseCellPx(state);
+    const content = getLedContentBounds(state);
+    if (content.empty) {
+      const current = getLedZoom(state);
+      if (reason === 'manual' && current !== 100) { state.zoom = 100; return true; }
+      return false;
+    }
+    const availableW = Math.max(260, Math.floor(Number(wrap.clientWidth || 760) - 28));
+    const availableH = Math.max(240, Math.floor(Number(wrap.clientHeight || 520) - 28));
+    const contentW = Math.max(1, (Number(content.columns || 1) + 3) * basePx);
+    const contentH = Math.max(1, (Number(content.rows || 1) + 3) * basePx);
+    const target = clampLedZoom(Math.floor(Math.min(220, 100, availableW / contentW * 100, availableH / contentH * 100)));
+    const current = getLedZoom(state);
+    if (reason === 'manual' || Math.abs(current - target) >= 2) {
+      state.zoom = target;
+      return true;
+    }
+    return false;
+  }
+
+  function syncLedZoomControls(root) {
+    const state = root && root._v4LedState;
+    if (!state) return;
+    const zoom = getLedZoom(state);
+    root.querySelectorAll('[data-led-zoom-value]').forEach(el => { el.textContent = `${zoom}%`; });
+    root.querySelectorAll('[data-led-zoom]').forEach(input => { if ('value' in input) input.value = String(zoom); });
+    root.querySelectorAll('[data-led-autofit]').forEach(input => { if ('checked' in input) input.checked = state.autoFit !== false; });
+  }
+
+  function centerLedViewport(root) {
+    const state = root && root._v4LedState;
+    const wrap = root && root.querySelector && (root.querySelector('[data-led-grid-wrap]') || root.querySelector('.v4-led-grid-wrap'));
+    if (!state || !wrap) return;
+    const bounds = getLedContentBounds(state);
+    if (bounds.empty) { wrap.scrollLeft = 0; wrap.scrollTop = 0; return; }
+    const cellPx = getLedRenderCellPx(state);
+    const gap = 4;
+    const centerX = (bounds.minX + bounds.columns / 2) * (cellPx + gap);
+    const centerY = (bounds.minY + bounds.rows / 2) * (cellPx + gap);
+    const maxLeft = Math.max(0, wrap.scrollWidth - wrap.clientWidth);
+    const maxTop = Math.max(0, wrap.scrollHeight - wrap.clientHeight);
+    wrap.scrollLeft = Math.max(0, Math.min(maxLeft, Math.round(centerX - wrap.clientWidth / 2)));
+    wrap.scrollTop = Math.max(0, Math.min(maxTop, Math.round(centerY - wrap.clientHeight / 2)));
+  }
+
+  function handleLedZoomAction(root, action) {
+    const state = root && root._v4LedState;
+    if (!state) return;
+    if (action === 'fit') {
+      state.autoFit = true;
+      fitLedCanvasToViewport(root, 'manual');
+      state.pendingCenter = true;
+    } else if (action === 'center') {
+      state.pendingCenter = true;
+    } else if (action === 'in') {
+      state.autoFit = false;
+      state.zoom = clampLedZoom(getLedZoom(state) + 10);
+      state.pendingCenter = true;
+    } else if (action === 'out') {
+      state.autoFit = false;
+      state.zoom = clampLedZoom(getLedZoom(state) - 10);
+      state.pendingCenter = true;
+    } else if (action === 'reset') {
+      state.autoFit = false;
+      state.zoom = 100;
+      state.pendingCenter = true;
+    }
+    renderLedGrid(root);
   }
 
   function getMainPart(state) { return (state.parts || []).find(part => part.id === 'main') || null; }
@@ -656,7 +801,10 @@
     const grid = root.querySelector('[data-led-grid]');
     const note = root.querySelector('[data-led-grid-note]');
     if (!state || !grid) return;
-    grid.style.gridTemplateColumns = `repeat(${state.cols}, var(--led-cell-size, 28px))`;
+    if (state.autoFit !== false) fitLedCanvasToViewport(root, 'auto');
+    const renderCellPx = getLedRenderCellPx(state);
+    grid.style.setProperty('--led-cell-size', `${renderCellPx}px`);
+    grid.style.gridTemplateColumns = `repeat(${state.cols}, ${renderCellPx}px)`;
     grid.innerHTML = '';
     for (let y = 0; y < state.rows; y += 1) {
       for (let x = 0; x < state.cols; x += 1) {
@@ -676,6 +824,13 @@
       const active = getActivePart(state, false);
       const count = (state.parts || []).reduce((sum, part) => sum + (part.cells || []).length, 0);
       note.textContent = `${state.parts.length} конструкц. · ${count} кабинетов · активна: ${active ? active.name : 'нет'}`;
+    }
+    syncLedZoomControls(root);
+    if (state.pendingCenter) {
+      state.pendingCenter = false;
+      const centerNow = () => centerLedViewport(root);
+      if (typeof requestAnimationFrame === 'function') requestAnimationFrame(centerNow);
+      else setTimeout(centerNow, 0);
     }
   }
 
@@ -698,7 +853,7 @@
     const options = root._v4LedOptions || {};
     const catalogMode = options.catalogMode || options.sourceMode || (options.mode === 'quote' ? 'quote' : (String(options.source || '').toLowerCase().includes('quote') ? 'quote' : 'quick'));
     const quickPricing = quickPricingVisible(options) ? { enabled:true, visible:true, quickUnitPrice:base.quickUnitPrice, quickInstallCost:base.quickInstallCost, quickDeliveryCost:base.quickDeliveryCost, source:'quick-led-manual-pricing' } : { enabled:false, visible:false, permission:'quick_pricing:view' };
-    return Object.assign({}, base, { layoutMode: 'freeform', layoutBlocks, explicitEmptyLayout: layoutBlocks.length === 0, sourceMode: catalogMode, catalogMode, quickPricing });
+    return Object.assign({}, base, { layoutMode: 'freeform', layoutBlocks, explicitEmptyLayout: layoutBlocks.length === 0, sourceMode: catalogMode, catalogMode, gridCols: state.cols || GRID_COLS, gridRows: state.rows || GRID_ROWS, zoom: state.zoom, ledZoom: state.zoom, autoFit: state.autoFit !== false, ledAutoFit: state.autoFit !== false, baseCellPx: state.baseCellPx, ledBaseCellPx: state.baseCellPx, quickPricing });
   }
 
   function calculate(root) {
