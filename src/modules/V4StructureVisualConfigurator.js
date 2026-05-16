@@ -1568,33 +1568,14 @@
   }
 
   function pickStoolCornerNodes(requiredQty) {
-    const available = equipmentAvailableByTrussSpec();
-    const fallbackOrder = ['cornerU012','cornerU016','cornerU017','cornerU020','cornerU024','cornerU022'];
-    const picks = [];
-    const warnings = [];
-    let remaining = Math.max(0, Math.round(Number(requiredQty || 0)));
-    fallbackOrder.forEach(type => {
-      if (remaining <= 0) return;
-      const qty = Math.min(remaining, Math.max(0, Math.floor(Number(available[type] || 0))));
-      for (let i = 0; i < qty; i += 1) picks.push(type);
-      remaining -= qty;
-    });
-    if (remaining > 0) {
-      for (let i = 0; i < remaining; i += 1) picks.push('cornerU012');
-      warnings.push({ type:'subrent', text:`Не хватает 3D-углов: добрать в субаренду U012 — ${remaining} шт.` });
-    }
-    const replacements = picks.filter(type => type !== 'cornerU012');
-    if (replacements.length) {
-      const grouped = replacements.reduce((acc, type) => (acc[type] = (acc[type] || 0) + 1, acc), {});
-      Object.entries(grouped).forEach(([type, qty]) => {
-        const dim = STOOL_NODE_DIMENSIONS_M[type] || { w:0.5, h:0.5, z:0.5, label:type };
-        const dx = Math.max(0, Math.round((Number(dim.w || 0.5) - 0.5) * 100));
-        const dy = Math.max(0, Math.round((Number(dim.h || 0.5) - 0.5) * 100));
-        const dz = Math.max(0, Math.round((Number(dim.z || 0.5) - 0.5) * 100));
-        warnings.push({ type:'replacement', text:`Замена U012 → ${(STOOL_NODE_DIMENSIONS_M[type] && STOOL_NODE_DIMENSIONS_M[type].label) || type}: ${qty} шт. Габарит может увеличиться примерно на +${dx} см по X, +${dy} см по Y, +${dz} см по Z на каждый такой узел по задействованной оси.` });
-      });
-    }
-    return { picks, warnings, available };
+    const count = Math.max(0, Math.round(Number(requiredQty || 0)));
+    const picks = Array.from({ length:count }, () => 'cornerU012');
+
+    // v3.0 standalone quick mode: stool template must always be built from U012 by default.
+    // Stock-constrained replacements (U016/U017/U020/U024/U022) belong to the quote/warehouse flow,
+    // not to the field quick constructor. This prevents default fallback to U022 cubes when the
+    // standalone demo database has no available U012 quantity but has U022 stock.
+    return { picks, warnings:[], available:{} };
   }
 
   function addTemplateWarning(state, warning) {

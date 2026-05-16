@@ -3574,6 +3574,13 @@ html {
 <script src="src/modules/DomUtils.js"></script>
 <script src="src/modules/StageGridState.js"></script>
 <script src="src/modules/StageCalculator.js"></script>
+<script>
+(function(){
+  try { localStorage.setItem('appTheme','dark'); } catch (e) {}
+  document.documentElement.setAttribute('data-app-theme','dark');
+  document.documentElement.style.colorScheme='dark';
+})();
+</script>
 <script src="src/modules/AppSettings.js"></script>
 <script src="src/modules/ToastManager.js"></script>
 <script src="src/modules/BusyIndicator.js"></script>
@@ -3625,6 +3632,7 @@ html {
 <script src="src/modules/V4BomInspector.js"></script>
 <script src="src/modules/V4DesignSystem.js"></script>
 <script src="src/modules/MobileDarkUiParity.js"></script>
+<script src="src/modules/StandaloneDarkThemeLock.js"></script>
 
 <script>
 (function () {
