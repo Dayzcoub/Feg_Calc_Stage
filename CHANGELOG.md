@@ -82,3 +82,36 @@
 
 ### Preserved
 - Логика Stage / Truss / LED, BOM, PDF, zoom/auto-fit и исправление табуретки U012 не менялись.
+
+## v3.0.4 — Mobile Safe Rollback Hotfix
+
+### Fixed
+- Откат проблемного мобильного слоя 3.0.3, из-за которого приложение могло зависать и не реагировать на нажатия.
+- `StandaloneMobileFieldPolish.js` переведён в безопасный CSS-only режим без `MutationObserver` и DOM-перестроек.
+- Сохранены тёмная тема, Safari dark hotfix и правка табуретки U012.
+
+### Preserved
+- Расчёты, BOM, PDF-экспорт, quick-конструкторы и база quick ideal catalog не менялись.
+
+## v3.0.5 — Mobile UI usability fix
+
+### Fixed
+- Исправлена мобильная раскладка быстрых конструкторов Stage / Truss / LED.
+- Усилены mobile CSS-селекторы, чтобы они корректно перебивали desktop-правила `V4DesignSystem` на телефонах.
+- Убрано горизонтальное расползание модальных окон и рабочих областей.
+- Конструктор ферм переведён на телефоне в одну колонку: библиотека, инструменты, масштаб и поле больше не стоят рядом.
+- Конструктор сцены переведён на телефоне в одну колонку: панель масштаба больше не уезжает вправо.
+- Поля Stage / Truss / LED центрируются после открытия, добавления шаблонов, zoom/fit и поворота экрана.
+
+### Preserved
+- Расчёты, BOM, PDF-экспорт, quick ideal catalog, Safari dark hotfix и шаблон табуретки U012 не менялись.
+
+
+## v3.0.6 — Stage mobile UI tuning
+
+- Mobile-only polish for the quick Stage constructor.
+- Compact horizontal rows for deck/support, dimensions, edge closure and quick pricing.
+- Stage build controls moved below the constructor field on mobile.
+- Stage summary cards compacted into three columns.
+- Technical Stage bridge notes hidden on mobile.
+- Desktop UI, calculations, BOM and PDF export are unchanged.

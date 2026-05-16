@@ -96,3 +96,21 @@ PDF использует тот же механизм, что и исходны�
 - Поля построения Stage и Truss автоматически центрируются и не создают лишнюю пустую зону справа.
 - Панели настроек и кнопки стали компактнее и удобнее для полевой работы с телефона.
 - Расчёты, BOM, PDF, quick-логика, Safari dark theme и hotfix табуретки U012 не менялись.
+
+## Hotfix v3.0.4
+
+Сборка v3.0.4 является безопасным откатом проблемного мобильного слоя v3.0.3. Приложение снова использует стабильную основу v3.0.2, а мобильная полировка работает только через CSS без наблюдателей DOM и принудительных перестроек интерфейса.
+
+## v3.0.5 mobile usability hotfix
+
+В версии 3.0.5 исправлена мобильная компоновка быстрых конструкторов. Stage, Truss и LED ограничены шириной экрана телефона, desktop-сетки перебиваются mobile-слоем, рабочие поля центрируются после открытия и применения шаблонов. Расчёты, PDF и BOM не менялись.
+
+
+## v3.0.6 — Stage mobile UI tuning
+
+- Mobile-only polish for the quick Stage constructor.
+- Compact horizontal rows for deck/support, dimensions, edge closure and quick pricing.
+- Stage build controls moved below the constructor field on mobile.
+- Stage summary cards compacted into three columns.
+- Technical Stage bridge notes hidden on mobile.
+- Desktop UI, calculations, BOM and PDF export are unchanged.
