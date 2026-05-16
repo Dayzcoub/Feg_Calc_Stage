@@ -5,7 +5,7 @@
   const QUICK_CALCULATORS = Object.freeze([
     { id: 'stage', title: 'Сцена', output: ['Схема', 'Техлист', 'Склад', 'Вес'], icon: '▦' },
     { id: 'truss', title: 'Фермы', output: ['Схема', 'Техлист', 'Склад', 'Вес'], icon: '△' },
-    { id: 'led', title: 'LED экран', output: ['Кабинеты', 'Кабели', 'Мощность', 'Вес'], icon: '▣' }
+    { id: 'led', title: 'LED Экраны', output: ['Кабинеты', 'Кабели', 'Мощность', 'Вес'], icon: '▣' }
   ]);
 
   const QUICK_MODAL_VERSION = '3.16.13';
@@ -21,7 +21,7 @@
         <div class="v4-card-head">
           <div>
             <div class="v4-kicker">Quick calculators</div>
-            <h3>Быстрые расчёты</h3>
+            <h3>Быстрые конструкторы</h3>
           </div>
           <p class="v4-muted">Маленькие технические калькуляторы без клиентов и КП. Коммерческий блок Stage/LED показывается только ролям с доступом к ценам.</p>
         </div>

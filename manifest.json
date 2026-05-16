@@ -1,28 +1,37 @@
 {
-  "name": "FEG Quick Constructors Mobile Field",
-  "short_name": "FEG Field",
+  "name": "FEG Stage PRO 3.0",
+  "short_name": "FEG PRO 3.0",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#080c10",
-  "theme_color": "#0f1011",
+  "background_color": "#071510",
+  "theme_color": "#0f3b2e",
+  "orientation": "any",
+  "description": "Standalone quick constructors for Stage, Truss and LED with local calculations and PDF export.",
+  "version": "3.0.0",
   "icons": [
     {
       "src": "icon-180.png",
       "sizes": "180x180",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
-  "description": "Mobile field standalone quick constructors: Stage, Truss, LED with PDF export",
-  "version": "3.17.54-mobile-field",
-  "scope": "./"
+  "categories": [
+    "productivity",
+    "utilities"
+  ],
+  "lang": "ru-RU"
 }

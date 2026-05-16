@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>FEG Quick Constructors Standalone v3.17.54</title>
+    <title>FEG Stage PRO 3.0</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f1011">
+    <meta name="theme-color" content="#0f3b2e">
     <link rel="apple-touch-icon" href="icon-180.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/jspdf@4.2.1/dist/jspdf.umd.min.js" integrity="sha512-plOdviVmws4Y3JAvbnpfKb2hVxKM1lCwsi3vmElYRj+tiDLffZ4FVUj5a8vyKJ9pIgl8JCAHEJ4D1iUKBecswg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
@@ -2973,6 +2974,33 @@
         }
 
 
+/* FEG Stage PRO 3.0 release title image. */
+.quick-release-splash {
+  width: min(420px, 82vw);
+  margin: 0 auto 22px;
+  display: block;
+  border-radius: 34px;
+  border: 1px solid rgba(231, 190, 98, .34);
+  box-shadow: 0 24px 80px rgba(0,0,0,.54), 0 0 42px rgba(35,180,98,.16);
+  background: rgba(2,6,23,.38);
+  object-fit: cover;
+}
+.quick-standalone-body .v4-shell {
+  gap: 0;
+  align-content: center;
+  justify-items: center;
+}
+@media (min-width: 860px) {
+  .quick-release-splash { width: min(460px, 48vw); margin-bottom: 26px; }
+  .quick-standalone-body #quickStandaloneMount { width: min(820px, 100%); }
+}
+@media (max-width: 720px) {
+  .quick-release-splash { width: min(320px, 78vw); margin-bottom: 16px; border-radius: 28px; }
+}
+@media (max-width: 420px) {
+  .quick-release-splash { width: min(270px, 76vw); margin-bottom: 14px; border-radius: 24px; }
+}
+
 /* Standalone shell only: quick widgets themselves keep original v3.17.54 classes/styles. */
 .quick-standalone-hero,
 .quick-standalone-note { display:none !important; }
@@ -2996,6 +3024,15 @@
   .quick-standalone-body .v4-shell { min-height:calc(100vh - 28px); }
   .quick-standalone-body .v4-quick-grid { grid-template-columns:1fr; gap:12px; }
   .quick-standalone-body .v4-quick-tile { min-height:112px; border-radius:22px; }
+}
+
+/* v3.0 release title overrides are intentionally last in the standalone launcher block. */
+.quick-standalone-body .v4-shell {
+  align-content: center;
+  justify-items: center;
+}
+@media (min-width: 860px) {
+  .quick-standalone-body #quickStandaloneMount { width: min(820px, 100%) !important; }
 }
 
 
@@ -3525,11 +3562,12 @@ html {
 <body class="v4-only-body quick-standalone-body">
     <section id="quickStandalonePage" class="app-page active-page v4-only-page" aria-label="FEG Quick Constructors Standalone">
         <div class="v4-shell">
-            <p id="quickStandaloneStatus" hidden>Загрузка быстрых конструкторов Stage / Truss / LED...</p>
-            <main id="quickStandaloneMount" class="v4-wide-section"></main>
+            <img class="quick-release-splash" src="assets/feg-stage-pro-3.0-title.png" alt="FEG Stage PRO 3.0 — Stage, Truss, LED" loading="eager" decoding="async">
+            <p id="quickStandaloneStatus" hidden>Загрузка FEG Stage PRO 3.0...</p>
+            <main id="quickStandaloneMount" class="v4-wide-section" aria-label="Выбор конструктора"></main>
         </div>
     </section>
-    <div id="pdfContent" style="display:none;"><h2 id="pdfTitle">FEG Stage PRO</h2><div id="pdfData"></div><p id="pdfFooter" style="margin-top:22px;font-size:11px;color:#666;">FEG Quick Constructors Standalone</p></div>
+    <div id="pdfContent" style="display:none;"><h2 id="pdfTitle">FEG Stage PRO 3.0</h2><div id="pdfData"></div><p id="pdfFooter" style="margin-top:22px;font-size:11px;color:#666;">FEG Stage PRO 3.0 · Standalone Quick Constructors</p></div>
     <datalist id="clientDatalist"></datalist>
     <div class="quick-standalone-toast" data-standalone-toast></div>
 <script src="src/modules/FormatUtils.js"></script>
@@ -3586,6 +3624,7 @@ html {
 <script src="src/modules/V4QuoteDraftHydrator.js"></script>
 <script src="src/modules/V4BomInspector.js"></script>
 <script src="src/modules/V4DesignSystem.js"></script>
+<script src="src/modules/MobileDarkUiParity.js"></script>
 
 <script>
 (function () {
@@ -3609,7 +3648,7 @@ html {
         mount.innerHTML = '<div class="v4-card"><div class="v4-kicker">Standalone error</div><h3>Модуль QuickCalculators не загружен</h3><p class="v4-muted">Проверь целостность архива и пути src/modules.</p></div>';
         return;
       }
-      var localUser = { id:'quick-standalone-local', displayName:'Локальный быстрый режим', email:'local@feg.quick', role:'admin', workspaceName:'Standalone' };
+      var localUser = { id:'quick-standalone-local', displayName:'FEG Stage PRO 3.0', email:'local@feg.quick', role:'admin', workspaceName:'FEG Stage PRO 3.0' };
       var authState = { isAuthenticated:true, isDemo:true, role:'admin', user:localUser, workspaceId:'standalone', permissions:['*','quick_pricing:view','prices:view'] };
       ROOT.QuickCalculators.renderQuickCalculators(mount, {
         authState: authState,
@@ -3619,7 +3658,7 @@ html {
         quickPricingVisible: true,
         onOpen: function (kind) { if (window.showToast) window.showToast('Открыт быстрый конструктор: ' + kind); }
       });
-      if (status) status.textContent = 'Standalone · быстрые конструкторы Stage / Truss / LED · v3.17.54';
+      if (status) status.textContent = 'FEG Stage PRO 3.0 · Standalone Quick Constructors · Stage / Truss / LED';
       document.body.classList.add('quick-standalone-ready');
     } catch (error) {
       console.error(error);
