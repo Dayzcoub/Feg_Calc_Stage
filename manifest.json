@@ -1,6 +1,6 @@
 {
-  "name": "FEG Stage PRO 3.1.86",
-  "short_name": "FEG PRO 3.1.86",
+  "name": "FEG Stage PRO 3.1.88",
+  "short_name": "FEG PRO 3.1.88",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -8,7 +8,7 @@
   "theme_color": "#07090B",
   "orientation": "any",
   "description": "Standalone quick constructors for Stage, Truss and LED with Logic UI Rebuild, local calculations and PDF export.",
-  "version": "3.1.86",
+  "version": "3.1.88",
   "icons": [
     {
       "src": "icon-180.png",

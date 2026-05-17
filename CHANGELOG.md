@@ -1,4 +1,18 @@
-# v3.1.86 — Runner hardwired Supabase TOP-20
+# v3.1.88 — Runner jump physics tuning
+
+- Tuned FEG TECH RUN jump height down from the previous high/floaty arc.
+- Added stronger fall gravity and a shorter ascent impulse so the jump feels less lunar and more physical.
+- Normalized runner physics to the frame delta for steadier behavior across displays.
+- Added `docs/V3_1_88_RUNNER_JUMP_PHYSICS_TUNING.md`.
+- No constructor calculations, BOM, warehouse, reservations, PDF export, legacy/v3, backend quote writes, LED logic, Supabase config, or game leaderboard logic changed.
+
+# v3.1.87 — Runner Supabase SQL documentation fix
+
+- Fixed the Supabase SQL documentation for `submit_runner_score`: `ON CONFLICT` now targets `runner_scores_workspace_client_unique` explicitly to avoid PL/pgSQL ambiguity around `client_score_id`.
+- Added `docs/V3_1_87_RUNNER_SUPABASE_SQL_DOC_FIX.md` with the verified SQL fix and test query notes.
+- No runtime constructor logic, calculations, BOM, warehouse, PDF export, LED logic, backend quote writes, dark fallback, responsive contract, or scroll logic changed.
+
+# v3.1.87 — Runner hardwired Supabase TOP-20
 
 - FEG TECH RUN now uses hardwired Supabase Project URL, publishable key and workspace key `feg-main`; user-facing Supabase settings are removed from the game modal.
 - Cloud writes now go through RPC functions `submit_runner_score` and `get_runner_scores` instead of direct table UI configuration.

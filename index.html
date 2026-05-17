@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>FEG Stage PRO 3.1.86</title>
+    <title>FEG Stage PRO 3.1.88</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#07090B">
     <link rel="apple-touch-icon" href="icon-180.png">
@@ -3577,13 +3577,13 @@ html {
         <div class="standalone-window">
             <div class="standalone-body">
                 <main class="standalone-main" aria-label="Рабочая область">
-                    <p id="quickStandaloneStatus" hidden>Загрузка FEG Stage PRO 3.1.86...</p>
+                    <p id="quickStandaloneStatus" hidden>Загрузка FEG Stage PRO 3.1.88...</p>
                     <div id="quickStandaloneMount" class="v4-wide-section standalone-mount" aria-label="Выбор конструктора"></div>
                 </main>
             </div>
         </div>
     </section>
-    <div id="pdfContent" style="display:none;"><h2 id="pdfTitle">FEG Stage PRO 3.1.86</h2><div id="pdfData"></div><p id="pdfFooter" style="margin-top:22px;font-size:11px;color:#666;">FEG Stage PRO 3.1.86 · Standalone Quick Constructors</p></div>
+    <div id="pdfContent" style="display:none;"><h2 id="pdfTitle">FEG Stage PRO 3.1.88</h2><div id="pdfData"></div><p id="pdfFooter" style="margin-top:22px;font-size:11px;color:#666;">FEG Stage PRO 3.1.88 · Standalone Quick Constructors</p></div>
     <datalist id="clientDatalist"></datalist>
     <div class="quick-standalone-toast" data-standalone-toast></div>
 <script src="src/modules/FormatUtils.js"></script>
@@ -3694,7 +3694,7 @@ html {
         mount.innerHTML = '<div class="v4-card"><div class="v4-kicker">Standalone error</div><h3>Модуль QuickCalculators не загружен</h3><p class="v4-muted">Проверь целостность архива и пути src/modules.</p></div>';
         return;
       }
-      var localUser = { id:'quick-standalone-local', displayName:'FEG Stage PRO 3.1.86', email:'local@feg.quick', role:'admin', workspaceName:'FEG Stage PRO 3.1.86' };
+      var localUser = { id:'quick-standalone-local', displayName:'FEG Stage PRO 3.1.88', email:'local@feg.quick', role:'admin', workspaceName:'FEG Stage PRO 3.1.88' };
       var authState = { isAuthenticated:true, isDemo:true, role:'admin', user:localUser, workspaceId:'standalone', permissions:['*','quick_pricing:view','prices:view'] };
       ROOT.QuickCalculators.renderQuickCalculators(mount, {
         authState: authState,
@@ -3704,7 +3704,7 @@ html {
         quickPricingVisible: true,
         onOpen: function (kind) { if (window.showToast) window.showToast('Открыт быстрый конструктор: ' + kind); }
       });
-      if (status) status.textContent = 'FEG Stage PRO 3.1.86 · Standalone Quick Constructors · Stage / Truss / LED';
+      if (status) status.textContent = 'FEG Stage PRO 3.1.88 · Standalone Quick Constructors · Stage / Truss / LED';
       if (ROOT.QuickCalculators && ROOT.QuickCalculators.selectCalculator) {
         document.querySelectorAll('[data-feg-nav-kind]').forEach(function (btn) {
           btn.addEventListener('click', function () {
