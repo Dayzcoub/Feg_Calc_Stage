@@ -2,11 +2,19 @@
   'use strict';
 
   const ROOT = (window.FEGModules = window.FEGModules || {});
-  const APP_VERSION = '3.1.86';
+  const APP_VERSION = '3.1.88';
   const STORAGE_KEY = 'fegStagePro.runnerScores.v1';
   const SCORE_QUEUE_KEY = 'fegStagePro.runnerScoreQueue.v1';
   const PLAYER_KEY = 'fegStagePro.runnerPlayerName.v1';
   const MAX_SCORES = 20;
+  const RUNNER_PHYSICS = Object.freeze({
+    groundY: 286,
+    jumpVelocity: -14.4,
+    jumpHoldMs: 45,
+    ascentGravity: 0.68,
+    fallGravity: 1.05,
+    maxFallSpeed: 18.2
+  });
   const CLOUD_TABLE = 'runner_scores';
   const CLOUD_SOURCE = 'mini_runner';
   const CLOUD_RPC_SUBMIT = 'submit_runner_score';
@@ -723,8 +731,8 @@
       return;
     }
     if (player.grounded) {
-      player.vy = -19.4;
-      player.jumpHold = 190;
+      player.vy = RUNNER_PHYSICS.jumpVelocity;
+      player.jumpHold = RUNNER_PHYSICS.jumpHoldMs;
       player.grounded = false;
     }
   };
@@ -779,7 +787,7 @@
       { type: 'decor', w: 40, h: 44 }
     ];
     const item = types[Math.floor(Math.random() * types.length)];
-    const ground = 286;
+    const ground = RUNNER_PHYSICS.groundY;
     this.state.obstacles.push({
       type: item.type,
       x: 930,
@@ -802,7 +810,7 @@
   RunnerGame.prototype.update = function (dt) {
     const state = this.state;
     const player = state.player;
-    const groundY = 286;
+    const groundY = RUNNER_PHYSICS.groundY;
     state.elapsed += dt;
     state.speed = Math.min(11.2, 5.3 + state.elapsed / 22000);
     state.distance += state.speed * dt * 0.012;
@@ -813,13 +821,16 @@
       state.spawnTimer = Math.max(720, 1450 - state.elapsed / 60) + Math.random() * 620;
     }
     player.frame += dt;
+    const physicsStep = clamp(dt / 16.6667, 0.5, 2.25);
     if (!player.grounded && player.jumpHold > 0 && player.vy < 0) {
       player.jumpHold = Math.max(0, player.jumpHold - dt);
-      player.vy += 0.40;
+      player.vy += RUNNER_PHYSICS.ascentGravity * physicsStep;
     } else {
-      player.vy += 0.62;
+      const gravity = player.vy < 0 ? RUNNER_PHYSICS.ascentGravity * 1.1 : RUNNER_PHYSICS.fallGravity;
+      player.vy += gravity * physicsStep;
     }
-    player.y += player.vy;
+    player.vy = clamp(player.vy, RUNNER_PHYSICS.jumpVelocity, RUNNER_PHYSICS.maxFallSpeed);
+    player.y += player.vy * physicsStep;
     if (player.y + player.h >= groundY) {
       player.y = groundY - player.h;
       player.vy = 0;
