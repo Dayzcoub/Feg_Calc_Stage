@@ -1,3 +1,42 @@
+# v3.1.86 — Runner hardwired Supabase TOP-20
+
+- FEG TECH RUN now uses hardwired Supabase Project URL, publishable key and workspace key `feg-main`; user-facing Supabase settings are removed from the game modal.
+- Cloud writes now go through RPC functions `submit_runner_score` and `get_runner_scores` instead of direct table UI configuration.
+- Local queue remains as an offline buffer; pending results are retried before reading the common leaderboard.
+- Added SQL documentation for protected RPC-based leaderboard storage with automatic TOP-20 cleanup in Supabase.
+- Preserved Stage/Truss/LED calculations, BOM, warehouse, reservations, PDF export, legacy/v3, backend quote writes, dark fallback, constructor responsive contract and scroll logic.
+
+# v3.1.85 — Runner Supabase hard queue and mobile playability pass
+
+- FEG TECH RUN now treats Supabase export as the required final destination: every finished score is assigned a stable client_score_id and placed into a local upload queue until Supabase accepts it.
+- Added queued/pending/failed/synced state handling and retry sync when the leaderboard is refreshed.
+- Supabase writes now use an upsert endpoint with on_conflict=workspace_key,client_score_id to avoid duplicate score rows after retry.
+- Runner jump physics were made longer and more forgiving; obstacles were scaled down and spawn cadence was relaxed so a correctly timed jump can clear them.
+- Mobile runner mode now requests fullscreen and landscape orientation; tap on the game screen triggers jump and the close button remains visible.
+- Constructor calculations, BOM, warehouse, reservations, PDF export, legacy/v3, backend quote writes, dark fallback, responsive contract, and scroll logic were not changed.
+
+## v3.1.84 — FEG TECH RUN online leaderboard
+
+- Added Supabase/PostgREST online leaderboard support for the hidden FEG TECH RUN mini-game.
+- Runner scores are still saved to localStorage first, then mirrored to the shared `runner_scores` table when Supabase settings are present.
+- Added in-game cloud settings block: Supabase URL, anon key, workspace key, refresh action and connection status.
+- Added fallback messaging when the online leaderboard is unavailable.
+- Protected quick constructors, calculations, BOM, warehouse, PDF export, legacy/v3 and backend quote writes remain untouched.
+
+## v3.1.83 — Hero artwork mini-runner game
+
+- Added hidden `FEG TECH RUN` mini-game launched from the main hero artwork.
+- Added local leaderboard with player name stored in the standalone app database (`localStorage`).
+- Kept constructors, formulas, BOM, warehouse, reservations, PDF export, legacy/v3 and backend writes untouched.
+- Documented the change in `docs/V3_1_83_HERO_TECH_RUNNER_GAME.md`.
+
+## v3.1.82 — Detailed constructor instructions and formulas
+
+- Expanded the in-app user guide with detailed instructions for Stage, Truss and LED constructors.
+- Added calculation formulas, defaults, conditions, rounding rules and safety notes directly inside the guide modal.
+- Added documentation table styles for dark/light themes without changing constructor business logic.
+- Documented the change in `docs/V3_1_82_DETAILED_CONSTRUCTOR_GUIDE.md`.
+
 ## v3.1.81 — Desktop summary metric parity for Truss and LED
 - Desktop-only polish for the Truss and LED result metric blocks.
 - Truss/LED metric cards now follow the accepted Stage card rhythm: stable two-column grid, fixed desktop min-height, matching value/label font scale and consistent card padding.
