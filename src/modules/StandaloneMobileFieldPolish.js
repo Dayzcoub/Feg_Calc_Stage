@@ -2,20 +2,20 @@
   'use strict';
 
   const STYLE_ID = 'feg-standalone-mobile-ui-v3-0-5';
-  const MOBILE_MQL = window.matchMedia ? window.matchMedia('(max-width: 860px), (pointer: coarse) and (max-width: 1024px)') : null;
+  const MOBILE_MQL = window.matchMedia ? window.matchMedia('(max-width: 767px)') : null;
 
   const css = `
 /* FEG Stage PRO 3.0.5 — safe mobile usability layer.
    CSS-first, no MutationObserver, no constructor calculation changes. */
-@media (max-width: 860px), (pointer: coarse) and (max-width: 1024px) {
+@media (max-width: 767px) {
   html,
   body.v4-only-body.quick-standalone-body {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
     overflow-x: hidden !important;
-    background: #05070b !important;
-    color-scheme: dark !important;
+    background: var(--feg-bg, #05070b) !important;
+    color-scheme: var(--feg-color-scheme, dark) !important;
     -webkit-text-size-adjust: 100% !important;
     text-size-adjust: 100% !important;
   }
@@ -340,11 +340,11 @@
     gap: 8px !important;
     overflow: hidden !important;
   }
-  body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-truss-library {
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library {
     width: 100% !important;
     max-width: 100% !important;
-    max-height: 30svh !important;
-    overflow: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
     padding: 8px !important;
     border-radius: 16px !important;
     -webkit-overflow-scrolling: touch !important;
@@ -438,6 +438,182 @@
   }
   body.v4-only-body.quick-standalone-body .v4-quick-modal-body :is(table,.v4-table,.orders-table,.truss-project-table,.client-table,.block-calc-table,.block-bom) {
     max-width: none !important;
+  }
+}
+
+
+@media (max-width: 767px) {
+  /* v3.1.49 — Truss mobile library sizing tuned for standalone constructor screens.
+     Keep the v3.1.48 standalone scope fix, but rebalance density so more items fit
+     in view without losing readability. */
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library {
+    gap: 10px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group {
+    overflow: hidden !important;
+    padding: 10px !important;
+    border-color: rgba(148,163,184,.12) !important;
+    background: linear-gradient(180deg, rgba(255,255,255,.024), rgba(255,255,255,.012)) !important;
+    box-shadow: none !important;
+    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group.active {
+    border-color: rgba(243,198,78,.18) !important;
+    box-shadow: inset 0 0 0 1px rgba(243,198,78,.05) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group summary {
+    display: grid !important;
+    grid-template-columns: 16px minmax(0, 1fr) auto !important;
+    gap: 8px !important;
+    align-items: center !important;
+    min-height: 34px !important;
+    margin: 0 0 8px !important;
+    padding: 7px 9px !important;
+    border: 1px solid rgba(148,163,184,.08) !important;
+    border-radius: 12px !important;
+    background: linear-gradient(180deg, rgba(255,255,255,.022), rgba(255,255,255,.01)) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.02) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group.active summary {
+    border-color: rgba(148,163,184,.10) !important;
+    background: linear-gradient(180deg, rgba(243,198,78,.05), rgba(14,165,233,.018)) !important;
+    box-shadow: inset 3px 0 0 rgba(243,198,78,.72), inset 0 1px 0 rgba(255,255,255,.03) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group .v4-truss-group-mark {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 16px !important;
+    min-width: 16px !important;
+    height: 16px !important;
+    padding: 0 !important;
+    border-radius: 6px !important;
+    border: 1px solid rgba(148,163,184,.14) !important;
+    background: rgba(255,255,255,.025) !important;
+    color: rgba(226,232,240,.82) !important;
+    line-height: 1 !important;
+    font-size: 9px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group.active .v4-truss-group-mark {
+    border-color: rgba(243,198,78,.18) !important;
+    background: rgba(243,198,78,.08) !important;
+    color: #f3d49a !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group summary b {
+    min-width: 0 !important;
+    font-size: 11px !important;
+    line-height: 1.15 !important;
+    color: rgba(241,245,249,.96) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group summary em {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    padding: 0 6px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(148,163,184,.16) !important;
+    background: rgba(255,255,255,.035) !important;
+    color: rgba(226,232,240,.78) !important;
+    line-height: 1 !important;
+    font-size: 10px !important;
+    font-style: normal !important;
+    font-weight: 800 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group.active summary em {
+    border-color: rgba(243,198,78,.18) !important;
+    background: rgba(255,255,255,.05) !important;
+    color: rgba(255,239,199,.84) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group-body {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+    padding-top: 1px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group-body button {
+    min-height: 34px !important;
+    border-radius: 10px !important;
+    padding: 5px 6px !important;
+    position: relative !important;
+    font-style: normal !important;
+    font-weight: 800 !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+    border-color: rgba(148,163,184,.20) !important;
+    background: #151719 !important;
+    color: rgba(241,245,249,.94) !important;
+    transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease, background .16s ease, color .16s ease !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group-body button .v4-truss-btn-icon {
+    font-size: 11px !important;
+    line-height: 1 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group-body button:is(.active,.is-active) {
+    background: linear-gradient(180deg, rgba(24,45,56,.94), rgba(18,30,40,.96)) !important;
+    border-color: rgba(243,198,78,.88) !important;
+    color: #fff7df !important;
+    box-shadow: inset 0 0 0 1px rgba(243,198,78,.18), inset 0 1px 0 rgba(255,255,255,.08), 0 0 0 2px rgba(243,198,78,.12), 0 10px 18px rgba(0,0,0,.26) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group-body button:is(.active,.is-active)::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: 2px !important;
+    border-radius: 10px !important;
+    border: 1px solid rgba(255,255,255,.08) !important;
+    pointer-events: none !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group-body button:is(.active,.is-active) :is(span, small, .v4-truss-btn-icon) {
+    color: #fff7df !important;
+    text-shadow: 0 1px 10px rgba(243,198,78,.16) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-btn-icon--straight {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-btn-icon--straight .v4-truss-btn-glyph {
+    opacity: .92 !important;
+    transform: translateY(-.5px) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-btn-icon--straight .v4-truss-btn-meter {
+    min-width: 0 !important;
+    letter-spacing: 0 !important;
+    font-size: 11px !important;
+  }
+
+}
+
+@media (max-width: 420px) {
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group-body {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library .v4-truss-group-body button {
+    min-height: 32px !important;
+    padding: 4px 5px !important;
   }
 }
 

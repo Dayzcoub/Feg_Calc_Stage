@@ -1,4 +1,6 @@
-:root {
+:root,
+html[data-app-theme="dark"] {
+  --feg-color-scheme: dark;
   --feg-bg: #07090B;
   --feg-bg-2: #090B0E;
   --feg-surface: #0D0F12;
@@ -34,4 +36,35 @@
   --feg-shadow: 0 18px 60px rgba(0,0,0,0.45);
   --feg-shadow-soft: 0 10px 32px rgba(0,0,0,0.32);
   --feg-font: Inter, SF Pro Display, SF Pro Text, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* v3.1.58 theme-readiness: light tokens are gated by AppSettings.
+   They do not activate unless the explicit light-theme feature flag is enabled
+   and data-app-theme="light" is applied. */
+html[data-app-theme="light"] {
+  --feg-color-scheme: light;
+  --feg-bg: #F4F6F4;
+  --feg-bg-2: #EAEFEA;
+  --feg-surface: #FFFFFF;
+  --feg-surface-2: #F7FAF7;
+  --feg-panel: #FFFFFF;
+  --feg-panel-2: #F5F8F5;
+  --feg-panel-3: #EEF4EE;
+  --feg-field: #FFFFFF;
+  --feg-border: #D8E1D8;
+  --feg-border-strong: #AEBDAE;
+  --feg-border-soft: rgba(15,23,42,0.10);
+  --feg-text: #101815;
+  --feg-text-2: #46524C;
+  --feg-text-muted: #6E7A73;
+  --feg-text-disabled: #A8B1AA;
+  --feg-gold: #9A6B10;
+  --feg-gold-2: #B98220;
+  --feg-gold-dark: #6E4D0F;
+  --feg-green: #168052;
+  --feg-cyan: #1A7280;
+  --feg-red: #B83232;
+  --feg-warning: #A86610;
+  --feg-shadow: 0 18px 60px rgba(15,23,42,0.13);
+  --feg-shadow-soft: 0 10px 32px rgba(15,23,42,0.10);
 }

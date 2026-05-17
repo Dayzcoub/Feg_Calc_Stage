@@ -15,17 +15,30 @@
         return global.localStorage;
     }
 
+    function isLightThemeEnabled() {
+        try {
+            if (global.FEG_ENABLE_LIGHT_THEME === true) return true;
+            if (storage().getItem('fegLightThemeEnabled') === '1') return true;
+        } catch (err) {}
+        const doc = global.document;
+        const root = doc && doc.documentElement;
+        return !!(root && root.getAttribute('data-feg-light-theme-enabled') === 'true');
+    }
+
+    function normalizeAppTheme(theme) {
+        return theme === 'light' && isLightThemeEnabled() ? 'light' : DEFAULT_APP_THEME;
+    }
+
     function loadAppTheme() {
         try {
-            const saved = storage().getItem('appTheme');
-            return saved === 'light' ? 'light' : DEFAULT_APP_THEME;
+            return normalizeAppTheme(storage().getItem('appTheme'));
         } catch (err) {
             return DEFAULT_APP_THEME;
         }
     }
 
     function saveAppTheme(theme, options) {
-        const normalized = theme === 'light' ? 'light' : 'dark';
+        const normalized = normalizeAppTheme(theme);
         try { storage().setItem('appTheme', normalized); } catch (err) {}
         applyAppTheme(normalized, options);
         return normalized;
@@ -33,7 +46,7 @@
 
     function applyAppTheme(theme, options) {
         const doc = (options && options.document) || global.document;
-        const normalized = theme === 'light' ? 'light' : 'dark';
+        const normalized = normalizeAppTheme(theme);
         if (doc && doc.body && doc.body.classList) {
             doc.body.classList.toggle('theme-light', normalized === 'light');
             doc.body.classList.toggle('theme-dark', normalized === 'dark');
@@ -134,6 +147,8 @@
         loadAppTheme,
         saveAppTheme,
         applyAppTheme,
+        isLightThemeEnabled,
+        normalizeAppTheme,
         syncThemeInput,
         readThemeFromInput,
         makeLocalWorkspaceKey,

@@ -5,7 +5,7 @@
   const css = `
 /* v3.0 mobile dark UI parity — keeps constructor logic untouched.
    Mobile/tablet touch layouts now use the same compact dark palette as the desktop V4 UI. */
-@media (max-width: 860px), (pointer: coarse) and (max-width: 1024px) {
+@media (max-width: 767px) {
   body.v4-only-body.quick-standalone-body {
     --bg:#08090a;
     --bg-2:#0b0c0d;
@@ -242,7 +242,28 @@
 }
 `;
 
+  function isLightThemeEnabled() {
+    try {
+      if (window.FEG_ENABLE_LIGHT_THEME === true) return true;
+      if (window.localStorage && window.localStorage.getItem('fegLightThemeEnabled') === '1') return true;
+    } catch (err) {}
+    return !!(document.documentElement && document.documentElement.getAttribute('data-feg-light-theme-enabled') === 'true');
+  }
+
+  function isLightThemeActive() {
+    return isLightThemeEnabled() && document.documentElement && document.documentElement.getAttribute('data-app-theme') === 'light';
+  }
+
+  function remove() {
+    const style = document.getElementById(STYLE_ID);
+    if (style && style.parentNode) style.parentNode.removeChild(style);
+  }
+
   function inject() {
+    if (isLightThemeActive()) {
+      remove();
+      return;
+    }
     // Keep this style outside <head> to avoid fighting with V4DesignSystem's
     // head-level MutationObserver. Two observers moving their style nodes to
     // the end of <head> caused an infinite reorder loop in browsers, which
@@ -254,7 +275,7 @@
     if (!style) {
       style = document.createElement('style');
       style.id = STYLE_ID;
-      style.setAttribute('data-feg-version', '3.0-mobile-dark-ui-parity-fixed');
+      style.setAttribute('data-feg-version', '3.1.58-mobile-theme-guard');
       style.setAttribute('data-feg-style-scope', 'body-safe-no-head-observer');
       style.textContent = css;
       parent.appendChild(style);
@@ -262,7 +283,7 @@
     }
 
     if (style.textContent !== css) style.textContent = css;
-    style.setAttribute('data-feg-version', '3.0-mobile-dark-ui-parity-fixed');
+    style.setAttribute('data-feg-version', '3.1.58-mobile-theme-guard');
     style.setAttribute('data-feg-style-scope', 'body-safe-no-head-observer');
 
     // Keep it as the last child of body/html so it wins in cascade without
@@ -282,9 +303,22 @@
   setTimeout(inject, 250);
   setTimeout(inject, 1000);
 
+  if (window.MutationObserver) {
+    const startObserver = function () {
+      const root = document.documentElement;
+      if (!root) return;
+      const observer = new MutationObserver(inject);
+      observer.observe(root, { attributes: true, attributeFilter: ['data-app-theme', 'data-feg-light-theme-enabled'] });
+      if (document.body) observer.observe(document.body, { attributes: true, attributeFilter: ['class', 'data-app-theme'] });
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startObserver, { once: true });
+    else startObserver();
+  }
+
   window.FEG_MOBILE_DARK_UI_PARITY = {
-    version: '3.0-mobile-dark-ui-parity',
-    palette: 'desktop-v4-compact-dark',
-    refresh: inject
+    version: '3.1.58-mobile-theme-guard',
+    palette: 'desktop-v4-compact-dark-default',
+    refresh: inject,
+    isLightThemeActive
   };
 })();

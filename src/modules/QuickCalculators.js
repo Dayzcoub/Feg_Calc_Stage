@@ -3,9 +3,9 @@
   const ROOT = (window.FEGModules = window.FEGModules || {});
 
   const QUICK_CALCULATORS = Object.freeze([
-    { id: 'stage', title: 'Сцена', output: ['Схема', 'Техлист', 'Склад', 'Вес'], icon: '▦' },
-    { id: 'truss', title: 'Фермы', output: ['Схема', 'Техлист', 'Склад', 'Вес'], icon: '△' },
-    { id: 'led', title: 'LED Экраны', output: ['Кабинеты', 'Кабели', 'Мощность', 'Вес'], icon: '▣' }
+    { id: 'stage', title: 'Сцена', output: ['Схема', 'Техлист', 'Склад', 'Вес'], icon: '▦', imageIcon: 'assets/launch-stage-icon.png' },
+    { id: 'truss', title: 'Фермы', output: ['Схема', 'Техлист', 'Склад', 'Вес'], icon: '△', imageIcon: 'assets/launch-truss-icon.png' },
+    { id: 'led', title: 'LED Экраны', output: ['Кабинеты', 'Кабели', 'Мощность', 'Вес'], icon: '▣', imageIcon: 'assets/launch-led-icon.png' }
   ]);
 
   const QUICK_MODAL_VERSION = '3.16.13';
@@ -20,30 +20,34 @@
       <section class="feg-dashboard" data-feg-dashboard>
         <div class="feg-dashboard-hero-grid" data-feg-dashboard-hero>
           <article class="feg-hero-card v4-card">
-            <img class="feg-hero-art" src="assets/feg-stage-pro-3.0-title.png" alt="FEG Stage PRO 3.1.7 · Stage · Truss · LED" loading="eager" decoding="async">
+            <img class="feg-hero-art" src="assets/feg-stage-pro-3.0-title.png" alt="FEG Stage PRO 3.1.81 · Stage · Truss · LED" loading="eager" decoding="async">
           </article>
           <div class="feg-launch-grid" aria-label="Быстрые конструкторы">
             ${QUICK_CALCULATORS.map(calc => `
               <button type="button" class="feg-launch-tile" data-v4-quick="${calc.id}">
-                <span class="feg-launch-icon" data-launch-kind="${calc.id}" aria-hidden="true"></span>
+                <span class="feg-launch-icon${calc.imageIcon ? ' feg-launch-icon--image' : ''}" data-launch-kind="${calc.id}" aria-hidden="true">${calc.imageIcon ? `<img class="feg-launch-icon-image" src="${escapeHtml(calc.imageIcon)}" alt="" loading="eager" decoding="async">` : ''}</span>
                 <b>${escapeHtml(calc.title)}</b>
                 <small>${calc.id === 'stage' ? 'Конструктор сценических площадок' : calc.id === 'truss' ? 'Конструктор фермовых конструкций' : 'Конструктор LED экранов и медиа систем'}</small>
               </button>`).join('')}
+              <div class="feg-launch-support-stack" aria-label="Тема и инструкция">
+                <button type="button" class="feg-launch-theme-toggle feg-theme-toggle" data-feg-theme-toggle data-feg-theme-toggle-label="true" aria-label="Переключить тему" aria-pressed="false" title="Переключить светлую/тёмную тему">
+                  <span class="feg-theme-switch-track" aria-hidden="true"><span class="feg-theme-switch-knob"></span></span>
+                  <span class="feg-theme-switch-caption">Тема</span>
+                </button>
+                <button type="button" class="feg-launch-guide-button" data-feg-user-guide-open aria-label="Открыть инструкцию пользователя" title="Инструкция пользователя">
+                  <span class="feg-launch-guide-mark" aria-hidden="true">?</span>
+                  <span class="feg-launch-guide-caption">Инструкция</span>
+                </button>
+              </div>
           </div>
         </div>
 
         <section class="feg-workspace-shell v4-card" data-feg-workspace-shell>
-          <div class="feg-workspace-tabs" role="tablist" aria-label="Конструкторы">
-            ${QUICK_CALCULATORS.map(calc => `
-              <button type="button" class="feg-workspace-tab" data-v4-quick-tab="${calc.id}" role="tab" aria-selected="false">
-                <span class="feg-workspace-tab-icon" data-launch-kind="${calc.id}" aria-hidden="true"></span>
-                <span>${escapeHtml(calc.title)}</span>
-              </button>`).join('')}
-          </div>
           <div class="feg-workspace-stage" data-feg-workspace-stage>
             <div class="feg-workspace-body" data-v4-quick-workspace></div>
           </div>
         </section>
+        <div class="feg-user-guide-root" data-feg-user-guide-root></div>
       </section>`;
     root._v4QuickDocText = '';
     root._v4QuickDocName = 'quick-sheet.txt';
@@ -59,8 +63,144 @@
       selectCalculator(root, action);
       if (cb.onOpen) cb.onOpen(action);
     }));
+    root.querySelectorAll('[data-feg-user-guide-open]').forEach(btn => btn.addEventListener('click', () => openQuickUserGuide(root)));
     selectCalculator(root, cb.initialKind || 'stage');
+    if (ROOT.LogicUiRuntime && ROOT.LogicUiRuntime.refresh) ROOT.LogicUiRuntime.refresh(root);
+    if (window.FEG_LIGHT_THEME_SHELL && typeof window.FEG_LIGHT_THEME_SHELL.bindLaunchControls === 'function') {
+      window.FEG_LIGHT_THEME_SHELL.bindLaunchControls(root);
+    }
     return root;
+  }
+
+
+  function openQuickUserGuide(root) {
+    const mount = root && root.querySelector ? root.querySelector('[data-feg-user-guide-root]') : null;
+    if (!mount) return null;
+    mount.innerHTML = `
+      <div class="feg-user-guide-backdrop open" data-feg-user-guide-modal aria-hidden="false">
+        <article class="feg-user-guide-modal" role="dialog" aria-modal="true" aria-labelledby="fegUserGuideTitle">
+          <header class="feg-user-guide-head">
+            <div>
+              <div class="feg-user-guide-kicker">FEG Stage PRO / ПАК.ИТ · инструкция</div>
+              <h2 id="fegUserGuideTitle">Как пользоваться быстрыми конструкторами</h2>
+              <p>Короткая документация внутри программы: порядок работы, что считает каждый блок и что можно безопасно выгружать в PDF/техлисты.</p>
+            </div>
+            <button type="button" class="feg-user-guide-close" data-feg-user-guide-close aria-label="Закрыть инструкцию">×</button>
+          </header>
+          <div class="feg-user-guide-body">
+            ${getQuickUserGuideHtml()}
+          </div>
+        </article>
+      </div>`;
+    const modal = mount.querySelector('[data-feg-user-guide-modal]');
+    const close = () => {
+      mount.innerHTML = '';
+      window.removeEventListener('keydown', onKey);
+    };
+    const onKey = event => { if (event.key === 'Escape') close(); };
+    const closeBtn = mount.querySelector('[data-feg-user-guide-close]');
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (modal) modal.addEventListener('click', event => { if (event.target === modal) close(); });
+    window.addEventListener('keydown', onKey);
+    return modal;
+  }
+
+  function getQuickUserGuideHtml() {
+    return `
+      <section class="feg-user-guide-section feg-user-guide-section--intro">
+        <h3>Назначение программы</h3>
+        <p>Приложение предназначено для быстрого технического расчёта трёх типов конструкций: сценической площадки, фермовой конструкции и LED экрана. Быстрые конструкторы помогают собрать схему, проверить основные параметры, получить комплектовку, вес, складской лист и PDF для передачи клиенту или команде.</p>
+        <p>Текущая standalone-версия работает как быстрый расчётный инструмент. Быстрые конструкторы используют изолированную идеальную базу комплектующих и не зависят от реального склада, дефицита и резервов сметчика.</p>
+      </section>
+
+      <section class="feg-user-guide-grid" aria-label="Основные разделы инструкции">
+        <article class="feg-user-guide-card">
+          <h3>Главный экран</h3>
+          <ol>
+            <li>Выбери большую кнопку: <b>Сцена</b>, <b>Фермы</b> или <b>LED Экраны</b>.</li>
+            <li>Рабочая область откроется ниже hero-блока.</li>
+            <li>Переключатель <b>Тема</b> меняет светлый и тёмный режим интерфейса.</li>
+            <li>Кнопка <b>Инструкция</b> открывает эту справку без выхода из конструктора.</li>
+          </ol>
+        </article>
+
+        <article class="feg-user-guide-card">
+          <h3>Сцена</h3>
+          <ol>
+            <li>Выбери тип: настил или лестница.</li>
+            <li>Задай размеры, высоту и нужные параметры стоимости.</li>
+            <li>Собирай поле кликом или протяжкой по сетке.</li>
+            <li>Используй шаблоны для быстрого прямоугольника.</li>
+            <li>Проверь комплектацию: настил, ноги, рамы, перекладины, вес и стоимость.</li>
+          </ol>
+        </article>
+
+        <article class="feg-user-guide-card">
+          <h3>Фермы</h3>
+          <ol>
+            <li>Выбери шаблон: портал, рама, табуретка или ручная блочная сборка.</li>
+            <li>Добавляй прямые фермы, углы, узлы, базы и стойки из библиотеки.</li>
+            <li>Поворачивай и удаляй выбранные элементы через панель действий.</li>
+            <li>Следи за индикатором нагрузки и таблицами расчёта.</li>
+            <li>Для табуретки пустое поле количества ног включает автоопоры по текущему правилу пролётов.</li>
+          </ol>
+        </article>
+
+        <article class="feg-user-guide-card">
+          <h3>LED Экраны</h3>
+          <ol>
+            <li>Добавь одну или несколько LED конструкций.</li>
+            <li>Заполняй сетку кабинетами или используй готовые размеры.</li>
+            <li>Выбери режим установки: стоим, висим или оба режима.</li>
+            <li>Проверь кабинеты, Hanging Bar, ноги, кабели, мощность, пусковое потребление и вес.</li>
+            <li>Соотношение сторон считается отдельно для каждой конструкции.</li>
+          </ol>
+        </article>
+
+        <article class="feg-user-guide-card">
+          <h3>PDF и техлисты</h3>
+          <ol>
+            <li>После сборки нажми экспорт PDF в выбранном конструкторе.</li>
+            <li>PDF содержит сводку и схему текущей конфигурации.</li>
+            <li>Техлист нужен монтажной команде, складской лист — для подготовки комплекта.</li>
+            <li>Перед отправкой клиенту проверь размеры, стоимость, вес и выбранный режим установки.</li>
+          </ol>
+        </article>
+
+        <article class="feg-user-guide-card">
+          <h3>Тема, мобильный и desktop</h3>
+          <ol>
+            <li>Тёмная тема остаётся основной и резервной.</li>
+            <li>Светлая тема включается только вручную переключателем.</li>
+            <li>Мобильный режим работает до 767 px включительно.</li>
+            <li>Desktop и планшетный режим работают от 768 px без промежуточных breakpoint-скачков.</li>
+            <li>Масштаб конструктора регулируется кнопками, слайдером и auto-fit.</li>
+          </ol>
+        </article>
+      </section>
+
+      <section class="feg-user-guide-section">
+        <h3>Рекомендуемый порядок работы</h3>
+        <div class="feg-user-guide-flow">
+          <span>1. Выбрать конструктор</span>
+          <span>2. Собрать схему</span>
+          <span>3. Проверить размеры</span>
+          <span>4. Проверить вес и комплект</span>
+          <span>5. Сформировать PDF/техлист</span>
+          <span>6. Передать в смету или в работу</span>
+        </div>
+      </section>
+
+      <section class="feg-user-guide-section">
+        <h3>Что важно помнить</h3>
+        <ul class="feg-user-guide-notes">
+          <li>Быстрые конструкторы не списывают склад и не создают резервы.</li>
+          <li>Расчётная комплектация в standalone-режиме служит для быстрого планирования и подготовки КП.</li>
+          <li>Перед реальной отгрузкой нужно сверять комплект с фактическим складом, состоянием оборудования и проектными ограничениями.</li>
+          <li>Любые нестандартные подвесы, нагрузки, высоты, погодные условия и площадки требуют отдельной инженерной проверки.</li>
+        </ul>
+      </section>
+    `;
   }
 
   function selectCalculator(root, kind, options) {
@@ -795,6 +935,7 @@
     hydrateQuickDrafts,
     readQuickDraft,
     saveQuickDraft,
-    syncOpenQuickModalSections
+    syncOpenQuickModalSections,
+    openQuickUserGuide
   };
 })();

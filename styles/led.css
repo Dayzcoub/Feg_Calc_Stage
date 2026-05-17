@@ -52,7 +52,7 @@
   justify-content: space-between;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .v4-led-constructor,
   .v4-led-workbench,
   .v4-led-side-panel,
@@ -245,7 +245,7 @@
   --feg-led-active-color: rgba(103,232,249,.28);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .v4-led-active-indicator {
     min-height: 26px;
     padding: 6px 8px;

@@ -445,28 +445,29 @@
     root.innerHTML = `
       <div class="v4-structure-editor v4-structure-stage v4-stage-polish" data-v4-structure-stage>
         <div class="v4-stage-template-panel feg-control-panel">
-          <div class="v4-truss-template-head">
+          <div class="v4-truss-template-head v4-stage-template-head">
             <div class="v4-kicker">быстрое построение сцены</div>
-            <div class="v4-truss-mode-pill v4-stage-draw-pill" data-stage-draw-label>Клик / протяжка: добавить или удалить</div>
           </div>
           <div class="v4-stage-controls-layout">
-            <div class="v4-stage-control-stack v4-stage-control-stack--build feg-control-grid feg-control-grid--rows">
-              <label class="v4-field v4-field--deck">Тип настила<select data-stage-deck>${stageOptionHtml('deck', stageCatalog().deckVariants, input.deckKey || 'stage_deck_1200')}</select></label>
-              <label class="v4-field v4-field--support">Тип столбов<select data-stage-support>${stageOptionHtml('support', stageCatalog().supportVariants, initialSupportKey)}</select></label>
-              <div class="v4-stage-frame-auto-card v4-stage-frame-auto-card--compact">
-                <input type="hidden" data-stage-frame value="${attr(initialFrameKey)}">
-                <span>Перекладина</span>
-                <b data-stage-frame-label>${esc(stageFrameLabelForKey(initialFrameKey))}</b>
+            <div class="v4-stage-main-controls-card" data-stage-main-controls-card>
+              <div class="v4-stage-control-stack v4-stage-control-stack--build feg-control-grid feg-control-grid--rows">
+                <label class="v4-field v4-field--deck">Тип настила<select data-stage-deck>${stageOptionHtml('deck', stageCatalog().deckVariants, input.deckKey || 'stage_deck_1200')}</select></label>
+                <label class="v4-field v4-field--support">Тип столбов<select data-stage-support>${stageOptionHtml('support', stageCatalog().supportVariants, initialSupportKey)}</select></label>
+                <div class="v4-stage-frame-auto-card v4-stage-frame-auto-card--compact">
+                  <input type="hidden" data-stage-frame value="${attr(initialFrameKey)}">
+                  <span>Перекладина</span>
+                  <b data-stage-frame-label>${esc(stageFrameLabelForKey(initialFrameKey))}</b>
+                </div>
               </div>
-            </div>
-            <div class="v4-stage-control-stack v4-stage-control-stack--dimensions feg-control-grid feg-control-grid--3">
-              <label class="v4-field v4-field--width">Ширина, мод.<input data-stage-preset="w" type="number" min="1" step="1" value="${attr(input.widthModules || 4)}"></label>
-              <label class="v4-field v4-field--depth">Глубина, мод.<input data-stage-preset="d" type="number" min="1" step="1" value="${attr(input.depthModules || 3)}"></label>
-              <label class="v4-field v4-field--height">Высота сцены, м<input data-stage-height type="number" min="0" step="0.1" value="${attr(initialHeightM)}"><small data-stage-height-default-note>${esc(stageHeightDefaultText(initialSupportKey))}</small></label>
-            </div>
-            <div class="v4-stage-control-stack v4-stage-control-stack--closure feg-control-grid feg-control-grid--2">
-              <label class="v4-stage-check v4-stage-check--edge"><input data-stage-edge-enabled type="checkbox"${opts.input && opts.input.edgeClosureEnabled ? ' checked' : ''}> Включить закрытие торцов</label>
-              <label class="v4-field v4-field--edge-type"><span class="v4-field-label">Тип закрытия торцов</span><select data-stage-edge-type>${stageOptionHtml('edge', stageCatalog().edgeClosureVariants, opts.input && opts.input.edgeClosureType || 'fabric_skirt')}</select></label>
+              <div class="v4-stage-control-stack v4-stage-control-stack--dimensions feg-control-grid feg-control-grid--3">
+                <label class="v4-field v4-field--width">Ширина, мод.<input data-stage-preset="w" type="number" min="1" step="1" value="${attr(input.widthModules || 4)}"></label>
+                <label class="v4-field v4-field--depth">Глубина, мод.<input data-stage-preset="d" type="number" min="1" step="1" value="${attr(input.depthModules || 3)}"></label>
+                <label class="v4-field v4-field--height">Высота сцены, м<input data-stage-height type="number" min="0" step="0.1" value="${attr(initialHeightM)}"><small data-stage-height-default-note>${esc(stageHeightDefaultText(initialSupportKey))}</small></label>
+              </div>
+              <div class="v4-stage-control-stack v4-stage-control-stack--closure feg-control-grid feg-control-grid--2">
+                <label class="v4-stage-check v4-stage-check--edge"><input data-stage-edge-enabled type="checkbox"${opts.input && opts.input.edgeClosureEnabled ? ' checked' : ''}> Включить закрытие торцов</label>
+                <label class="v4-field v4-field--edge-type"><span class="v4-field-label">Тип закрытия торцов</span><select data-stage-edge-type>${stageOptionHtml('edge', stageCatalog().edgeClosureVariants, opts.input && opts.input.edgeClosureType || 'fabric_skirt')}</select></label>
+              </div>
             </div>
             ${renderQuickStagePricingControls(input, opts)}
           </div>
@@ -573,7 +574,7 @@
 
   function isStagePreDesktopLayout() {
     if (typeof window === 'undefined' || !window.matchMedia) return false;
-    return window.matchMedia('(max-width: 1179px)').matches;
+    return window.matchMedia('(max-width: 767px)').matches;
   }
 
   function syncStageResponsiveToolOrder(root) {
@@ -642,7 +643,7 @@
       if (reason === 'manual' && current !== 100) { state.zoom = 100; return true; }
       return false;
     }
-    const isMobileStageViewport = typeof window !== 'undefined' && window.innerWidth <= 768;
+    const isMobileStageViewport = typeof window !== 'undefined' && window.innerWidth <= 767;
     const availableW = Math.max(isMobileStageViewport ? 180 : 260, Math.floor(num(wrap && wrap.clientWidth, 760) - 28));
     const availableH = Math.max(isMobileStageViewport ? 150 : 240, Math.floor(num(wrap && wrap.clientHeight, 520) - 28));
     const contentW = Math.max(1, (Number(content.columns || 1) + 3) * basePx);
@@ -1220,7 +1221,12 @@
           const icon = v4Icons[spec.id] || spec.icon || '□';
           const title = spec.label || spec.short || spec.id;
           const isSelected = state.selected === spec.id;
-          return `<button type="button" class="${isSelected ? 'active is-active' : ''}" data-kind="${attr(spec.kind || '')}" data-truss-type="${attr(spec.id)}" title="${attr(title)}" aria-label="${attr(title)}" aria-pressed="${isSelected ? 'true' : 'false'}"><span class="v4-truss-btn-icon">${esc(icon)}</span></button>`;
+          const isStraight = /^truss/.test(spec.id || '');
+          const straightLabel = isStraight ? String(icon).replace(/^▰\s*/, '') : '';
+          const iconHtml = isStraight
+            ? `<span class="v4-truss-btn-icon v4-truss-btn-icon--straight"><span class="v4-truss-btn-glyph">▰</span><span class="v4-truss-btn-meter">${esc(straightLabel)}</span></span>`
+            : `<span class="v4-truss-btn-icon">${esc(icon)}</span>`;
+          return `<button type="button" class="${isSelected ? 'active is-active' : ''}" data-kind="${attr(spec.kind || '')}" data-truss-type="${attr(spec.id)}" title="${attr(title)}" aria-label="${attr(title)}" aria-pressed="${isSelected ? 'true' : 'false'}">${iconHtml}</button>`;
         }).join('')}</div>
       </details>`;
     }).join('');
@@ -1822,9 +1828,13 @@
       const reqX = requiredInternalCount(widthM);
       const reqY = requiredInternalCount(depthM);
       if (targetLegs <= 0) {
+        // v3.1.56: automatic stool supports must keep every top-frame span within maxSpanM.
+        // Each internal coordinate is mirrored on both opposite sides of the stool frame:
+        // 12 m width -> 1 internal X pair -> 2 additional legs;
+        // 24 m width -> 2 internal X pairs -> 4 additional legs.
         return {
-          xInternal:widthM > maxSpanM ? 1 : 0,
-          yInternal:depthM > maxSpanM ? 1 : 0,
+          xInternal:reqX,
+          yInternal:reqY,
           singleAxis:null,
           reqX,
           reqY,
@@ -1975,7 +1985,14 @@
     });
     state.templateWarnings = [];
     cornerPick.warnings.forEach(w => addTemplateWarning(state, w.text));
-    if (supportPoints.length > 4) addTemplateWarning(state, `Табуретка: добавлены дополнительные опоры с базами: ${supportPoints.length - 4} шт.`);
+    if (supportPoints.length > 4) {
+      const extraLegs = supportPoints.length - 4;
+      const autoSpanNote = requestedLegCount <= 0 ? ` Авто-правило: не более ${metric(maxSpanM, 0)} м между опорами.` : '';
+      addTemplateWarning(state, `Табуретка: добавлены дополнительные опоры с базами: ${extraLegs} шт.${autoSpanNote}`);
+    }
+    if (requestedLegCount <= 0) {
+      addTemplateWarning(state, `Авто-распределение ног: пролёты по X ≈ ${metric(maxGapMeters(xInternalCoords, startX, rightX), 2)} м, по Y ≈ ${metric(maxGapMeters(yInternalCoords, startY, bottomY), 2)} м.`);
+    }
     if (requestedLegCount > 0) {
       addTemplateWarning(state, `Ручной расчёт табуретки: задано ${supportPoints.length} ног, каждая получает стойку и базу.`);
       if (!allocation.enough) addTemplateWarning(state, `Внимание: ${targetLegs} ног недостаточно, чтобы гарантировать пролёты не больше 9 м по ширине/глубине. Увеличь количество ног минимум до ${4 + 2 * (allocation.reqX + allocation.reqY)}.`);
@@ -1984,7 +2001,7 @@
     addTemplateWarning(state, `Табуретка: U017 для дополнительных ног врезается в раму и разрывает прямую ферму, а не накладывается сверху.`);
     addTemplateWarning(state, `Стойки ${supportPoints.length}: прямая нога ${metric(legStraightHeightM, 2)} м + верхний узел ${metric(topNodeHeightM, 2)} м = общая высота ${metric(heightM, 2)} м.`);
     addTemplateWarning(state, `Основной 3D-угол табуретки: U012 500×500×500 мм. Если используется замена по наличию, общий габарит может увеличиться.`);
-    setTrussGeometryState(state, { mode:'3d', is3d:true, source:'stool-template', widthM, depthM, heightM, legStraightHeightM, topNodeHeightM, usesU012:true, usesTJoints:supportPoints.length > 4, supportPoints:supportPoints.length, requestedLegCount, stoolSupportLayout:{ xTop:xTopCoords.length, xBottom:xBottomCoords.length, yLeft:yLeftCoords.length, yRight:yRightCoords.length, manual:requestedLegCount > 0, maxSpanM } });
+    setTrussGeometryState(state, { mode:'3d', is3d:true, source:'stool-template', widthM, depthM, heightM, legStraightHeightM, topNodeHeightM, usesU012:true, usesTJoints:supportPoints.length > 4, supportPoints:supportPoints.length, requestedLegCount, stoolSupportLayout:{ xTop:xTopCoords.length, xBottom:xBottomCoords.length, yLeft:yLeftCoords.length, yRight:yRightCoords.length, manual:requestedLegCount > 0, maxSpanM, autoRuleVersion:'v3.1.56-max-9m-spans', requiredInternalX:allocation.reqX, requiredInternalY:allocation.reqY, maxGapX:maxGapMeters(xInternalCoords, startX, rightX), maxGapY:maxGapMeters(yInternalCoords, startY, bottomY) } });
     const normalized = truss.normalizeItems ? truss.normalizeItems(items, specs) : items;
     state.items = state.items.concat(normalized);
     state.cols = Math.max(state.cols || 18, rightX + 3, pairStartX + legPairGroups.length * pairGap + 2);
@@ -2278,21 +2295,25 @@
     const spanInfo = res.spanInfo || (res.loadCheck && res.loadCheck.spanInfo) || {};
     const box = root.querySelector('[data-truss-summary]');
     if (box) box.innerHTML = `
-      <div class="v4-summary-grid">
-        <div class="v4-mini"><b>${metric(res.totalMeters, 1)} м</b><span>Прямые фермы</span></div>
-        <div class="v4-mini"><b>${metric(spanInfo.maxEffective || 0, 1)} м</b><span>Расчётный пролёт с U</span></div>
-        <div class="v4-mini"><b>${metric(res.physicalBounds && res.physicalBounds.width || 0, 2)}×${metric(res.physicalBounds && res.physicalBounds.height || 0, 2)} м</b><span>${res.dimensionSource === 'stool-top-frame' ? 'Габарит верхней рамы' : 'Габарит с T/X узлами'}</span></div>
-        <div class="v4-mini"><b>${esc(res.nodePieces || 0)}</b><span>Узлы / углы</span></div>
-        <div class="v4-mini"><b>${esc(res.baseCount || 0)}</b><span>Базы TRS-930</span></div>
-        <div class="v4-mini"><b>${esc(res.connectionCount || 0)}</b><span>Стыки C2-88 авто</span></div>
-        <div class="v4-mini"><b>${weight(section.weightKg || res.weight)}</b><span>Вес</span></div>
-        ${renderQuickPricingCards(quickPricing)}
+      <div class="v4-truss-summary-metrics">
+        <div class="v4-summary-grid">
+          <div class="v4-mini"><b>${metric(res.totalMeters, 1)} м</b><span>Прямые фермы</span></div>
+          <div class="v4-mini"><b>${metric(spanInfo.maxEffective || 0, 1)} м</b><span>Расчётный пролёт с U</span></div>
+          <div class="v4-mini"><b>${metric(res.physicalBounds && res.physicalBounds.width || 0, 2)}×${metric(res.physicalBounds && res.physicalBounds.height || 0, 2)} м</b><span>${res.dimensionSource === 'stool-top-frame' ? 'Габарит верхней рамы' : 'Габарит с T/X узлами'}</span></div>
+          <div class="v4-mini"><b>${esc(res.nodePieces || 0)}</b><span>Узлы / углы</span></div>
+          <div class="v4-mini"><b>${esc(res.baseCount || 0)}</b><span>Базы TRS-930</span></div>
+          <div class="v4-mini"><b>${esc(res.connectionCount || 0)}</b><span>Стыки C2-88 авто</span></div>
+          <div class="v4-mini"><b>${weight(section.weightKg || res.weight)}</b><span>Вес</span></div>
+          ${renderQuickPricingCards(quickPricing)}
+        </div>
       </div>
-      ${Array.isArray(state.templateWarnings) && state.templateWarnings.length ? `<div class="v4-note v4-truss-template-warnings"><b>Предупреждения шаблона</b><br>${state.templateWarnings.map(w => `• ${esc(w)}`).join('<br>')}</div>` : ''}
-      ${renderTrussFinalKitTable(section, state)}
-      ${renderQuickPricingTable(quickPricing)}
-      ${ctx.options && ctx.options.mode === 'quote' ? renderTrussSubrentNeeds(section, state) : (ROOT.QuickPdfExport && ROOT.QuickPdfExport.renderActionHtml ? ROOT.QuickPdfExport.renderActionHtml('truss') : '')}
-      <div class="v4-note">${esc(section.summary || 'Фермы готовы к сохранению.')} · Детальная проверка нагрузок открывается через индикатор сверху.</div>`;
+      <div class="v4-truss-summary-details">
+        ${Array.isArray(state.templateWarnings) && state.templateWarnings.length ? `<div class="v4-note v4-truss-template-warnings"><b>Предупреждения шаблона</b><br>${state.templateWarnings.map(w => `• ${esc(w)}`).join('<br>')}</div>` : ''}
+        ${renderTrussFinalKitTable(section, state)}
+        ${renderQuickPricingTable(quickPricing)}
+        ${ctx.options && ctx.options.mode === 'quote' ? renderTrussSubrentNeeds(section, state) : (ROOT.QuickPdfExport && ROOT.QuickPdfExport.renderActionHtml ? ROOT.QuickPdfExport.renderActionHtml('truss') : '')}
+        <div class="v4-note">${esc(section.summary || 'Фермы готовы к сохранению.')} · Детальная проверка нагрузок открывается через индикатор сверху.</div>
+      </div>`;
     if (ROOT.QuickPdfExport && ROOT.QuickPdfExport.bindAction) {
       ROOT.QuickPdfExport.bindAction(box, { kind:'truss', title:'Быстрый технический расчёт ферм', getSection:() => readTrussSection(root) });
     }

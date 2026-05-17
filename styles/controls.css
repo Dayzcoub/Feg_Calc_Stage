@@ -222,7 +222,7 @@ label:has(input[type="checkbox"]) {
 }
 
 /* Mobile: keep labels readable and controls dense. */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   :root {
     --feg-control-height: var(--feg-control-height-mobile);
     --feg-control-label-w: 72px;
@@ -520,7 +520,7 @@ input[type="checkbox"] {
   text-overflow: ellipsis !important;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   :root {
     --feg-control-label-size: 8.5px;
     --feg-control-value-size: 10.5px;
@@ -614,7 +614,7 @@ input[type="checkbox"] {
 /* v3.1.9 — shared mobile control grouping pass.
    Rule preserved: typography, grid rhythm and control rows are defined in shared style files,
    not as inline screen hacks. */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   :root {
     --feg-control-label-size: 8px;
     --feg-control-value-size: 10px;
@@ -909,7 +909,7 @@ input[type="checkbox"] {
 /* v3.1.10 — shared Stage mobile flow grid.
    This is a structural shared controls pass, not per-widget patching:
    it normalizes Stage mobile controls through global control classes and shared stage classes. */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   :root {
     --feg-stage-m-gap: 7px;
     --feg-stage-m-line: rgba(255,255,255,0.10);
@@ -1278,7 +1278,7 @@ input[type="checkbox"] {
 
 /* v3.1.11 — authoritative Stage mobile controls polish.
    Kept in the shared controls layer: no inline style patches and no per-element runtime hacks. */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   body.v4-only-body.quick-standalone-body .v4-structure-stage {
     gap: 8px !important;
   }

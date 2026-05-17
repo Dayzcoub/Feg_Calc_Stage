@@ -173,7 +173,7 @@
   max-width: 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .v4-quick-modal-backdrop {
     padding: 0 !important;
     align-items: stretch !important;

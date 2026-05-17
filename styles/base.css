@@ -5,7 +5,7 @@ body {
   background: var(--feg-bg) !important;
   color: var(--feg-text) !important;
   font-family: var(--feg-font) !important;
-  color-scheme: dark !important;
+  color-scheme: var(--feg-color-scheme, dark) !important;
 }
 
 body,
@@ -38,7 +38,7 @@ body.v4-only-body {
 
 ::selection { background: rgba(243,198,78,0.30); color: var(--feg-text); }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   html,
   body {
     width: 100%;

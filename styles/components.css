@@ -232,7 +232,7 @@ table td {
   color: var(--feg-text) !important;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .v4-table-wrap table,
   .feg-table-wrap table,
   .table-wrap table,
@@ -362,7 +362,7 @@ table td {
   font-weight: 600;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .v4-structure-toolbar,
   .v4-led-grid-head,
   .v4-truss-template-head,

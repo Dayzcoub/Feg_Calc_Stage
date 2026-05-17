@@ -81,7 +81,7 @@
   padding: 10px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .v4-structure-truss,
   .v4-truss-template-panel,
   .v4-truss-layout,

@@ -901,26 +901,30 @@
     const summary = calc.summarizeLed(result);
     const rows = section && Array.isArray(section.bomRows) ? section.bomRows : calc.buildLedBomRows(result);
     box.innerHTML = `
-      <div class="v4-summary-grid">
-        <div class="v4-mini"><b>Фактический габарит</b><span>${escapeHtml(summary.actualSize)}</span><small>${escapeHtml(summary.cabinets)}</small></div>
-        <div class="v4-mini"><b>Конструкции</b><span>${formatNumber(summary.constructionCount || 0, 0)} шт</span><small>каждая считается отдельно</small></div>
-        <div class="v4-mini"><b>Пиксели</b><span>${escapeHtml(summary.pixelSize)}</span><small>${escapeHtml(summary.cabinetPixelSize)}</small></div>
-        <div class="v4-mini"><b>Вес / мощность</b><span>${formatNumber(summary.weightKg, 1)} кг · ${formatNumber(summary.powerKw, 2)} кВт</span><small>пуск: ${formatNumber(summary.startupPowerKw, 2)} кВт</small></div>
-        ${renderQuickPricingCard(section && section.quickPricing)}
-        <div class="v4-mini"><b>Монтаж / ноги / Hanging Bar</b><span>${escapeHtml(summary.mountMode)} · ${result.legCount} ног · ${summary.hangingBars || 0} HB</span><small>${escapeHtml(result.legType.name)} · печеньки: ${summary.brackets} · М8×60: ${summary.bolts} · М8×20: ${summary.m8x20Bolts || 0} · Спанцет/шакл: ${summary.spansetCount || 0}/${summary.shackleCount || 0}</small></div>
-        <div class="v4-mini"><b>Кабели</b><span>PowerCON–Schuko: ${summary.powerconSchukoCables}</span><small>220В: ${summary.powerLinks} · RJ45: ${summary.rj45Links}</small></div>
-        <div class="v4-mini ok"><b>${section && section.readyFor && section.readyFor.bomContract ? 'READY' : 'BOM'}</b><span>LED → общий BOM</span><small>${rows.length} строк · contract-ready</small></div>
+      <div class="v4-led-summary-metrics">
+        <div class="v4-summary-grid">
+          <div class="v4-mini"><b>${escapeHtml(summary.actualSize)}</b><span>Фактический габарит</span><small>${escapeHtml(summary.cabinets)}</small></div>
+          <div class="v4-mini"><b>${formatNumber(summary.constructionCount || 0, 0)} шт</b><span>Конструкции</span><small>каждая считается отдельно</small></div>
+          <div class="v4-mini"><b>${escapeHtml(summary.pixelSize)}</b><span>Пиксели</span><small>${escapeHtml(summary.cabinetPixelSize)}</small></div>
+          <div class="v4-mini"><b>${formatNumber(summary.weightKg, 1)} кг · ${formatNumber(summary.powerKw, 2)} кВт</b><span>Вес / мощность</span><small>пуск: ${formatNumber(summary.startupPowerKw, 2)} кВт</small></div>
+          ${renderQuickPricingCard(section && section.quickPricing)}
+          <div class="v4-mini"><b>${escapeHtml(summary.mountMode)} · ${result.legCount} ног · ${summary.hangingBars || 0} HB</b><span>Монтаж / ноги / Hanging Bar</span><small>${escapeHtml(result.legType.name)} · печеньки: ${summary.brackets} · М8×60: ${summary.bolts} · М8×20: ${summary.m8x20Bolts || 0} · Спанцет/шакл: ${summary.spansetCount || 0}/${summary.shackleCount || 0}</small></div>
+          <div class="v4-mini"><b>PowerCON–Schuko: ${summary.powerconSchukoCables}</b><span>Кабели</span><small>220В: ${summary.powerLinks} · RJ45: ${summary.rj45Links}</small></div>
+          <div class="v4-mini ok"><b>${section && section.readyFor && section.readyFor.bomContract ? 'READY' : 'BOM'}</b><span>LED → общий BOM</span><small>${rows.length} строк · contract-ready</small></div>
+        </div>
       </div>
-      ${renderConstructionReport(result)}
-      ${renderQuickPricingTable(section && section.quickPricing)}
-      <div class="v4-table-wrap">
-        <table class="v4-table">
-          <thead><tr><th>Позиция</th><th>Кол-во</th><th>Вес</th><th>Мощность</th><th>Пуск</th><th>Примечание</th></tr></thead>
-          <tbody>${rows.map(row => `<tr><td><b>${escapeHtml(row.name)}</b><br><span class="v4-muted">${escapeHtml(row.code)}</span></td><td>${formatNumber(row.qty, 0)} ${escapeHtml(row.unit)}</td><td>${formatNumber(row.weightKg, 1)} кг</td><td>${row.powerW ? formatNumber(row.powerW / 1000, 2) + ' кВт' : '—'}</td><td>${row.startupPowerW ? formatNumber(row.startupPowerW / 1000, 2) + ' кВт' : '—'}</td><td>${escapeHtml(row.note)}</td></tr>`).join('')}</tbody>
-        </table>
-      </div>
-      ${input && input.catalogMode === 'quote' ? '' : (ROOT.QuickPdfExport && ROOT.QuickPdfExport.renderActionHtml ? ROOT.QuickPdfExport.renderActionHtml('led') : '')}
-      <div data-led-export></div>`;
+      <div class="v4-led-summary-details">
+        ${renderConstructionReport(result)}
+        ${renderQuickPricingTable(section && section.quickPricing)}
+        <div class="v4-table-wrap">
+          <table class="v4-table">
+            <thead><tr><th>Позиция</th><th>Кол-во</th><th>Вес</th><th>Мощность</th><th>Пуск</th><th>Примечание</th></tr></thead>
+            <tbody>${rows.map(row => `<tr><td><b>${escapeHtml(row.name)}</b><br><span class="v4-muted">${escapeHtml(row.code)}</span></td><td>${formatNumber(row.qty, 0)} ${escapeHtml(row.unit)}</td><td>${formatNumber(row.weightKg, 1)} кг</td><td>${row.powerW ? formatNumber(row.powerW / 1000, 2) + ' кВт' : '—'}</td><td>${row.startupPowerW ? formatNumber(row.startupPowerW / 1000, 2) + ' кВт' : '—'}</td><td>${escapeHtml(row.note)}</td></tr>`).join('')}</tbody>
+          </table>
+        </div>
+        ${input && input.catalogMode === 'quote' ? '' : (ROOT.QuickPdfExport && ROOT.QuickPdfExport.renderActionHtml ? ROOT.QuickPdfExport.renderActionHtml('led') : '')}
+        <div data-led-export></div>
+      </div>`;
 
     if (ROOT.QuickPdfExport && ROOT.QuickPdfExport.bindAction && (!input || input.catalogMode !== 'quote')) {
       ROOT.QuickPdfExport.bindAction(box, { kind:'led', title:'Быстрый технический расчёт LED-экрана', getSection:() => getLedSection(root) });

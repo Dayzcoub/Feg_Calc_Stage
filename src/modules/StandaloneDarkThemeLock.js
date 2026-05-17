@@ -3,10 +3,10 @@
 
   const STYLE_ID = 'feg-standalone-dark-theme-lock-v3';
   const css = `
-/* FEG Stage PRO 3.0 standalone desktop Safari dark theme lock.
-   Purpose: standalone quick constructors must stay in the same dark V4 palette
-   on every browser, even if Safari has an old localStorage appTheme=light value. */
-html[data-app-theme="light"], html[data-app-theme="dark"] {
+/* FEG Stage PRO v3.1.58 standalone dark palette guard.
+   It preserves the current dark baseline by default, but no longer blocks a
+   future light theme when the explicit light-theme feature gate is enabled. */
+html[data-app-theme="dark"] {
   color-scheme: dark !important;
   background:#08090a !important;
 }
@@ -227,33 +227,82 @@ body.v4-only-body.quick-standalone-body ::selection {
 `;
 
   let applying = false;
+  let lastAppliedTheme = null;
 
-  function persistDarkPreference() {
-    try { window.localStorage.setItem('appTheme', 'dark'); } catch (err) {}
+  function isLightThemeEnabled() {
+    try {
+      if (window.FEG_ENABLE_LIGHT_THEME === true) return true;
+      if (window.localStorage && window.localStorage.getItem('fegLightThemeEnabled') === '1') return true;
+    } catch (err) {}
+    return !!(document.documentElement && document.documentElement.getAttribute('data-feg-light-theme-enabled') === 'true');
   }
 
-  function forceDarkClasses() {
+  function resolveTheme() {
+    try {
+      const settings = window.FEGModules && window.FEGModules.AppSettings;
+      if (settings && typeof settings.loadAppTheme === 'function') return settings.loadAppTheme();
+      const saved = window.localStorage && window.localStorage.getItem('appTheme');
+      return saved === 'light' && isLightThemeEnabled() ? 'light' : 'dark';
+    } catch (err) {
+      return 'dark';
+    }
+  }
+
+  function persistThemePreference(theme) {
+    try { window.localStorage.setItem('appTheme', theme === 'light' ? 'light' : 'dark'); } catch (err) {}
+  }
+
+  function currentThemeMatches(theme) {
+    const doc = document;
+    if (!doc || !doc.body || !doc.documentElement) return false;
+    const normalized = theme === 'light' && isLightThemeEnabled() ? 'light' : 'dark';
+    return doc.documentElement.getAttribute('data-app-theme') === normalized
+      && doc.body.getAttribute('data-app-theme') === normalized
+      && doc.documentElement.classList.contains(normalized === 'light' ? 'theme-light' : 'theme-dark')
+      && doc.body.classList.contains(normalized === 'light' ? 'theme-light' : 'theme-dark')
+      && String(doc.documentElement.style.colorScheme || '').toLowerCase() === (normalized === 'light' ? 'light' : 'dark')
+      && String(doc.body.style.colorScheme || '').toLowerCase() === (normalized === 'light' ? 'light' : 'dark');
+  }
+
+  function applyThemeClasses(theme) {
     const doc = document;
     if (!doc || !doc.body || !doc.documentElement) return;
+    const normalized = theme === 'light' && isLightThemeEnabled() ? 'light' : 'dark';
+    if (lastAppliedTheme === normalized && currentThemeMatches(normalized)) return;
     applying = true;
-    doc.body.classList.remove('theme-light');
-    doc.body.classList.add('theme-dark');
-    doc.body.setAttribute('data-app-theme', 'dark');
-    doc.documentElement.setAttribute('data-app-theme', 'dark');
-    doc.documentElement.style.colorScheme = 'dark';
+    doc.body.classList.toggle('theme-light', normalized === 'light');
+    doc.body.classList.toggle('theme-dark', normalized === 'dark');
+    if (doc.body.getAttribute('data-app-theme') !== normalized) doc.body.setAttribute('data-app-theme', normalized);
+    doc.documentElement.classList.toggle('theme-light', normalized === 'light');
+    doc.documentElement.classList.toggle('theme-dark', normalized === 'dark');
+    if (doc.documentElement.getAttribute('data-app-theme') !== normalized) doc.documentElement.setAttribute('data-app-theme', normalized);
+    const scheme = normalized === 'light' ? 'light' : 'dark';
+    if (String(doc.documentElement.style.colorScheme || '').toLowerCase() !== scheme) doc.documentElement.style.colorScheme = scheme;
+    if (String(doc.body.style.colorScheme || '').toLowerCase() !== scheme) doc.body.style.colorScheme = scheme;
     const metaTheme = doc.querySelector('meta[name="theme-color"]');
-    if (metaTheme) metaTheme.setAttribute('content', '#0f1011');
+    const metaColor = normalized === 'light' ? '#f4f6f4' : '#0f1011';
+    if (metaTheme && metaTheme.getAttribute('content') !== metaColor) metaTheme.setAttribute('content', metaColor);
+    lastAppliedTheme = normalized;
     applying = false;
   }
 
-  function injectStyle() {
+  function removeStyle() {
+    const style = document.getElementById(STYLE_ID);
+    if (style && style.parentNode) style.parentNode.removeChild(style);
+  }
+
+  function injectStyle(theme) {
+    if (theme === 'light') {
+      removeStyle();
+      return;
+    }
     let style = document.getElementById(STYLE_ID);
     const parent = document.body || document.documentElement;
     if (!parent) return;
     if (!style) {
       style = document.createElement('style');
       style.id = STYLE_ID;
-      style.setAttribute('data-feg-version', '3.0.1-safari-desktop-dark-lock');
+      style.setAttribute('data-feg-version', '3.1.58-standalone-theme-guard-safe');
       style.textContent = css;
       parent.appendChild(style);
     } else if (style.textContent !== css) {
@@ -263,9 +312,11 @@ body.v4-only-body.quick-standalone-body ::selection {
   }
 
   function apply() {
-    persistDarkPreference();
-    forceDarkClasses();
-    injectStyle();
+    const theme = resolveTheme();
+    persistThemePreference(theme);
+    applyThemeClasses(theme);
+    injectStyle(theme);
+    lastAppliedTheme = theme === 'light' && isLightThemeEnabled() ? 'light' : 'dark';
   }
 
   apply();
@@ -278,24 +329,14 @@ body.v4-only-body.quick-standalone-body ::selection {
   setTimeout(apply, 250);
   setTimeout(apply, 1000);
 
-  if (window.MutationObserver) {
-    const startObserver = function () {
-      if (!document.body) return;
-      const observer = new MutationObserver(function () {
-        if (applying) return;
-        if (document.body.classList.contains('theme-light') || document.documentElement.getAttribute('data-app-theme') === 'light') {
-          apply();
-        }
-      });
-      observer.observe(document.body, { attributes: true, attributeFilter: ['class', 'data-app-theme'] });
-      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-app-theme', 'style'] });
-    };
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startObserver, { once: true });
-    else startObserver();
-  }
+  /* v3.1.58: no MutationObserver here. The v3.1.57 observer could loop on
+     startup when theme/style attributes were rewritten by adjacent runtime layers.
+     Startup safety wins; explicit theme/runtime calls can still use refresh(). */
 
   window.FEG_STANDALONE_DARK_THEME_LOCK = {
-    version: '3.0.1-safari-desktop-dark-lock',
-    refresh: apply
+    version: '3.1.58-standalone-theme-guard-safe',
+    refresh: apply,
+    resolveTheme,
+    isLightThemeEnabled
   };
 })();

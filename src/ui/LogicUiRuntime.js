@@ -2,7 +2,7 @@
   'use strict';
   const ROOT = (window.FEGModules = window.FEGModules || {});
   const UI = (ROOT.LogicUiRuntime = ROOT.LogicUiRuntime || {});
-  const VERSION = '3.1.13-pre-desktop-responsive-usability';
+  const VERSION = '3.1.54-tablet-desktop-surface-lock';
 
   function injectLayoutFixCss() {
     if (document.getElementById('feg-v312-pre-desktop-responsive-usability')) return;
@@ -40,6 +40,62 @@
         max-height:none !important;
         overflow:visible !important;
       }
+      @media (min-width:768px) {
+        html, body {
+          overflow-x:hidden !important;
+          overflow-y:auto !important;
+          overscroll-behavior-y:auto !important;
+          scroll-behavior:auto !important;
+        }
+        body.v4-only-body.quick-standalone-body,
+        body.v4-only-body.quick-standalone-body.quick-standalone-ready {
+          overflow-x:hidden !important;
+          overflow-y:auto !important;
+          overscroll-behavior-y:auto !important;
+          scroll-behavior:auto !important;
+        }
+        body.v4-only-body.quick-standalone-body #quickStandalonePage,
+        body.v4-only-body.quick-standalone-body .standalone-window,
+        body.v4-only-body.quick-standalone-body .standalone-body,
+        body.v4-only-body.quick-standalone-body .standalone-main,
+        body.v4-only-body.quick-standalone-body #quickStandaloneMount,
+        body.v4-only-body.quick-standalone-body .standalone-mount,
+        body.v4-only-body.quick-standalone-body .feg-dashboard,
+        body.v4-only-body.quick-standalone-body .feg-workspace-shell,
+        body.v4-only-body.quick-standalone-body .feg-workspace-stage,
+        body.v4-only-body.quick-standalone-body .feg-workspace-body {
+          max-height:none !important;
+          overflow:visible !important;
+          overscroll-behavior-y:auto !important;
+        }
+      }
+      @media (min-width:768px) and (max-width:1179px) {
+        html, body,
+        body.v4-only-body.quick-standalone-body,
+        body.v4-only-body.quick-standalone-body.quick-standalone-ready {
+          overflow-x:auto !important;
+          overflow-y:auto !important;
+        }
+        body.v4-only-body.quick-standalone-body #quickStandalonePage,
+        body.v4-only-body.quick-standalone-body .standalone-window,
+        body.v4-only-body.quick-standalone-body .standalone-body,
+        body.v4-only-body.quick-standalone-body .standalone-main,
+        body.v4-only-body.quick-standalone-body #quickStandaloneMount,
+        body.v4-only-body.quick-standalone-body .standalone-mount,
+        body.v4-only-body.quick-standalone-body .feg-dashboard,
+        body.v4-only-body.quick-standalone-body .feg-workspace-shell,
+        body.v4-only-body.quick-standalone-body .feg-workspace-stage,
+        body.v4-only-body.quick-standalone-body .feg-workspace-body {
+          min-width:1280px !important;
+          max-width:none !important;
+        }
+        body.v4-only-body.quick-standalone-body .standalone-window,
+        body.v4-only-body.quick-standalone-body .standalone-main {
+          width:1280px !important;
+          max-width:none !important;
+          box-sizing:border-box !important;
+        }
+      }
       @media (max-width:767px) {
         body.v4-only-body.quick-standalone-body #quickStandalonePage {
           overflow-y:auto !important;
@@ -61,7 +117,7 @@
 
   function unlockMobilePageScroll() {
     const apply = () => {
-      const isMobile = window.innerWidth <= 768;
+      const isMobile = window.innerWidth <= 767;
       document.documentElement.style.overflowY = 'auto';
       document.documentElement.style.height = 'auto';
       if (document.body) {
@@ -98,16 +154,34 @@
     window.addEventListener('orientationchange', apply, { passive: true });
   }
 
+  function syncAppThemeRuntime() {
+    const settings = window.FEGModules && window.FEGModules.AppSettings;
+    const theme = settings && typeof settings.loadAppTheme === 'function'
+      ? settings.loadAppTheme()
+      : 'dark';
+    if (settings && typeof settings.applyAppTheme === 'function') {
+      settings.applyAppTheme(theme);
+      return theme;
+    }
+    const normalized = theme === 'light' ? 'light' : 'dark';
+    document.documentElement.classList.toggle('theme-light', normalized === 'light');
+    document.documentElement.classList.toggle('theme-dark', normalized === 'dark');
+    if (document.body) {
+      document.body.classList.toggle('theme-light', normalized === 'light');
+      document.body.classList.toggle('theme-dark', normalized === 'dark');
+      document.body.setAttribute('data-app-theme', normalized);
+      document.body.style.colorScheme = normalized === 'light' ? 'light' : 'dark';
+    }
+    document.documentElement.setAttribute('data-app-theme', normalized);
+    document.documentElement.style.colorScheme = normalized === 'light' ? 'light' : 'dark';
+    return normalized;
+  }
+
   function lockDarkTheme() {
-    try {
-      if (localStorage.getItem('appTheme') === 'light') localStorage.setItem('appTheme', 'dark');
-      localStorage.setItem('appTheme', 'dark');
-    } catch (_) {}
-    document.documentElement.classList.remove('theme-light');
-    document.body && document.body.classList.remove('theme-light');
-    document.documentElement.setAttribute('data-app-theme', 'dark');
-    document.documentElement.style.colorScheme = 'dark';
-    if (document.body) document.body.style.colorScheme = 'dark';
+    /* Backward-compatible public API name. v3.1.58 no longer hard-locks dark;
+       it syncs the current allowed app theme. Light remains disabled until the
+       explicit light-theme feature gate is enabled. */
+    return syncAppThemeRuntime();
   }
 
   function syncStageEdgeClosure(root) {
@@ -152,51 +226,16 @@
 
 
   function enableDesktopWheelScrollBridge() {
+    /* v3.1.52: the previous desktop wheel bridge listened to every wheel event
+       in capture mode with passive:false, then manually called window.scrollBy().
+       That helped earlier locked layouts, but after the page-scroll rebuild it
+       fights native browser momentum and makes desktop scrolling feel slow/jumpy.
+       Desktop now uses native page scrolling; keep the function as a no-op so
+       older boot code or external calls do not re-install the heavy listener. */
     if (window.__fegDesktopWheelScrollBridge) return;
-    window.__fegDesktopWheelScrollBridge = true;
-    const getScrollableParent = (start) => {
-      let el = start && start.nodeType === 1 ? start : start && start.parentElement;
-      while (el && el !== document.body && el !== document.documentElement) {
-        const st = window.getComputedStyle(el);
-        const canScrollY = /(auto|scroll)/.test(st.overflowY) && el.scrollHeight > el.clientHeight + 2;
-        if (canScrollY) return el;
-        el = el.parentElement;
-      }
-      return null;
-    };
-    const isFormControl = (target) => !!(target && target.closest && target.closest('input, textarea, select, [contenteditable="true"]'));
-    const isRangeControl = (target) => !!(target && target.closest && target.closest('input[type="range"]'));
-    const shouldUseNative = (target) => {
-      if (isRangeControl(target)) return true;
-      const scrollable = getScrollableParent(target);
-      if (!scrollable) return false;
-      if (scrollable.classList && (
-        scrollable.classList.contains('standalone-main') ||
-        scrollable.id === 'quickStandalonePage' ||
-        scrollable.id === 'quickStandaloneMount'
-      )) return false;
-      const delta = Math.abs(window.event && window.event.deltaY || 0);
-      return delta && scrollable.scrollHeight > scrollable.clientHeight + 2;
-    };
-    document.addEventListener('wheel', (event) => {
-      if (!document.body || !document.body.classList.contains('quick-standalone-body')) return;
-      if (event.ctrlKey || event.metaKey) return;
-      if (isFormControl(event.target) && !isRangeControl(event.target)) return;
-      const desktopWide = window.innerWidth >= 769;
-      if (!desktopWide) return;
-      if (shouldUseNative(event.target)) return;
-      const deltaY = event.deltaY || 0;
-      const deltaX = event.deltaX || 0;
-      if (!deltaY && !deltaX) return;
-      const before = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-      window.scrollBy({ top: deltaY, left: deltaX, behavior: 'auto' });
-      const after = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-      if (after !== before || Math.abs(deltaY) > Math.abs(deltaX)) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-      }
-    }, { capture:true, passive:false });
+    window.__fegDesktopWheelScrollBridge = 'native-scroll-v3.1.52';
   }
+
 
   function boot() {
     lockDarkTheme();
@@ -211,6 +250,7 @@
   UI.boot = boot;
   UI.refresh = refresh;
   UI.lockDarkTheme = lockDarkTheme;
+  UI.syncAppThemeRuntime = syncAppThemeRuntime;
   UI.injectLayoutFixCss = injectLayoutFixCss;
   UI.unlockMobilePageScroll = unlockMobilePageScroll;
   UI.enableDesktopWheelScrollBridge = enableDesktopWheelScrollBridge;

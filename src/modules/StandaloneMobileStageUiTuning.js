@@ -2,12 +2,12 @@
   'use strict';
 
   const STYLE_ID = 'feg-standalone-mobile-stage-ui-v3-0-9';
-  const MOBILE_MQL = window.matchMedia ? window.matchMedia('(max-width: 860px), (pointer: coarse) and (max-width: 1024px)') : null;
+  const MOBILE_MQL = window.matchMedia ? window.matchMedia('(max-width: 767px)') : null;
 
   const css = `
 /* FEG Stage PRO 3.0.9 — mobile-only Stage build toolbar compact label hotfix.
    Scope: quick standalone mobile Stage constructor only. Desktop layout is untouched. */
-@media (max-width: 860px), (pointer: coarse) and (max-width: 1024px) {
+@media (max-width: 767px) {
   body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-structure-stage.v4-stage-polish {
     display: flex !important;
     flex-direction: column !important;

@@ -22,7 +22,7 @@
 
 
 /* v3.1.5 — clean workspace, desktop scroll restore, compact FEG 3.0 artwork, load check inside scale panel. */
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   html,
   body.v4-only-body.quick-standalone-body {
     height: auto !important;
@@ -48,14 +48,18 @@
   }
   body.v4-only-body.quick-standalone-body .feg-hero-card {
     min-height: 150px !important;
-    display: grid !important;
-    place-items: center !important;
+    display: block !important;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
   body.v4-only-body.quick-standalone-body .feg-hero-art {
-    min-height: 0 !important;
-    max-height: 150px !important;
-    height: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 150px !important;
+    max-height: none !important;
     object-fit: contain !important;
+    object-position: center center !important;
+    display: block !important;
   }
   body.v4-only-body.quick-standalone-body .v4-truss-zoom-panel {
     display: flex !important;
