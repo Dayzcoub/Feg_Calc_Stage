@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>FEG Stage PRO 3.0</title>
+    <title>FEG Stage PRO 3.1.23</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f3b2e">
+    <meta name="theme-color" content="#07090B">
     <link rel="apple-touch-icon" href="icon-180.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
@@ -3558,16 +3558,47 @@ html {
 }
 
 </style>
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/components.css">
+<link rel="stylesheet" href="styles/app-shell.css">
+<link rel="stylesheet" href="styles/constructors.css">
+<link rel="stylesheet" href="styles/stage.css">
+<link rel="stylesheet" href="styles/truss.css">
+<link rel="stylesheet" href="styles/led.css">
+<link rel="stylesheet" href="styles/desktop.css">
+<link rel="stylesheet" href="styles/mobile.css">
+<link rel="stylesheet" href="styles/controls.css">
+<link rel="stylesheet" href="styles/breakpoints.css">
+<link rel="stylesheet" href="styles/print-pdf-preview.css">
 </head>
 <body class="v4-only-body quick-standalone-body">
     <section id="quickStandalonePage" class="app-page active-page v4-only-page" aria-label="FEG Quick Constructors Standalone">
-        <div class="v4-shell">
-            <img class="quick-release-splash" src="assets/feg-stage-pro-3.0-title.png" alt="FEG Stage PRO 3.0 — Stage, Truss, LED" loading="eager" decoding="async">
-            <p id="quickStandaloneStatus" hidden>Загрузка FEG Stage PRO 3.0...</p>
-            <main id="quickStandaloneMount" class="v4-wide-section" aria-label="Выбор конструктора"></main>
+        <div class="standalone-window">
+            <header class="standalone-topbar" aria-label="Верхняя панель">
+                <div class="standalone-topbar-brand">
+                    <div class="standalone-window-controls" aria-hidden="true"><span></span><span></span><span></span></div>
+                    <div class="standalone-brand-title">FEG STAGE <b>PRO 3.1.23</b></div>
+                </div>
+                <div class="standalone-topbar-center"><div class="standalone-top-caption">Stage · Truss · LED</div></div>
+                <div class="standalone-topbar-actions" aria-label="Быстрые действия">
+                    <button type="button" class="standalone-icon-btn" aria-label="Сохранить">💾</button>
+                    <button type="button" class="standalone-icon-btn" aria-label="Отменить">↶</button>
+                    <button type="button" class="standalone-icon-btn" aria-label="Повторить">↷</button>
+                    <button type="button" class="standalone-icon-btn" aria-label="Настройки">⚙</button>
+                    <button type="button" class="standalone-icon-btn" aria-label="Профиль">◉</button>
+                    <button type="button" class="standalone-icon-btn" aria-label="Пользователь">◌</button>
+                </div>
+            </header>
+            <div class="standalone-body">
+                <main class="standalone-main" aria-label="Рабочая область">
+                    <p id="quickStandaloneStatus" hidden>Загрузка FEG Stage PRO 3.1.23...</p>
+                    <div id="quickStandaloneMount" class="v4-wide-section standalone-mount" aria-label="Выбор конструктора"></div>
+                </main>
+            </div>
         </div>
     </section>
-    <div id="pdfContent" style="display:none;"><h2 id="pdfTitle">FEG Stage PRO 3.0</h2><div id="pdfData"></div><p id="pdfFooter" style="margin-top:22px;font-size:11px;color:#666;">FEG Stage PRO 3.0 · Standalone Quick Constructors</p></div>
+    <div id="pdfContent" style="display:none;"><h2 id="pdfTitle">FEG Stage PRO 3.1.23</h2><div id="pdfData"></div><p id="pdfFooter" style="margin-top:22px;font-size:11px;color:#666;">FEG Stage PRO 3.1.23 · Standalone Quick Constructors</p></div>
     <datalist id="clientDatalist"></datalist>
     <div class="quick-standalone-toast" data-standalone-toast></div>
 <script src="src/modules/FormatUtils.js"></script>
@@ -3635,6 +3666,11 @@ html {
 <script src="src/modules/StandaloneDarkThemeLock.js"></script>
 <script src="src/modules/StandaloneMobileFieldPolish.js"></script>
 <script src="src/modules/StandaloneMobileStageUiTuning.js"></script>
+<script src="src/ui/AppShell.js"></script>
+<script src="src/ui/HomeScreen.js"></script>
+<script src="src/ui/ConstructorRouter.js"></script>
+<script src="src/ui/LogicUiRuntime.js"></script>
+
 
 <script>
 (function () {
@@ -3658,7 +3694,7 @@ html {
         mount.innerHTML = '<div class="v4-card"><div class="v4-kicker">Standalone error</div><h3>Модуль QuickCalculators не загружен</h3><p class="v4-muted">Проверь целостность архива и пути src/modules.</p></div>';
         return;
       }
-      var localUser = { id:'quick-standalone-local', displayName:'FEG Stage PRO 3.0', email:'local@feg.quick', role:'admin', workspaceName:'FEG Stage PRO 3.0' };
+      var localUser = { id:'quick-standalone-local', displayName:'FEG Stage PRO 3.1.23', email:'local@feg.quick', role:'admin', workspaceName:'FEG Stage PRO 3.1.23' };
       var authState = { isAuthenticated:true, isDemo:true, role:'admin', user:localUser, workspaceId:'standalone', permissions:['*','quick_pricing:view','prices:view'] };
       ROOT.QuickCalculators.renderQuickCalculators(mount, {
         authState: authState,
@@ -3668,7 +3704,19 @@ html {
         quickPricingVisible: true,
         onOpen: function (kind) { if (window.showToast) window.showToast('Открыт быстрый конструктор: ' + kind); }
       });
-      if (status) status.textContent = 'FEG Stage PRO 3.0 · Standalone Quick Constructors · Stage / Truss / LED';
+      if (status) status.textContent = 'FEG Stage PRO 3.1.23 · Standalone Quick Constructors · Stage / Truss / LED';
+      if (ROOT.QuickCalculators && ROOT.QuickCalculators.selectCalculator) {
+        document.querySelectorAll('[data-feg-nav-kind]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            ROOT.QuickCalculators.selectCalculator(mount, btn.getAttribute('data-feg-nav-kind'), { scroll:true });
+          });
+        });
+        document.querySelectorAll('[data-feg-open-home]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            window.scrollTo({ top:0, behavior:'smooth' });
+          });
+        });
+      }
       document.body.classList.add('quick-standalone-ready');
     } catch (error) {
       console.error(error);
