@@ -1,13 +1,228 @@
-## v3.1.23 — Stage desktop workstation layout pass
+## v3.1.81 — Desktop summary metric parity for Truss and LED
+- Desktop-only polish for the Truss and LED result metric blocks.
+- Truss/LED metric cards now follow the accepted Stage card rhythm: stable two-column grid, fixed desktop min-height, matching value/label font scale and consistent card padding.
+- LED summary card markup now uses the same value-first structure as Stage, so labels no longer render as oversized desktop values.
+- Mobile layout, calculations, BOM, warehouse, reservations, PDF export, legacy/v3, backend writes, dark fallback and scroll logic were not changed.
 
-- Desktop-сцена перестроена из растянутой верхней полосы в workstation-компоновку: слева управление, по центру поле конструктора, справа ключевые метрики.
-- Детальные BOM/ценовые таблицы вынесены в широкий нижний ряд.
-- Блок масштаба, режим построения и пресеты теперь живут внутри левой панели управления.
-- Поле конструктора центрирует сетку по вертикали и горизонтали внутри рабочей зоны.
-- Для desktop 1180–1500 px добавлен двухколоночный fallback: управление + поле, метрики и таблицы ниже.
-- Расчёты, BOM, PDF, quick pricing и складская логика не менялись.
+## v3.1.80 — In-app user guide and compact launch controls
 
-## v3.1.18 — Truss mobile viewport/button correction
+- Added in-app user documentation modal to the standalone quick constructors home screen.
+- Added compact `Инструкция` launcher under the theme switch in the right launch control stack.
+- Reduced the visual height of the launch theme toggle by splitting the side column into two equal controls.
+- Kept the transparent image icon set, dark fallback, responsive contract, calculations, BOM, warehouse, reservations, PDF export logic, legacy/v3 and backend writes unchanged.
+- Documented the change in `docs/V3_1_80_IN_APP_USER_GUIDE.md`.
+
+## v3.1.79 — Launch transparent image icon set
+
+- В большие кнопки главного экрана встроен единый набор transparent PNG-иконок: «Сцена», «Фермы», «LED Экраны».
+- Иконки подключены как изображения через общий класс, без CSS-отрисовки объектов и без собственной подложки внутри PNG.
+- Фон launch-кнопок остаётся системным и переключается вместе с dark/light темой.
+- Расчёты, BOM, склад, резервы, PDF export, legacy/v3, backend writes и бизнес-логика не менялись.
+
+## v3.1.75 — Hero artwork preview swap
+
+- Replaced the standalone home hero artwork with the newly supplied wide FEG banner preview image so it can be checked in the real UI field.
+- No layout, calculation, BOM, warehouse, reservations, PDF export, legacy/v3, backend write, responsive, scroll or theme logic was changed.
+
+## v3.1.74 — Stage title field width and radius polish
+
+- Widened the stage title field/pill behind `Быстрое построение сцены` so it uses more of the available row width.
+- Smoothed the small top-left radius/offset mismatch between the stage panel corner and the title field.
+- No calculation, BOM, warehouse, reservations, PDF export, legacy/v3, backend write, responsive contract, scroll or constructor business logic was changed.
+
+## v3.1.73 — Stage build header centering
+
+- Removed the separate stage click/drag helper field (`Клик / протяжка: настил / лестница`) from the stage quick-build panel.
+- Centered the `Быстрое построение сцены` heading within the freed top strip of the stage control panel.
+- No calculation, BOM, warehouse, reservations, PDF export, legacy/v3, backend write, responsive contract, scroll or constructor business logic was changed.
+
+## v3.1.72 — Hero field-fit regeneration
+
+- Regenerated the standalone home hero artwork to a wide banner proportion closer to the real hero field/card size.
+- Removed the old hero-image height caps and switched the hero slot to full-card rendering, so the banner now uses the free space more harmoniously on desktop and mobile.
+- No calculation, BOM, warehouse, reservations, PDF export, legacy/v3, backend write, responsive contract, scroll or constructor business logic was changed.
+
+## v3.1.71 — Hero artwork fill tuning
+
+- Tuned the main home-screen hero artwork so it visually occupies more of the available card area by cropping/zooming the supplied wide branding art.
+- Kept all icon replacements from v3.1.70 intact.
+- No calculation, BOM, warehouse, reservations, PDF export, legacy/v3, backend write, responsive, scroll or theme logic was changed.
+
+## v3.1.70 — Branding icon refresh
+
+- Replaced the shipped application icons (`favicon`, `icon-180`, `icon-192`, `icon-512`) with the new square FEG Stage PRO badge supplied by the user.
+- Replaced the main hero image on the standalone home screen with the new wide FEG Stage PRO artwork supplied by the user.
+- No calculation, BOM, warehouse, reservations, PDF export, legacy/v3, backend write, responsive, scroll or theme logic was changed.
+
+## v3.1.69 — Standalone shell cleanup and redundant nav removal
+
+- Removed the standalone top shell/header strip (window dots + FEG Stage PRO title + Stage · Truss · LED caption) from the quick constructors shell.
+- Removed the redundant lower constructor tab row inside the workspace; constructor switching now happens only through the main large Stage / Truss / LED tiles.
+- Kept the relocated theme toggle in the launch tile row and kept truss load-indicator contrast improvements from v3.1.68.
+- No calculation, BOM, warehouse, reservations, PDF export, legacy/v3, backend write, responsive or scroll logic was changed.
+
+## v3.1.68 — Truss load indicator contrast + launch theme toggle
+
+- Made the truss load indicator text fully opaque and contrast-safe in light theme.
+- Removed the old top-right standalone action button cluster.
+- Moved the theme switch into the main Stage / Truss / LED launch row as a narrow toggle to the right of LED.
+- Kept calculations, BOM, warehouse, reservations, PDF export, legacy/v3 and backend writes unchanged.
+
+## v3.1.67 — Light truss load modal inner surface fix
+
+- Light-theme only: исправлен оставшийся тёмный фон внутри модалки проверки нагрузок ферм — legacy-блоки `block-load-section`, `block-load-grid` и `block-load-note` теперь получают светлые поверхности и читаемый контраст.
+- Правка строго ограничена модалкой проверки нагрузок ферм и не меняет расчёты LoadChecker, BOM, PDF export, склад, responsive, scroll, legacy/v3 и backend writes.
+- Dark theme остаётся дефолтом и fallback.
+
+## v3.1.66 — Light theme final contrast and modal pass
+
+- Light-theme only: отдельно дочищена модалка проверки нагрузки у ферм — сам `dialog`, form-card, поля, статусы, кнопки и inline-dark leftovers теперь переводятся в светлую поверхность.
+- Light-theme only: усилен контраст добавленных LED-модулей в конструкторе — filled/active cabinets стали насыщеннее, с более явной рамкой, тенями и сохранением цветовой индикации конструкций.
+- Light-theme only: усилен контраст добавленных модулей сцены — выбранные decking cells стали темнее и заметнее на светлой сетке; stairs получили более читаемую индикацию.
+- Light-theme only: добавлены финальные safety-правила для SVG/text/canvas, чтобы подписи и контуры читались на светлом фоне и не перекрывались.
+- Dark theme остаётся дефолтом и fallback; расчёты, BOM, PDF logic, склад, responsive, scroll, legacy/v3 и backend writes не трогались.
+
+## v3.1.65 — Light theme contrast polish and darker truss artwork
+
+- Light-theme only: отполирован общий контраст светлой темы после удаления тёмных фонов. Усилены текст, muted-текст, заголовки, поля, кнопки, active states, таблицы, status cards и load-индикаторы.
+- Light-theme only: добавлен anti-overlap pass для сеток, карточек, action rows, кнопок, field labels и modal bodies: `min-width:0`, нормальные gaps, wrap/overflow-wrap и безопасный scroll внутри модальных тел.
+- Light-theme only: ферменные конструкции сделаны заметно темнее на светлом фоне: прямые фермы, узлы, базы, labels и SVG-preview фермы получили более контрастные stroke/fill цвета.
+- Dark theme остаётся дефолтом и fallback; расчёты, BOM, PDF logic, склад, responsive, scroll, legacy/v3 и backend writes не трогались.
+
+## v3.1.64 — Light theme Stage/Truss surface cleanup
+
+- Light-theme only: дочищены оставшиеся тёмные фоны в конструкторах сцены и ферм.
+- Light-theme only: усилено покрытие для Stage/Truss control panels, template cards, control fields, zoom panels, canvas wrappers, stage grid, truss grid, truss library groups и load-check surfaces.
+- Light-theme only: добавлены отдельные light overrides для stage cells, selected deck cells, truss grid cells, selected truss blocks и SVG leftovers внутри scene/truss canvas/preview.
+- Dark theme остаётся дефолтом и fallback; расчёты, BOM, PDF logic, склад, responsive, scroll, legacy/v3 и backend writes не трогались.
+
+## v3.1.63 — Light theme dark leftover cleanup
+
+- Added a dedicated cleanup pass for remaining dark surfaces in light theme: standalone shell/topbar/sidebar, workspace tabs, constructor headers, PDF modal headers, zoom panels, canvas/work areas and older form/control rows.
+- Added targeted light overrides for legacy inline dark `background` styles and SVG dark rect/path leftovers inside constructor/preview canvases.
+- Light theme toggle from v3.1.62 is preserved; dark remains the default and fallback.
+- No calculation, BOM, PDF export, warehouse, responsive, scroll, legacy/v3 or backend write logic was changed.
+
+## v3.1.62 — Light theme launch controls
+
+- Added controlled launch UI for the light theme: a topbar theme toggle that enables the light-theme gate, switches the app theme, and persists the choice safely.
+- Extended `LightThemeShell` with production-facing helpers: `enableLight`, `disableLight`, `toggle`, `getTheme`, `refresh`, and launch-control sync.
+- Light theme still does not turn on accidentally from stale state; it activates only through the explicit toggle/helper and remains reversible to the dark baseline.
+- Dark theme remains the default fallback; calculations, BOM, PDF, warehouse, responsive, scroll, legacy/v3, and backend writes were not changed.
+
+## v3.1.61 — Light theme deep surface pass
+
+- Light-theme preview получил дополнительное покрытие старых inline/v4 поверхностей: readiness/auth/dashboard, warehouse, quick tiles/docs, BOM subsections, details/accordion, status cards and legacy project/order cards.
+- Добавлены light overrides для активных/выбранных состояний, warn/bad/ok blocks, debug/doc output, old dark inline backgrounds and SVG dark rect leftovers.
+- Dark theme remains the default; light mode is still gated and must be enabled explicitly for testing.
+- No calculation, BOM, PDF export logic, warehouse logic, responsive contract, scroll, legacy/v3, or backend writes were changed.
+
+## v3.1.60 — Light theme component coverage pass
+
+- Light-theme preview expanded beyond the initial shell: standalone topbar/window, toasts, action rows, summary cards, chips, status badges, PDF/client preview surfaces, BOM/settings/subrent blocks, SVG text and truss artwork colors now have light-mode overrides.
+- Added `window.FEG_LIGHT_THEME_SHELL.audit()` dev helper to scan the current light preview for dark-background leftovers and low-contrast hints.
+- Dark theme remains the default; light mode is still gated and must be enabled explicitly for testing.
+- No calculation, BOM, PDF export logic, warehouse, responsive contract, scroll, legacy/v3, or backend writes were changed.
+
+## v3.1.59 — Light theme shell preview
+
+- Добавлен первый gated `LightThemeShell`: светлая тема теперь имеет безопасный late-layer shell для фона, карточек, текста, borders, input/select/textarea, кнопок, модалок, таблиц, canvas/workspace зон Stage/Truss/LED и базовых active/status states.
+- Dark остаётся дефолтом и не меняется; light включается только явно через feature gate.
+- Добавлен dev/runtime helper `window.FEG_LIGHT_THEME_SHELL`: `enableLight()` / `disableLight()` / `refresh()` для локальной проверки светлой темы без добавления новой UI-кнопки.
+- Standalone dark guard и mobile dark parity сохранены: при dark они держат текущий baseline, при active light снимают свои dark-overrides.
+- Расчёты, BOM, PDF, склад, responsive, scroll, legacy/v3 и backend writes не трогались.
+
+## v3.1.58 — Theme guard startup freeze fix
+
+- Исправлен регресс v3.1.57, из-за которого приложение могло зависать на стартовом экране.
+- Причина: theme guard в `StandaloneDarkThemeLock` наблюдал за `style`-атрибутом root и сам же записывал `colorScheme`, что могло запускать зацикленный MutationObserver на старте.
+- Исправление: theme guard стал идемпотентным, больше не следит за `style`, не пишет повторно те же значения и применяет тему только при реальном расхождении состояния.
+- Theme-readiness каркас v3.1.57 сохранён, но startup/runtime снова безопасный.
+- Расчёты, BOM, PDF, склад, responsive, scroll, legacy/v3 и backend writes не трогались.
+
+## v3.1.57 — Theme readiness audit and guardrails
+
+- Theme-readiness pass: audited CSS/UI layers, runtime injected styles, hard dark locks, breakpoint leftovers, inline style risks and scroll/overflow cascade before implementing a light theme.
+- Removed hard theme blockers: startup script, AppSettings and LogicUiRuntime now default to dark but no longer permanently force `appTheme=dark`; light theme activation is gated by an explicit feature flag.
+- Converted standalone dark lock into a dark palette guard: it keeps the current dark baseline by default, but stops injecting/removes dark overrides when light theme is explicitly enabled and active.
+- Mobile dark parity layer now follows the same guard and no longer blocks future light mobile theme work.
+- Added light-token skeleton in `styles/tokens.css` and moved base `color-scheme` to `--feg-color-scheme`.
+- Removed unreachable historical media blocks `(min-width:768px) and (max-width:767px)` so breakpoint structure is cleaner before light-theme work.
+- No visual redesign intended; calculations, BOM, PDF, warehouse, responsive contract, scroll, legacy/v3 and backend writes were not changed.
+
+## v3.1.56 — Truss stool auto-support reference fix
+
+- Logic-only: исправлен регресс из v3.1.55, из-за которого табуретка вообще не строилась.
+- Причина: в финальном `setTrussGeometryState()` использовались локальные `reqX/reqY` вне области видимости, что давало runtime-ошибку при добавлении табуретки.
+- Авто-правило max 9 м сохранено: пустое `Кол-во ног` добавляет промежуточные пары опор по верхней раме, чтобы пролёт не превышал 9 м, вместе с U017, ногами и базами.
+- UI, responsive, scroll, PDF, склад, legacy/v3 и backend writes не трогались.
+
+## v3.1.54 — Tablet desktop surface lock
+
+- Исправлено последнее промежуточное состояние между desktop и mobile при сужении браузера.
+- Причина: часть constructor-grid правил уже держала desktop/tablet contract от `768px`, но сами рабочие поверхности всё ещё сжимались через `max-width: calc(100vw - ...)`, поэтому на ширине планшета появлялась узкая сломанная desktop-компоновка.
+- Для диапазона `768–1179px` зафиксирована единая desktop-поверхность `1280px` с горизонтальным viewport scroll вместо перестройки интерфейса.
+- Stage/Truss/LED получают стабильную desktop-сетку на планшетных ширинах; mobile остаётся только `<=767px`.
+- Mobile-визуал v3.1.51, desktop-scroll v3.1.52 и unified breakpoint contract v3.1.53 сохранены; расчёты, BOM, PDF, склад, legacy/v3 и backend writes не трогались.
+
+## v3.1.53 — Unified tablet/desktop breakpoint contract
+
+- Responsive contract simplified: mobile layout now turns on only at `max-width: 767px`; tablet/narrow browser widths from `768px` keep the desktop interface instead of switching through intermediate layouts.
+- Disabled the old hybrid tablet/pre-desktop breakpoints (`860/900/1024/1179/1180`) that caused multiple visual jumps while narrowing the browser window.
+- Mobile-only runtime layers (`StandaloneMobileFieldPolish`, `StandaloneMobileStageUiTuning`, `MobileDarkUiParity`) no longer activate on tablets just because of `pointer: coarse`; they activate only on true mobile width.
+- Stage responsive DOM reordering now happens only in mobile width, so tablet/narrow desktop keeps desktop order.
+- Calculations, BOM, PDF, warehouse, legacy/v3 and backend writes were not changed.
+
+## v3.1.52 — Desktop native scroll restore
+
+- Desktop-only: найден и отключён старый wheel-bridge, который в capture-режиме с `passive:false` перехватывал каждое колесо мыши, вручную вызывал `window.scrollBy()` и мог делать desktop-скролл дёрганым/медленным.
+- Desktop-only: desktop-страницы возвращены на нативный browser scroll/momentum; runtime-scroll контейнеры нормализованы так, чтобы не создавать лишний внутренний scroll поверх основного page scroll.
+- Mobile `max-width:767px` визуальные правила не менялись; визуальный baseline v3.1.51 сохранён. Расчёты, BOM, PDF, склад, legacy/v3 и backend writes не трогались.
+
+## v3.1.51 — Mobile truss library area expansion
+
+- Mobile-only: раскрыта область библиотеки ферм в standalone mobile-конструкторе, чтобы секции `Прямые фермы / 2D узлы / 3D узлы` показывали всё содержимое без внутреннего обрезания.
+- Mobile-only: снято жёсткое ограничение по высоте у `.v4-truss-library`, поэтому блок больше не живёт в маленьком внутреннем scroll-контейнере и раскрывается по содержимому.
+- Mobile-only: компактная композиция v3.1.50 сохранена; desktop media-зоны не менялись, расчёты/BOM/PDF/склад/legacy-v3/backend writes не трогались.
+
+## v3.1.50 — Mobile truss library composition fit
+
+- Mobile-only: компоновка библиотечных блоков `Прямые фермы / 2D узлы / 3D узлы` приведена к более компактному виду, чтобы кнопки помещались в секции так же, как на согласованном референсе.
+- Mobile-only: для библиотечных секций зафиксирована четырёхколоночная сетка, уменьшены paddings header, group mark, badge и сами кнопки, чтобы элементы не выглядели слишком крупно и не распирали блоки.
+- Mobile-only: сохранены desktop-перенесённые принципы — спокойный active header, более явный selected button и пробел между иконкой и числом у прямых ферм.
+- Desktop media-зоны не менялись; расчёты, BOM, PDF, склад, legacy/v3 и backend writes не трогались.
+
+## v3.1.49 — Mobile truss library size rebalance
+
+- Mobile-only: блоки `Прямые фермы / 2D узлы / 3D узлы` в standalone mobile-конструкторе переведены на более плотный, но читаемый размер, чтобы в экран помещалось больше кнопок без потери читаемости.
+- Mobile-only: грид библиотеки переведён на adaptive `auto-fit` с меньшим минимальным размером карточек, поэтому на типичной ширине телефона блоки раскладываются компактнее и ритм секций стал ровнее.
+- Mobile-only: уменьшены header paddings, badge/group mark и размеры кнопок библиотеки; для прямых ферм сохранён читаемый отступ между иконкой и цифрой.
+- Desktop media-зоны не менялись; расчёты, BOM, PDF, склад, legacy/v3 и backend writes не трогались.
+
+## v3.1.48 — Mobile truss library standalone scope fix
+
+- Mobile-only: найдено, почему стиль библиотеки ферм не применялся — поздний mobile parity selector был привязан к `.v4-quick-modal-body`, а текущий standalone mobile-конструктор рендерит фермы прямо внутри `#quickStandaloneMount/.standalone-mount`.
+- Mobile-only: late-layer правила библиотеки `Прямые фермы / 2D узлы / 3D узлы` перенесены на фактический scope `.v4-structure-truss .v4-truss-library` в mobile media-scope StandaloneMobileFieldPolish.
+- Mobile-only: сохранены правки модалки проверки нагрузок, пробел между иконкой и числом у прямых ферм, спокойный active header и более явный selected button.
+- Desktop media-зоны не менялись; расчёты, BOM, PDF, склад, legacy/v3 и backend writes не трогались.
+
+## v3.1.38 — Stage desktop safe preset fix
+
+- База мобильной версии откатана к принятому состоянию v3.1.21, без правок v3.1.24/v3.1.25.
+- Desktop-компоновка сцены перенесена отдельным слоем и работает только при `min-width: 1180px`.
+- Ниже 1180 px новые desktop wrapper-блоки summary нейтрализуются через `display: contents`, чтобы мобильный поток не менялся.
+- Правило зафиксировано: desktop-правки не должны заходить в mobile/tablet `max-width` зоны.
+
+## v3.1.21 — LED active construction indication restore
+
+- В LED-конструкторе восстановлена активная подсветка выбранной конструкции в блоке `Active construction`.
+- Возвращена цветовая индикация добавленных LED-конструкций в списке этого же блока.
+- Добавлен компактный активный индикатор с цветовой точкой, названием и количеством кабинетов.
+- Состояние выбора синхронизируется через `active/is-active`, `aria-pressed` и `data-active-color`.
+- Правка внесена через shared LED render/state и `styles/led.css`, без локального CSS-костыля.
+- Расчёты, PDF, BOM и quick catalog не менялись.
+
+## v3.1.21 — LED active construction indication restore
 
 - Исправлен мобильный блок редактирования ферм: контейнер больше не делит панель на три колонки, строка `Добавлять / Удалять` занимает полную ширину и остаётся одной горизонтальной строкой.
 - Исправлено центрирование поля конструктора ферм: поле снова уважает JS-размеры сетки, а viewport центрируется по фактическому содержимому с учётом внутренних отступов.

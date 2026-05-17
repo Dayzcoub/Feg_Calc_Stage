@@ -1,13 +1,70 @@
-## v3.1.23 — Stage desktop workstation layout pass
+## v3.1.61 — Light theme component coverage pass
 
-- Desktop-сцена перестроена из растянутой верхней полосы в workstation-компоновку: слева управление, по центру поле конструктора, справа ключевые метрики.
-- Детальные BOM/ценовые таблицы вынесены в широкий нижний ряд.
-- Блок масштаба, режим построения и пресеты теперь живут внутри левой панели управления.
-- Поле конструктора центрирует сетку по вертикали и горизонтали внутри рабочей зоны.
-- Для desktop 1180–1500 px добавлен двухколоночный fallback: управление + поле, метрики и таблицы ниже.
-- Расчёты, BOM, PDF, quick pricing и складская логика не менялись.
+- Light-theme preview coverage expanded across standalone shell, cards, chips, PDF/client previews, BOM/settings/subrent panels and SVG labels.
+- Added `window.FEG_LIGHT_THEME_SHELL.audit()` for local light-theme leak/contrast checks.
+- Dark theme remains default; light mode is still gated.
 
-## v3.1.18 — Truss mobile viewport/button correction
+## v3.1.61 — Theme guard startup freeze fix
+
+- Исправлен регресс v3.1.57, из-за которого приложение могло зависать на стартовом экране.
+- Причина: theme guard в `StandaloneDarkThemeLock` наблюдал за `style`-атрибутом root и сам же записывал `colorScheme`, что могло запускать зацикленный MutationObserver на старте.
+- Исправление: theme guard стал идемпотентным, больше не следит за `style`, не пишет повторно те же значения и применяет тему только при реальном расхождении состояния.
+- Theme-readiness каркас v3.1.57 сохранён, но startup/runtime снова безопасный.
+- Расчёты, BOM, PDF, склад, responsive, scroll, legacy/v3 и backend writes не трогались.
+
+## v3.1.57 — Theme readiness audit and guardrails
+
+- Theme-readiness pass: audited CSS/UI layers, runtime injected styles, hard dark locks, breakpoint leftovers, inline style risks and scroll/overflow cascade before implementing a light theme.
+- Removed hard theme blockers: startup script, AppSettings and LogicUiRuntime now default to dark but no longer permanently force `appTheme=dark`; light theme activation is gated by an explicit feature flag.
+- Converted standalone dark lock into a dark palette guard: it keeps the current dark baseline by default, but stops injecting/removes dark overrides when light theme is explicitly enabled and active.
+- Mobile dark parity layer now follows the same guard and no longer blocks future light mobile theme work.
+- Added light-token skeleton in `styles/tokens.css` and moved base `color-scheme` to `--feg-color-scheme`.
+- Removed unreachable historical media blocks `(min-width:768px) and (max-width:767px)` so breakpoint structure is cleaner before light-theme work.
+- No visual redesign intended; calculations, BOM, PDF, warehouse, responsive contract, scroll, legacy/v3 and backend writes were not changed.
+
+## v3.1.56 — Truss stool auto-support reference fix
+
+- Logic-only: исправлен регресс из v3.1.55, из-за которого табуретка вообще не строилась.
+- Причина: в финальном `setTrussGeometryState()` использовались локальные `reqX/reqY` вне области видимости, что давало runtime-ошибку при добавлении табуретки.
+- Авто-правило max 9 м сохранено: пустое `Кол-во ног` добавляет промежуточные пары опор по верхней раме, чтобы пролёт не превышал 9 м, вместе с U017, ногами и базами.
+- UI, responsive, scroll, PDF, склад, legacy/v3 и backend writes не трогались.
+
+## v3.1.54 — Tablet desktop surface lock
+
+- Исправлено последнее промежуточное состояние между desktop и mobile при сужении браузера.
+- Диапазон `768–1179px` теперь использует стабильную desktop-поверхность `1280px` с горизонтальным viewport scroll, а не узкую поломанную промежуточную сетку.
+- Stage/Truss/LED получают стабильную desktop-сетку на планшетных ширинах; mobile остаётся только `<=767px`.
+- Mobile-визуал v3.1.51, desktop-scroll v3.1.52 и unified breakpoint contract v3.1.53 сохранены; расчёты, BOM, PDF, склад, legacy/v3 и backend writes не трогались.
+
+## v3.1.53 — Unified tablet/desktop breakpoint contract
+
+- Responsive contract simplified: mobile layout now turns on only at `max-width: 767px`; tablet/narrow browser widths from `768px` keep the desktop interface instead of switching through intermediate layouts.
+- Disabled the old hybrid tablet/pre-desktop breakpoints (`860/900/1024/1179/1180`) that caused multiple visual jumps while narrowing the browser window.
+- Mobile-only runtime layers (`StandaloneMobileFieldPolish`, `StandaloneMobileStageUiTuning`, `MobileDarkUiParity`) no longer activate on tablets just because of `pointer: coarse`; they activate only on true mobile width.
+- Stage responsive DOM reordering now happens only in mobile width, so tablet/narrow desktop keeps desktop order.
+- Calculations, BOM, PDF, warehouse, legacy/v3 and backend writes were not changed.
+
+## v3.1.48 — Mobile truss library standalone scope fix
+
+- Mobile-only: найдено, почему стиль библиотеки ферм не применялся — поздний mobile parity selector был привязан к `.v4-quick-modal-body`, а текущий standalone mobile-конструктор рендерит фермы прямо внутри `#quickStandaloneMount/.standalone-mount`.
+- Mobile-only: late-layer правила библиотеки `Прямые фермы / 2D узлы / 3D узлы` перенесены на фактический scope `.v4-structure-truss .v4-truss-library` в mobile media-scope StandaloneMobileFieldPolish.
+- Mobile-only: сохранены правки модалки проверки нагрузок, пробел между иконкой и числом у прямых ферм, спокойный active header и более явный selected button.
+- Desktop media-зоны не менялись; расчёты, BOM, PDF, склад, legacy/v3 и backend writes не трогались.
+
+## v3.1.38 — Stage desktop safe preset fix
+
+- База мобильной версии откатана к принятому состоянию v3.1.21, без правок v3.1.24/v3.1.25.
+- Desktop-компоновка сцены перенесена отдельным слоем и работает только при `min-width: 1180px`.
+- Ниже 1180 px новые desktop wrapper-блоки summary нейтрализуются через `display: contents`, чтобы мобильный поток не менялся.
+- Правило зафиксировано: desktop-правки не должны заходить в mobile/tablet `max-width` зоны.
+
+## v3.1.21 — LED active construction indication restore
+
+- LED `Active construction`: возвращена подсветка выбранной конструкции и цветовая индикация добавленных конструкций.
+- Добавлен компактный цветовой индикатор активной конструкции.
+- Расчёты, PDF, BOM и складская логика не менялись.
+
+## v3.1.21 — LED active construction indication restore
 
 - Исправлен мобильный блок редактирования ферм: контейнер больше не делит панель на три колонки, строка `Добавлять / Удалять` занимает полную ширину и остаётся одной горизонтальной строкой.
 - Исправлено центрирование поля конструктора ферм: поле снова уважает JS-размеры сетки, а viewport центрируется по фактическому содержимому с учётом внутренних отступов.
@@ -224,4 +281,3 @@ Standalone-приложение переведено на утверждённы
 - Пресеты Stage закреплены в 2-колоночной сетке, последний пресет растягивается на строку.
 - Canvas Stage получил более удобную высоту на mobile.
 - Правки выполнены через shared control layer `styles/controls.css`, без локальных inline-костылей.
-
