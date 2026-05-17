@@ -17,68 +17,109 @@
     if (!root) return null;
     const cb = callbacks || {};
     root.innerHTML = `
-      <div class="v4-card v4-quick-panel">
-        <div class="v4-card-head">
-          <div>
-            <div class="v4-kicker">Quick calculators</div>
-            <h3>Быстрые конструкторы</h3>
-          </div>
-          <p class="v4-muted">Маленькие технические калькуляторы без клиентов и КП. Коммерческий блок Stage/LED показывается только ролям с доступом к ценам.</p>
-        </div>
-        <div class="v4-quick-grid">
-          ${QUICK_CALCULATORS.map(calc => `
-            <button type="button" class="v4-quick-tile" data-v4-quick="${calc.id}">
-              <span class="v4-quick-icon">${escapeHtml(calc.icon)}</span>
-              <b>${escapeHtml(calc.title)}</b>
-              <small>${calc.output.map(escapeHtml).join(' · ')}</small>
-            </button>`).join('')}
-        </div>
-        <div class="v4-quick-docs" data-v4-quick-docs>
-          <div class="v4-kicker">Technical sheets</div>
-          <h4>Техлисты сцены и ферм из shared BOM</h4>
-          <p class="v4-muted">Быстрый экспорт без клиентов, цен и КП. Общий BOM теперь открывается вручную, чтобы сцена/фермы/LED не зависали от постоянной диагностики.</p>
-          <div class="v4-doc-actions">
-            <button type="button" class="btn-secondary" data-v4-quick-doc="stage:tech">Сцена · техлист</button>
-            <button type="button" class="btn-secondary" data-v4-quick-doc="stage:warehouse">Сцена · склад</button>
-            <button type="button" class="btn-secondary" data-v4-quick-doc="truss:tech">Фермы · техлист</button>
-            <button type="button" class="btn-secondary" data-v4-quick-doc="truss:warehouse">Фермы · склад</button>
-            <button type="button" class="btn-secondary" data-v4-quick-doc="led:tech">LED · техлист</button>
-            <button type="button" class="btn-secondary" data-v4-quick-doc="led:warehouse">LED · склад</button>
-            <button type="button" class="btn-secondary" data-v4-quick-doc="unified:tech">Общий техлист v4</button>
-            <button type="button" class="btn-secondary" data-v4-quick-doc="unified:warehouse">Общий склад v4</button>
-            <button type="button" class="btn-secondary" data-v4-quick-doc="unified:json">Unified JSON</button>
-            <button type="button" class="btn-secondary" data-v4-quick-doc="unified:contract">BOM contract</button>
-            <button type="button" class="btn-primary" data-v4-quick-draft>В черновик сметы v4</button>
-          </div>
-          <pre class="v4-quick-doc-output" data-v4-quick-doc-output>Выбери лист, чтобы увидеть текст для копирования или скачивания.</pre>
-          <div class="v4-doc-actions">
-            <button type="button" class="btn-secondary" data-v4-quick-doc-copy disabled>Копировать</button>
-            <button type="button" class="btn-secondary" data-v4-quick-doc-download disabled>Скачать .txt</button>
+      <section class="feg-dashboard" data-feg-dashboard>
+        <div class="feg-dashboard-hero-grid" data-feg-dashboard-hero>
+          <article class="feg-hero-card v4-card">
+            <img class="feg-hero-art" src="assets/feg-stage-pro-3.0-title.png" alt="FEG Stage PRO 3.1.7 · Stage · Truss · LED" loading="eager" decoding="async">
+          </article>
+          <div class="feg-launch-grid" aria-label="Быстрые конструкторы">
+            ${QUICK_CALCULATORS.map(calc => `
+              <button type="button" class="feg-launch-tile" data-v4-quick="${calc.id}">
+                <span class="feg-launch-icon" data-launch-kind="${calc.id}" aria-hidden="true"></span>
+                <b>${escapeHtml(calc.title)}</b>
+                <small>${calc.id === 'stage' ? 'Конструктор сценических площадок' : calc.id === 'truss' ? 'Конструктор фермовых конструкций' : 'Конструктор LED экранов и медиа систем'}</small>
+              </button>`).join('')}
           </div>
         </div>
-        <div data-v4-quick-visual-preview></div>
-        <div data-v4-bom-inspector></div>
-      </div>
-      <div data-v4-quick-modal-root></div>`;
+
+        <section class="feg-workspace-shell v4-card" data-feg-workspace-shell>
+          <div class="feg-workspace-tabs" role="tablist" aria-label="Конструкторы">
+            ${QUICK_CALCULATORS.map(calc => `
+              <button type="button" class="feg-workspace-tab" data-v4-quick-tab="${calc.id}" role="tab" aria-selected="false">
+                <span class="feg-workspace-tab-icon" data-launch-kind="${calc.id}" aria-hidden="true"></span>
+                <span>${escapeHtml(calc.title)}</span>
+              </button>`).join('')}
+          </div>
+          <div class="feg-workspace-stage" data-feg-workspace-stage>
+            <div class="feg-workspace-body" data-v4-quick-workspace></div>
+          </div>
+        </section>
+      </section>`;
     root._v4QuickDocText = '';
     root._v4QuickDocName = 'quick-sheet.txt';
     root._v4QuickOptions = cb;
     hydrateQuickDrafts(root);
     root.querySelectorAll('[data-v4-quick]').forEach(btn => btn.addEventListener('click', () => {
       const action = btn.getAttribute('data-v4-quick');
-      openQuickModal(root, action);
+      selectCalculator(root, action, { scroll:true });
       if (cb.onOpen) cb.onOpen(action);
     }));
-    root.querySelectorAll('[data-v4-quick-doc]').forEach(btn => btn.addEventListener('click', () => renderQuickDoc(root, btn.getAttribute('data-v4-quick-doc'))));
-    const draftBtn = root.querySelector('[data-v4-quick-draft]');
-    if (draftBtn) draftBtn.addEventListener('click', () => saveQuickQuoteDraft(root));
-    const copyBtn = root.querySelector('[data-v4-quick-doc-copy]');
-    if (copyBtn) copyBtn.addEventListener('click', () => copyQuickDoc(root));
-    const downloadBtn = root.querySelector('[data-v4-quick-doc-download]');
-    if (downloadBtn) downloadBtn.addEventListener('click', () => downloadQuickDoc(root));
-    renderQuickVisualPreview(root);
-    renderQuickBomInspectorPlaceholder(root);
+    root.querySelectorAll('[data-v4-quick-tab]').forEach(btn => btn.addEventListener('click', () => {
+      const action = btn.getAttribute('data-v4-quick-tab');
+      selectCalculator(root, action);
+      if (cb.onOpen) cb.onOpen(action);
+    }));
+    selectCalculator(root, cb.initialKind || 'stage');
     return root;
+  }
+
+  function selectCalculator(root, kind, options) {
+    const scope = root && root.querySelector ? root : null;
+    if (!scope) return null;
+    const targetKind = QUICK_CALCULATORS.some(item => item.id === kind) ? kind : 'stage';
+    const opts = options || {};
+    const mount = scope.querySelector('[data-v4-quick-workspace]');
+    const title = scope.querySelector('[data-v4-quick-title]');
+    const subtitle = scope.querySelector('[data-v4-quick-subtitle]');
+    if (!mount) return null;
+    scope._v4QuickCurrentKind = targetKind;
+    scope.querySelectorAll('[data-v4-quick], [data-v4-quick-tab]').forEach(btn => {
+      const key = btn.getAttribute('data-v4-quick') || btn.getAttribute('data-v4-quick-tab');
+      const active = key === targetKind;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    document.querySelectorAll('[data-feg-nav-kind]').forEach(btn => {
+      btn.classList.toggle('is-active', btn.getAttribute('data-feg-nav-kind') === targetKind);
+    });
+    if (title) title.textContent = targetKind === 'stage' ? 'Сцена' : targetKind === 'truss' ? 'Фермы' : 'LED Экраны';
+    if (subtitle) subtitle.textContent = '';
+    mount.innerHTML = '';
+    if (targetKind === 'stage' && ROOT.V4StructureVisualConfigurator) {
+      ROOT.V4StructureVisualConfigurator.renderStageConfigurator(mount, {
+        mode:'quick',
+        title:'Сцена',
+        input:getQuickDraftInput(scope, 'stage', { explicitEmpty:true }),
+        authState: scope._v4QuickOptions && scope._v4QuickOptions.authState,
+        user: scope._v4QuickOptions && scope._v4QuickOptions.user,
+        role: scope._v4QuickOptions && scope._v4QuickOptions.role,
+        onChange:(section, input) => { setQuickSection(scope, 'stage', section, input); }
+      });
+    } else if (targetKind === 'stage') {
+      renderStageConfigurator(mount, scope);
+    } else if (targetKind === 'truss' && ROOT.V4StructureVisualConfigurator) {
+      ROOT.V4StructureVisualConfigurator.renderTrussConfigurator(mount, {
+        mode:'quick',
+        title:'Быстрый блочный конфигуратор ферм',
+        input:getQuickDraftInput(scope, 'truss', { items: [], state:{} }),
+        authState: scope._v4QuickOptions && scope._v4QuickOptions.authState,
+        user: scope._v4QuickOptions && scope._v4QuickOptions.user,
+        role: scope._v4QuickOptions && scope._v4QuickOptions.role,
+        onChange:(section, input) => { setQuickSection(scope, 'truss', section, input); }
+      });
+    } else if (targetKind === 'truss') {
+      renderTrussConfigurator(mount, scope);
+    } else if (targetKind === 'led') {
+      renderLedConfigurator(mount, scope);
+    } else {
+      mount.innerHTML = `<div class="v4-note">Неизвестный калькулятор: ${escapeHtml(targetKind)}</div>`;
+    }
+    if (ROOT.LogicUiRuntime && ROOT.LogicUiRuntime.refresh) ROOT.LogicUiRuntime.refresh(mount);
+    if (opts.scroll && mount.scrollIntoView) {
+      const stage = scope.querySelector('[data-feg-workspace-stage]');
+      (stage || mount).scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+    return mount;
   }
 
   function openQuickModal(root, kind) {
@@ -106,12 +147,13 @@
     if (closeBtn) closeBtn.addEventListener('click', close);
     if (modal) modal.addEventListener('click', event => { if (event.target === modal) close(); });
     window.addEventListener('keydown', onKey);
-    if (kind === 'stage' && ROOT.V4StructureVisualConfigurator) ROOT.V4StructureVisualConfigurator.renderStageConfigurator(body, { mode:'quick', title:'Быстрый визуальный конфигуратор сцены', input: getQuickDraftInput(root, 'stage', { explicitEmpty:true }), authState: root._v4QuickOptions && root._v4QuickOptions.authState, user: root._v4QuickOptions && root._v4QuickOptions.user, role: root._v4QuickOptions && root._v4QuickOptions.role, onChange: (section, input) => { setQuickSection(root, 'stage', section, input); } });
+    if (kind === 'stage' && ROOT.V4StructureVisualConfigurator) ROOT.V4StructureVisualConfigurator.renderStageConfigurator(body, { mode:'quick', title:'Сцена', input: getQuickDraftInput(root, 'stage', { explicitEmpty:true }), authState: root._v4QuickOptions && root._v4QuickOptions.authState, user: root._v4QuickOptions && root._v4QuickOptions.user, role: root._v4QuickOptions && root._v4QuickOptions.role, onChange: (section, input) => { setQuickSection(root, 'stage', section, input); } });
     else if (kind === 'stage') renderStageConfigurator(body, root);
     else if (kind === 'truss' && ROOT.V4StructureVisualConfigurator) ROOT.V4StructureVisualConfigurator.renderTrussConfigurator(body, { mode:'quick', title:'Быстрый блочный конфигуратор ферм', input: getQuickDraftInput(root, 'truss', { items: [], state:{} }), authState: root._v4QuickOptions && root._v4QuickOptions.authState, user: root._v4QuickOptions && root._v4QuickOptions.user, role: root._v4QuickOptions && root._v4QuickOptions.role, onChange: (section, input) => { setQuickSection(root, 'truss', section, input); } });
     else if (kind === 'truss') renderTrussConfigurator(body, root);
     else if (kind === 'led') renderLedConfigurator(body, root);
     else body.innerHTML = `<div class="v4-note">Неизвестный калькулятор: ${escapeHtml(kind)}</div>`;
+    if (ROOT.LogicUiRuntime && ROOT.LogicUiRuntime.refresh) ROOT.LogicUiRuntime.refresh(mount);
     return modal;
   }
 
@@ -737,6 +779,7 @@
     QUICK_MODAL_VERSION,
     renderQuickCalculators,
     renderQuickDoc,
+    selectCalculator,
     openQuickModal,
     renderStageConfigurator,
     renderTrussConfigurator,

@@ -1,0 +1,59 @@
+.quick-pdf-backdrop {
+  background: rgba(0,0,0,.78) !important;
+  backdrop-filter: blur(12px);
+}
+
+.quick-pdf-modal,
+.pdf-modal {
+  background: var(--feg-surface) !important;
+  color: var(--feg-text) !important;
+  border: 1px solid var(--feg-border) !important;
+  border-radius: var(--feg-radius-xl) !important;
+  box-shadow: var(--feg-shadow) !important;
+  overflow: hidden !important;
+}
+
+.pdf-modal-header {
+  background: linear-gradient(180deg, #12151A, #0D0F12) !important;
+  border-bottom: 1px solid var(--feg-border) !important;
+  color: var(--feg-text) !important;
+  padding: 12px !important;
+}
+
+.pdf-modal-title {
+  color: var(--feg-text) !important;
+  font-weight: 900 !important;
+}
+
+.pdf-preview-frame {
+  background: #fff !important;
+  border: 0 !important;
+}
+
+@media (max-width: 700px) {
+  .quick-pdf-modal,
+  .pdf-modal {
+    width: 100vw !important;
+    height: 100dvh !important;
+    border-radius: 0 !important;
+  }
+
+  .pdf-modal-header {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 10px) !important;
+  }
+
+  .pdf-modal-actions {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  .pdf-modal-actions button {
+    width: 100% !important;
+    min-height: 40px !important;
+  }
+}

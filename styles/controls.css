@@ -1,0 +1,1615 @@
+/* v3.1.8 — global compact controls rhythm for the whole standalone app.
+   This is not a screen-specific hotfix: Stage / Truss / LED share the same field,
+   button, panel and compact mobile control language. */
+
+:root {
+  --feg-control-height: 28px;
+  --feg-control-height-mobile: 26px;
+  --feg-control-label-w: 78px;
+  --feg-control-gap: 7px;
+}
+
+/* Global field reset: all app controls use the same compact pro style. */
+.v4-field,
+.feg-field-wrap,
+label.v4-field,
+label.feg-field-wrap {
+  min-width: 0 !important;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  color: var(--feg-text-2) !important;
+  line-height: 1.15 !important;
+}
+
+.v4-field,
+.feg-field-wrap {
+  gap: 5px !important;
+}
+
+.v4-field > span:first-child,
+.v4-field > small:first-child,
+.v4-field small,
+.feg-label,
+label {
+  font-style: normal !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+input,
+select,
+textarea,
+.feg-field {
+  min-height: var(--feg-control-height) !important;
+  height: var(--feg-control-height) !important;
+  padding: 5px 9px !important;
+  border-radius: 7px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  font-style: normal !important;
+  line-height: 1.15 !important;
+  background: #090B0E !important;
+  color: var(--feg-text) !important;
+  border-color: #293039 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.035) !important;
+}
+
+select {
+  padding-right: 28px !important;
+  text-overflow: ellipsis !important;
+}
+
+input[type="checkbox"] {
+  width: 14px !important;
+  height: 14px !important;
+  min-width: 14px !important;
+  min-height: 14px !important;
+  padding: 0 !important;
+  accent-color: var(--feg-gold) !important;
+}
+
+button,
+.feg-btn,
+.btn-secondary,
+.btn-primary,
+.v4-mode-btn,
+.v4-icon-btn {
+  min-height: 30px !important;
+  padding: 6px 10px !important;
+  border-radius: 7px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  font-style: normal !important;
+  line-height: 1.15 !important;
+}
+
+.v4-icon-btn,
+button[aria-label] {
+  min-width: 30px !important;
+}
+
+.feg-control-grid {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: var(--feg-control-gap) !important;
+}
+
+.feg-control-grid--rows {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.feg-control-grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.feg-control-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.feg-control-row,
+.feg-control-grid--rows .v4-field,
+.feg-control-grid--rows .feg-field-wrap {
+  display: grid !important;
+  grid-template-columns: var(--feg-control-label-w) minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.feg-control-grid--rows .v4-field > input,
+.feg-control-grid--rows .v4-field > select,
+.feg-control-grid--rows .v4-field > textarea,
+.feg-control-row > input,
+.feg-control-row > select,
+.feg-control-row > textarea {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.feg-control-card-row,
+.v4-stage-frame-auto-card {
+  min-height: var(--feg-control-height) !important;
+  padding: 5px 9px !important;
+  display: grid !important;
+  grid-template-columns: var(--feg-control-label-w) minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 8px !important;
+  border-radius: 7px !important;
+}
+
+.v4-stage-frame-auto-card span,
+.feg-control-card-row span {
+  font-size: 11px !important;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  color: var(--feg-text-2) !important;
+}
+
+.v4-stage-frame-auto-card b,
+.feg-control-card-row b {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 12px !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  color: var(--feg-text) !important;
+}
+
+.feg-control-panel,
+.v4-stage-template-panel,
+.v4-truss-template-panel,
+.v4-led-panel-block {
+  padding: 12px !important;
+}
+
+.v4-stage-check,
+.v4-truss-autofit,
+.v4-stage-autofit,
+.v4-led-check,
+label:has(input[type="checkbox"]) {
+  min-height: var(--feg-control-height) !important;
+  border-radius: 7px !important;
+  font-size: 11px !important;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  line-height: 1.15 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+/* Shared compact zoom / scale controls. */
+.v4-stage-zoom-panel,
+.v4-truss-zoom-panel,
+.v4-led-zoom-panel {
+  padding: 9px 10px !important;
+}
+
+.v4-stage-zoom-controls,
+.v4-truss-zoom-controls,
+.v4-led-zoom-controls {
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+.v4-stage-zoom-controls input[type="range"],
+.v4-truss-zoom-controls input[type="range"],
+.v4-led-zoom-controls input[type="range"] {
+  height: 20px !important;
+  min-height: 20px !important;
+  padding: 0 !important;
+}
+
+/* Template/action buttons share one compact rhythm. */
+.v4-template-actions,
+.v4-actions,
+.v4-doc-actions {
+  gap: 7px !important;
+}
+
+.v4-template-actions button,
+.v4-actions button,
+.v4-doc-actions button,
+.v4-stage-tool-buttons button {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Mobile: keep labels readable and controls dense. */
+@media (max-width: 768px) {
+  :root {
+    --feg-control-height: var(--feg-control-height-mobile);
+    --feg-control-label-w: 72px;
+    --feg-control-gap: 7px;
+  }
+
+  input,
+  select,
+  textarea,
+  .feg-field {
+    min-height: var(--feg-control-height-mobile) !important;
+    height: var(--feg-control-height-mobile) !important;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+  }
+
+  button,
+  .feg-btn,
+  .btn-secondary,
+  .btn-primary,
+  .v4-mode-btn,
+  .v4-icon-btn {
+    min-height: 28px !important;
+    padding: 5px 8px !important;
+    font-size: 11px !important;
+  }
+
+  .feg-control-panel,
+  .v4-stage-template-panel,
+  .v4-truss-template-panel,
+  .v4-led-panel-block {
+    padding: 9px !important;
+  }
+
+  .feg-control-grid--rows {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .feg-control-grid--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .feg-control-grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .feg-control-grid--rows .v4-field,
+  .feg-control-grid--rows .feg-field-wrap,
+  .feg-control-row,
+  .v4-stage-frame-auto-card {
+    grid-template-columns: var(--feg-control-label-w) minmax(0, 1fr) !important;
+  }
+
+  .feg-control-grid--3 .v4-field,
+  .feg-control-grid--2 .v4-field,
+  .feg-control-grid--3 .feg-field-wrap,
+  .feg-control-grid--2 .feg-field-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 4px !important;
+  }
+
+  .feg-control-grid--3 .v4-field,
+  .feg-control-grid--2 .v4-field,
+  .feg-control-grid--rows .v4-field,
+  .feg-control-card-row,
+  .v4-stage-frame-auto-card {
+    font-size: 11px !important;
+  }
+
+  .v4-field small {
+    display: none !important;
+  }
+}
+
+
+/* v3.1.8 — global compact control rhythm.
+   Rule: visual fixes must live in global/shared style layers, not one-off screen hacks. */
+:root {
+  --feg-control-label-size: 9px;
+  --feg-control-value-size: 11px;
+  --feg-control-button-size: 11px;
+  --feg-control-radius: 7px;
+}
+
+.feg-control-grid,
+.v4-stage-controls-layout,
+.v4-truss-template-panel,
+.v4-led-panel-block {
+  font-size: var(--feg-control-value-size) !important;
+}
+
+.feg-control-grid > *,
+.feg-control-grid .v4-field,
+.feg-control-grid .feg-field-wrap,
+.feg-control-grid label,
+.v4-field,
+.feg-field-wrap {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.v4-field,
+.feg-field-wrap,
+.feg-control-grid .v4-field,
+.feg-control-grid .feg-field-wrap {
+  color: var(--feg-text-muted) !important;
+  font-size: var(--feg-control-label-size) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1.05 !important;
+}
+
+.v4-field > span:first-child,
+.v4-field > small:first-child,
+.feg-label,
+.feg-control-grid .v4-kicker,
+.feg-control-grid .v4-muted {
+  color: var(--feg-text-muted) !important;
+  font-size: var(--feg-control-label-size) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1.05 !important;
+}
+
+input,
+select,
+textarea,
+.feg-field {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: var(--feg-control-height) !important;
+  height: var(--feg-control-height) !important;
+  padding: 4px 8px !important;
+  border-radius: var(--feg-control-radius) !important;
+  font-size: var(--feg-control-value-size) !important;
+  font-weight: 650 !important;
+  line-height: 1.05 !important;
+}
+
+select {
+  padding-right: 24px !important;
+  white-space: nowrap !important;
+}
+
+button,
+.feg-btn,
+.btn-secondary,
+.btn-primary,
+.v4-mode-btn,
+.v4-icon-btn {
+  min-height: var(--feg-control-height) !important;
+  padding: 5px 8px !important;
+  border-radius: var(--feg-control-radius) !important;
+  font-size: var(--feg-control-button-size) !important;
+  font-weight: 750 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.feg-control-grid--rows,
+.feg-control-grid--rows.v4-stage-control-stack,
+.feg-control-grid--rows.v4-stage-control-stack--build {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.feg-control-grid--rows .v4-field,
+.feg-control-grid--rows .feg-field-wrap,
+.feg-control-row,
+.v4-stage-frame-auto-card,
+.feg-control-card-row {
+  display: grid !important;
+  grid-template-columns: minmax(68px, var(--feg-control-label-w)) minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 7px !important;
+  min-height: var(--feg-control-height) !important;
+}
+
+.feg-control-grid--2,
+.feg-control-grid--3 {
+  align-items: start !important;
+}
+
+.feg-control-grid--2 .v4-field,
+.feg-control-grid--3 .v4-field,
+.feg-control-grid--2 .feg-field-wrap,
+.feg-control-grid--3 .feg-field-wrap {
+  display: grid !important;
+  grid-template-rows: minmax(18px, auto) var(--feg-control-height) !important;
+  align-content: start !important;
+  gap: 4px !important;
+}
+
+.v4-stage-frame-auto-card,
+.feg-control-card-row,
+.v4-stage-check,
+.v4-truss-autofit,
+.v4-stage-autofit,
+.v4-led-check,
+label:has(input[type="checkbox"]) {
+  box-sizing: border-box !important;
+  border-radius: var(--feg-control-radius) !important;
+  border: 1px solid #293039 !important;
+  background: #090B0E !important;
+}
+
+.v4-stage-frame-auto-card span,
+.feg-control-card-row span {
+  font-size: var(--feg-control-label-size) !important;
+  line-height: 1.05 !important;
+}
+
+.v4-stage-frame-auto-card b,
+.feg-control-card-row b {
+  font-size: var(--feg-control-value-size) !important;
+  line-height: 1.05 !important;
+}
+
+.v4-stage-check,
+.v4-truss-autofit,
+.v4-stage-autofit,
+.v4-led-check,
+label:has(input[type="checkbox"]) {
+  gap: 6px !important;
+  padding: 5px 8px !important;
+  color: var(--feg-text-2) !important;
+  font-size: var(--feg-control-value-size) !important;
+  line-height: 1.05 !important;
+}
+
+input[type="checkbox"] {
+  width: 13px !important;
+  height: 13px !important;
+  min-width: 13px !important;
+  min-height: 13px !important;
+}
+
+.v4-stage-zoom-panel,
+.v4-truss-zoom-panel,
+.v4-led-zoom-panel {
+  padding: 8px !important;
+  display: grid !important;
+  gap: 7px !important;
+}
+
+.v4-stage-zoom-panel > div:first-child,
+.v4-truss-zoom-panel > div:first-child,
+.v4-led-zoom-panel > div:first-child {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+}
+
+.v4-stage-zoom-panel b,
+.v4-truss-zoom-panel b,
+.v4-led-zoom-panel b,
+.v4-stage-zoom-panel span,
+.v4-truss-zoom-panel span,
+.v4-led-zoom-panel span {
+  font-size: var(--feg-control-label-size) !important;
+  line-height: 1.05 !important;
+}
+
+.v4-stage-zoom-controls,
+.v4-truss-zoom-controls,
+.v4-led-zoom-controls {
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) 34px repeat(3, minmax(0, .55fr)) !important;
+  gap: 7px !important;
+  align-items: center !important;
+}
+
+.v4-stage-zoom-controls input[type="range"],
+.v4-truss-zoom-controls input[type="range"],
+.v4-led-zoom-controls input[type="range"] {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.v4-stage-tool-box,
+.v4-truss-template-card,
+.v4-led-panel-block {
+  font-size: var(--feg-control-value-size) !important;
+}
+
+.v4-stage-tool-buttons button,
+.v4-template-actions button {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --feg-control-label-size: 8.5px;
+    --feg-control-value-size: 10.5px;
+    --feg-control-button-size: 10.5px;
+    --feg-control-label-w: 70px;
+    --feg-control-gap: 6px;
+  }
+
+  .feg-control-panel,
+  .v4-stage-template-panel,
+  .v4-truss-template-panel,
+  .v4-led-panel-block {
+    padding: 8px !important;
+  }
+
+  .feg-control-grid,
+  .v4-stage-controls-layout {
+    gap: 7px !important;
+  }
+
+  .feg-control-grid--rows .v4-field,
+  .feg-control-grid--rows .feg-field-wrap,
+  .feg-control-row,
+  .v4-stage-frame-auto-card,
+  .feg-control-card-row {
+    grid-template-columns: minmax(62px, var(--feg-control-label-w)) minmax(0, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  .feg-control-grid--2,
+  .feg-control-grid--3,
+  .v4-stage-control-stack--dimensions,
+  .v4-stage-control-stack--pricing,
+  .v4-stage-control-stack--closure {
+    gap: 7px !important;
+  }
+
+  .feg-control-grid--2 .v4-field,
+  .feg-control-grid--3 .v4-field,
+  .feg-control-grid--2 .feg-field-wrap,
+  .feg-control-grid--3 .feg-field-wrap {
+    grid-template-rows: minmax(16px, auto) var(--feg-control-height-mobile) !important;
+    gap: 3px !important;
+  }
+
+  input,
+  select,
+  textarea,
+  .feg-field {
+    min-height: var(--feg-control-height-mobile) !important;
+    height: var(--feg-control-height-mobile) !important;
+    padding: 3px 7px !important;
+  }
+
+  button,
+  .feg-btn,
+  .btn-secondary,
+  .btn-primary,
+  .v4-mode-btn,
+  .v4-icon-btn {
+    min-height: var(--feg-control-height-mobile) !important;
+    padding: 4px 7px !important;
+  }
+
+  .v4-stage-zoom-controls,
+  .v4-truss-zoom-controls,
+  .v4-led-zoom-controls {
+    grid-template-columns: 34px minmax(0, 1fr) 34px !important;
+  }
+
+  .v4-stage-zoom-controls .btn-secondary,
+  .v4-stage-zoom-controls .v4-stage-autofit,
+  .v4-truss-zoom-controls .btn-secondary,
+  .v4-truss-zoom-controls .v4-truss-autofit,
+  .v4-led-zoom-controls .btn-secondary,
+  .v4-led-zoom-controls .v4-led-check {
+    grid-column: 1 / -1 !important;
+  }
+
+  .v4-stage-tool-box {
+    grid-template-columns: minmax(68px, auto) minmax(0, 1fr) !important;
+  }
+
+  .v4-stage-tool-box > span {
+    font-size: 8.5px !important;
+    line-height: 1.05 !important;
+  }
+}
+
+
+/* v3.1.9 — shared mobile control grouping pass.
+   Rule preserved: typography, grid rhythm and control rows are defined in shared style files,
+   not as inline screen hacks. */
+@media (max-width: 768px) {
+  :root {
+    --feg-control-label-size: 8px;
+    --feg-control-value-size: 10px;
+    --feg-control-button-size: 10px;
+    --feg-control-height-mobile: 24px;
+    --feg-control-gap: 6px;
+  }
+
+  .v4-field,
+  .feg-field-wrap,
+  .v4-stage-check,
+  .v4-stage-frame-auto-card {
+    font-size: var(--feg-control-label-size) !important;
+    line-height: 1.08 !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  input,
+  select,
+  textarea,
+  .feg-field {
+    min-height: var(--feg-control-height-mobile) !important;
+    height: var(--feg-control-height-mobile) !important;
+    padding: 3px 7px !important;
+    font-size: var(--feg-control-value-size) !important;
+    line-height: 1.08 !important;
+  }
+
+  button,
+  .feg-btn,
+  .btn-secondary,
+  .btn-primary,
+  .v4-mode-btn,
+  .v4-icon-btn {
+    min-height: var(--feg-control-height-mobile) !important;
+    padding: 4px 6px !important;
+    font-size: var(--feg-control-button-size) !important;
+    line-height: 1.08 !important;
+  }
+
+  .feg-control-section-title {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    margin: 0 0 1px !important;
+    text-align: center !important;
+    color: var(--feg-gold-2) !important;
+    font-size: 8.5px !important;
+    line-height: 1.05 !important;
+    letter-spacing: 0.03em !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-controls-layout {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-control-stack {
+    gap: 6px !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-control-stack--build {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-frame-auto-card {
+    grid-column: 1 / -1 !important;
+    min-height: 28px !important;
+    padding: 5px 8px !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-frame-auto-card span {
+    font-size: 8px !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-frame-auto-card b {
+    font-size: 10px !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-control-stack--dimensions {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    padding-top: 9px !important;
+    border-top: 1px solid rgba(255,255,255,0.10) !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-control-stack--closure {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    align-items: end !important;
+    gap: 7px !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-check {
+    min-height: var(--feg-control-height-mobile) !important;
+    padding: 4px 7px !important;
+    gap: 5px !important;
+    font-size: 8.5px !important;
+  }
+
+  .v4-stage-template-panel .v4-field--edge-type {
+    display: block !important;
+    font-size: 0 !important;
+  }
+
+  .v4-stage-template-panel .v4-field--edge-type .v4-field-label {
+    display: none !important;
+  }
+
+  .v4-stage-template-panel .v4-field--edge-type select {
+    width: 100% !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-control-stack--pricing {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    padding-top: 9px !important;
+    border-top: 1px solid rgba(255,255,255,0.10) !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-control-stack--pricing .v4-field,
+  .v4-stage-template-panel .v4-stage-control-stack--dimensions .v4-field,
+  .v4-stage-template-panel .v4-stage-control-stack--build .v4-field {
+    display: grid !important;
+    grid-template-rows: minmax(12px, auto) var(--feg-control-height-mobile) !important;
+    gap: 3px !important;
+    align-items: end !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-control-stack--pricing .v4-field small,
+  .v4-stage-template-panel .v4-stage-control-stack--dimensions .v4-field small {
+    display: none !important;
+  }
+
+  .v4-stage-zoom-panel {
+    padding: 9px !important;
+    display: grid !important;
+    gap: 6px !important;
+  }
+
+  .v4-stage-zoom-panel > div:first-child {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+  }
+
+  .v4-stage-zoom-panel > div:first-child b {
+    font-size: 10px !important;
+    line-height: 1.05 !important;
+  }
+
+  .v4-stage-zoom-panel [data-stage-zoom-value] {
+    display: none !important;
+  }
+
+  .v4-stage-zoom-controls {
+    display: grid !important;
+    grid-template-columns: 32px minmax(0, 1fr) 32px !important;
+    grid-template-rows: var(--feg-control-height-mobile) var(--feg-control-height-mobile) !important;
+    gap: 6px !important;
+    align-items: center !important;
+  }
+
+  .v4-stage-zoom-controls [data-stage-zoom-action="out"] {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    justify-self: stretch !important;
+  }
+
+  .v4-stage-zoom-controls [data-stage-zoom] {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .v4-stage-zoom-controls [data-stage-zoom-action="in"] {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    justify-self: stretch !important;
+  }
+
+  .v4-stage-zoom-controls [data-stage-zoom-action="fit"] {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+  }
+
+  .v4-stage-zoom-controls [data-stage-zoom-action="center"] {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+  }
+
+  .v4-stage-zoom-controls .v4-stage-autofit {
+    grid-column: 3 !important;
+    grid-row: 2 !important;
+    min-height: var(--feg-control-height-mobile) !important;
+    height: var(--feg-control-height-mobile) !important;
+    padding: 3px 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    font-size: 9px !important;
+    white-space: nowrap !important;
+  }
+
+  .v4-stage-zoom-controls .v4-stage-autofit input {
+    width: 12px !important;
+    height: 12px !important;
+    min-width: 12px !important;
+    min-height: 12px !important;
+  }
+
+  .v4-stage-tool-box {
+    grid-template-columns: minmax(0, 1fr) !important;
+    padding: 6px !important;
+  }
+
+  .v4-stage-tool-box > span {
+    display: none !important;
+  }
+
+  .v4-stage-tool-buttons {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+  }
+
+  .v4-stage-tool-buttons button {
+    min-width: 0 !important;
+    font-size: 10px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  .v4-template-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .v4-template-actions .v4-muted,
+  .v4-template-actions .v4-stage-clear-action--templates {
+    display: none !important;
+  }
+
+  .v4-template-actions .btn-secondary {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    min-width: 0 !important;
+    font-size: 10px !important;
+  }
+
+  .v4-template-actions .btn-secondary::before {
+    display: inline-block;
+    font-size: 10px;
+    opacity: 0.86;
+    color: var(--feg-gold-2);
+  }
+
+  .v4-template-actions [data-stage-action="rect"]::before { content: "▭"; }
+  .v4-template-actions [data-stage-action="walkway"]::before { content: "▬"; }
+  .v4-template-actions [data-stage-template="2x2"]::before { content: "⊞"; }
+  .v4-template-actions [data-stage-template="4x3"]::before { content: "▦"; }
+  .v4-template-actions [data-stage-template="6x4"]::before { content: "▩"; }
+
+  .v4-stage-canvas-wrap {
+    min-height: 0 !important;
+    height: min(70vw, 300px) !important;
+    max-height: 300px !important;
+    overflow: hidden !important;
+  }
+
+  .v4-stage-canvas-wrap .v4-visual-stage-grid {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .v4-stage-zoom-controls {
+    grid-template-columns: 30px minmax(0, 1fr) 30px !important;
+  }
+
+  .v4-stage-zoom-controls .v4-stage-autofit {
+    font-size: 8.5px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+}
+
+
+/* v3.1.10 — shared Stage mobile flow grid.
+   This is a structural shared controls pass, not per-widget patching:
+   it normalizes Stage mobile controls through global control classes and shared stage classes. */
+@media (max-width: 768px) {
+  :root {
+    --feg-stage-m-gap: 7px;
+    --feg-stage-m-line: rgba(255,255,255,0.10);
+    --feg-control-label-size: 7.5px;
+    --feg-control-value-size: 9.5px;
+    --feg-control-button-size: 9.5px;
+    --feg-control-height-mobile: 25px;
+  }
+
+  .v4-stage-template-panel {
+    padding: 9px !important;
+    border-radius: 13px !important;
+    gap: 8px !important;
+  }
+
+  .v4-stage-template-panel .v4-truss-template-head,
+  .v4-stage-template-panel .v4-stage-draw-help {
+    display: none !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-controls-layout {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: var(--feg-stage-m-gap) !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-control-stack {
+    width: 100% !important;
+    min-width: 0 !important;
+    gap: var(--feg-stage-m-gap) !important;
+  }
+
+  .v4-stage-template-panel .v4-field,
+  .v4-stage-template-panel .v4-stage-check,
+  .v4-stage-template-panel .v4-stage-frame-auto-card {
+    min-width: 0 !important;
+    font-size: var(--feg-control-label-size) !important;
+    line-height: 1.05 !important;
+    letter-spacing: 0 !important;
+    color: var(--feg-text-2) !important;
+  }
+
+  .v4-stage-template-panel .v4-field input,
+  .v4-stage-template-panel .v4-field select,
+  .v4-stage-template-panel select,
+  .v4-stage-template-panel input[type="number"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: var(--feg-control-height-mobile) !important;
+    height: var(--feg-control-height-mobile) !important;
+    padding: 4px 8px !important;
+    font-size: var(--feg-control-value-size) !important;
+    line-height: 1.05 !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .v4-stage-template-panel select {
+    padding-right: 22px !important;
+  }
+
+  /* 1) Top: deck/support in a horizontal row, frame full width below. */
+  .v4-stage-template-panel .v4-stage-control-stack--build {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: end !important;
+    gap: 7px !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-control-stack--build .v4-field {
+    display: grid !important;
+    grid-template-rows: 13px var(--feg-control-height-mobile) !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: end !important;
+    gap: 3px !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-frame-auto-card {
+    grid-column: 1 / -1 !important;
+    display: grid !important;
+    grid-template-columns: minmax(66px, 0.35fr) minmax(0, 1fr) !important;
+    min-height: 29px !important;
+    padding: 5px 9px !important;
+    border-radius: 9px !important;
+    gap: 8px !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-frame-auto-card span {
+    font-size: 7.5px !important;
+    white-space: nowrap !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-frame-auto-card b {
+    font-size: 9.5px !important;
+    line-height: 1.05 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* 2) Divider + dimensions row. */
+  .v4-stage-template-panel .v4-stage-control-stack--dimensions {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: end !important;
+    gap: 7px !important;
+    padding-top: 8px !important;
+    border-top: 1px solid var(--feg-stage-m-line) !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-control-stack--dimensions .v4-field {
+    display: grid !important;
+    grid-template-rows: 16px var(--feg-control-height-mobile) !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 3px !important;
+    align-items: end !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-control-stack--dimensions .v4-field small,
+  .v4-stage-template-panel .v4-stage-control-stack--pricing .v4-field small {
+    display: none !important;
+  }
+
+  /* 3) Edge closure: checkbox + select, no extra title. */
+  .v4-stage-template-panel .v4-stage-control-stack--closure {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    align-items: end !important;
+    gap: 7px !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-check--edge {
+    min-height: var(--feg-control-height-mobile) !important;
+    height: var(--feg-control-height-mobile) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 3px 8px !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-check--edge input {
+    width: 12px !important;
+    height: 12px !important;
+    min-width: 12px !important;
+    min-height: 12px !important;
+  }
+
+  .v4-stage-template-panel .v4-field--edge-type {
+    display: block !important;
+    min-width: 0 !important;
+    font-size: 0 !important;
+  }
+
+  .v4-stage-template-panel .v4-field--edge-type .v4-field-label {
+    display: none !important;
+  }
+
+  /* 4) Divider + centered quick pricing title + row. */
+  .v4-stage-template-panel .v4-stage-control-stack--pricing {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: end !important;
+    gap: 7px !important;
+    padding-top: 8px !important;
+    border-top: 1px solid var(--feg-stage-m-line) !important;
+  }
+
+  .v4-stage-template-panel .feg-control-section-title {
+    grid-column: 1 / -1 !important;
+    margin: 0 0 0 !important;
+    text-align: center !important;
+    font-size: 7.5px !important;
+    line-height: 1.05 !important;
+    letter-spacing: 0 !important;
+    color: var(--feg-gold-2) !important;
+  }
+
+  .v4-stage-template-panel .v4-stage-control-stack--pricing .v4-field {
+    display: grid !important;
+    grid-template-rows: 18px var(--feg-control-height-mobile) !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 3px !important;
+    align-items: end !important;
+  }
+
+  /* 5) Scale: row 1 = - / slider / +, row 2 = fit / center / auto-fit. */
+  .v4-stage-zoom-panel {
+    padding: 8px !important;
+    border-radius: 11px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  .v4-stage-zoom-panel > div:first-child {
+    display: none !important;
+  }
+
+  .v4-stage-zoom-controls {
+    display: grid !important;
+    grid-template-columns: 38px minmax(0, 1fr) 38px !important;
+    grid-template-rows: 30px 28px !important;
+    gap: 6px !important;
+    align-items: stretch !important;
+  }
+
+  .v4-stage-zoom-controls .v4-icon-btn {
+    min-height: 30px !important;
+    height: 30px !important;
+    min-width: 38px !important;
+    padding: 0 !important;
+    font-size: 12px !important;
+  }
+
+  .v4-stage-zoom-controls [data-stage-zoom-action="out"] { grid-column: 1 !important; grid-row: 1 !important; }
+  .v4-stage-zoom-controls [data-stage-zoom] { grid-column: 2 !important; grid-row: 1 !important; align-self:center !important; width:100% !important; min-width:0 !important; }
+  .v4-stage-zoom-controls [data-stage-zoom-action="in"] { grid-column: 3 !important; grid-row: 1 !important; }
+  .v4-stage-zoom-controls [data-stage-zoom-action="fit"] { grid-column: 1 !important; grid-row: 2 !important; }
+  .v4-stage-zoom-controls [data-stage-zoom-action="center"] { grid-column: 2 !important; grid-row: 2 !important; }
+  .v4-stage-zoom-controls .v4-stage-autofit { grid-column: 3 !important; grid-row: 2 !important; }
+
+  .v4-stage-zoom-controls .btn-secondary,
+  .v4-stage-zoom-controls .v4-stage-autofit {
+    width: 100% !important;
+    min-height: 28px !important;
+    height: 28px !important;
+    padding: 0 5px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    font-size: 8.5px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+  }
+
+  .v4-stage-zoom-controls .v4-stage-autofit input {
+    width: 12px !important;
+    height: 12px !important;
+    min-width: 12px !important;
+    min-height: 12px !important;
+  }
+
+  /* 6) Build tools: no title, one row. */
+  .v4-stage-tool-box {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    padding: 7px !important;
+    border-radius: 11px !important;
+  }
+
+  .v4-stage-tool-box > span {
+    display: none !important;
+  }
+
+  .v4-stage-tool-buttons {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .v4-stage-tool-buttons button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 30px !important;
+    height: 30px !important;
+    padding: 0 5px !important;
+    font-size: 9px !important;
+    line-height: 1.05 !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+  }
+
+  /* 7) Presets: true two-column grid, no accidental full-width buttons. */
+  .v4-template-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .v4-template-actions .v4-muted,
+  .v4-template-actions .v4-stage-clear-action--templates {
+    display: none !important;
+  }
+
+  .v4-template-actions .v4-stage-preset-btn,
+  .v4-template-actions .btn-secondary:not(.v4-stage-clear-action--templates) {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 31px !important;
+    height: 31px !important;
+    padding: 0 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    font-size: 9.5px !important;
+    line-height: 1.05 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .v4-template-actions .v4-stage-preset-btn::before,
+  .v4-template-actions .btn-secondary::before {
+    content: none !important;
+    display: none !important;
+  }
+
+  .v4-stage-preset-icon {
+    flex: 0 0 auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 14px !important;
+    font-size: 10px !important;
+    line-height: 1 !important;
+    color: var(--feg-gold-2) !important;
+    opacity: 0.88 !important;
+  }
+
+  .v4-stage-preset-btn span:last-child {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* 8) Canvas: directly after controls, large enough to use but not taller than the viewport. */
+  .v4-structure-stage .v4-stage-canvas-wrap {
+    height: clamp(230px, 68vw, 310px) !important;
+    min-height: 230px !important;
+    max-height: 310px !important;
+    overflow: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-radius: 11px !important;
+  }
+
+  .v4-structure-stage .v4-visual-stage-grid {
+    max-width: none !important;
+    max-height: none !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .v4-stage-template-panel .v4-stage-control-stack--build,
+  .v4-stage-template-panel .v4-stage-control-stack--closure,
+  .v4-stage-template-panel .v4-stage-control-stack--pricing,
+  .v4-stage-template-panel .v4-stage-control-stack--dimensions {
+    gap: 5px !important;
+  }
+
+  .v4-stage-zoom-controls {
+    grid-template-columns: 34px minmax(0, 1fr) 34px !important;
+  }
+
+  .v4-stage-zoom-controls .btn-secondary,
+  .v4-stage-zoom-controls .v4-stage-autofit {
+    font-size: 8px !important;
+  }
+}
+
+/* v3.1.11 — authoritative Stage mobile controls polish.
+   Kept in the shared controls layer: no inline style patches and no per-element runtime hacks. */
+@media (max-width: 768px) {
+  body.v4-only-body.quick-standalone-body .v4-structure-stage {
+    gap: 8px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel {
+    padding: 8px !important;
+    border-radius: 12px !important;
+    gap: 7px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel .v4-stage-controls-layout {
+    gap: 7px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel .v4-field,
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel .v4-stage-check,
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel .v4-stage-frame-auto-card {
+    font-style: normal !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel .v4-field,
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel .v4-field > span,
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel .v4-field-label,
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel .v4-stage-frame-auto-card span {
+    font-size: 6.7px !important;
+    font-weight: 700 !important;
+    line-height: 1.05 !important;
+    color: var(--feg-text-muted) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel input[type="number"],
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel select {
+    height: 24px !important;
+    min-height: 24px !important;
+    padding: 3px 6px !important;
+    border-radius: 7px !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    letter-spacing: -0.02em !important;
+    font-style: normal !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel select {
+    padding-right: 20px !important;
+    text-overflow: ellipsis !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--build {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--build .v4-field {
+    grid-template-rows: 11px 24px !important;
+    gap: 2px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--build .v4-field select {
+    font-size: 8.5px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-frame-auto-card {
+    min-height: 28px !important;
+    padding: 5px 8px !important;
+    grid-template-columns: 64px minmax(0, 1fr) !important;
+    gap: 7px !important;
+    border-radius: 8px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-frame-auto-card b {
+    font-size: 9px !important;
+    font-weight: 750 !important;
+    line-height: 1 !important;
+    letter-spacing: -0.02em !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--dimensions,
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--pricing {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    padding-top: 8px !important;
+    border-top: 1px solid rgba(255,255,255,0.10) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--dimensions .v4-field,
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--pricing .v4-field {
+    grid-template-rows: 15px 24px !important;
+    gap: 2px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--dimensions input,
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--pricing input {
+    font-size: 9.5px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--closure {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 6px !important;
+    align-items: stretch !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-check--edge {
+    height: 28px !important;
+    min-height: 28px !important;
+    padding: 3px 7px !important;
+    gap: 5px !important;
+    border-radius: 8px !important;
+    font-size: 6.9px !important;
+    font-weight: 700 !important;
+    line-height: 1.05 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-check--edge input {
+    width: 11px !important;
+    height: 11px !important;
+    min-width: 11px !important;
+    min-height: 11px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-field--edge-type {
+    display: flex !important;
+    align-items: stretch !important;
+    height: 28px !important;
+    min-height: 28px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-field--edge-type .v4-field-label {
+    display: none !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-field--edge-type select {
+    height: 28px !important;
+    min-height: 28px !important;
+    font-size: 8.7px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .feg-control-section-title {
+    grid-column: 1 / -1 !important;
+    text-align: center !important;
+    margin: 0 0 1px !important;
+    font-size: 6.9px !important;
+    line-height: 1.05 !important;
+    letter-spacing: 0 !important;
+    font-weight: 800 !important;
+    color: var(--feg-gold-2) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-panel {
+    padding: 8px !important;
+    border-radius: 11px !important;
+    gap: 6px !important;
+    margin: 7px 0 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-panel > div:first-child {
+    display: none !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(68px, 0.72fr) !important;
+    grid-template-rows: 30px 27px !important;
+    gap: 6px !important;
+    align-items: center !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls [data-stage-zoom-action="out"],
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls [data-stage-zoom-action="in"] {
+    grid-row: 1 !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 0 !important;
+    z-index: 2 !important;
+    font-size: 12px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls [data-stage-zoom-action="out"] {
+    grid-column: 1 !important;
+    justify-self: start !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls [data-stage-zoom-action="in"] {
+    grid-column: 3 !important;
+    justify-self: end !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls [data-stage-zoom] {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    width: calc(100% - 90px) !important;
+    min-width: 0 !important;
+    justify-self: center !important;
+    align-self: center !important;
+    padding: 0 !important;
+    z-index: 1 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls [data-stage-zoom-action="fit"],
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls [data-stage-zoom-action="center"],
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls .v4-stage-autofit {
+    grid-row: 2 !important;
+    height: 27px !important;
+    min-height: 27px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 0 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 7px !important;
+    font-size: 8.1px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls [data-stage-zoom-action="fit"] { grid-column: 1 !important; }
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls [data-stage-zoom-action="center"] { grid-column: 2 !important; }
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls .v4-stage-autofit { grid-column: 3 !important; }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls .v4-stage-autofit input {
+    width: 11px !important;
+    height: 11px !important;
+    min-width: 11px !important;
+    min-height: 11px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-tool-box {
+    padding: 7px !important;
+    border-radius: 11px !important;
+    margin-top: 2px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-tool-box > span {
+    display: none !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-tool-buttons {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-tool-buttons button {
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 0 5px !important;
+    font-size: 10px !important;
+    line-height: 1 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-template-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-template-actions .v4-muted,
+  body.v4-only-body.quick-standalone-body .v4-template-actions .v4-stage-clear-action--templates {
+    display: none !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-template-actions .v4-stage-preset-btn {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 31px !important;
+    min-height: 31px !important;
+    padding: 0 7px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    font-size: 9.5px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-template-actions .v4-stage-preset-btn--6x4 {
+    grid-column: 1 / -1 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-preset-icon {
+    width: 10px !important;
+    height: 10px !important;
+    min-width: 10px !important;
+    display: inline-block !important;
+    color: transparent !important;
+    border: 1px solid rgba(243,198,78,0.72) !important;
+    border-radius: 2px !important;
+    opacity: 0.9 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-preset-btn span:last-child {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-stage .v4-stage-canvas-wrap {
+    height: clamp(255px, 72vw, 330px) !important;
+    min-height: 255px !important;
+    max-height: 330px !important;
+    padding: 7px !important;
+    border-radius: 11px !important;
+    overflow: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+@media (max-width: 374px) {
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel .v4-stage-control-stack--build select {
+    font-size: 8px !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(62px, .65fr) !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls [data-stage-zoom-action="fit"],
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls [data-stage-zoom-action="center"],
+  body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls .v4-stage-autofit {
+    font-size: 7.6px !important;
+  }
+}

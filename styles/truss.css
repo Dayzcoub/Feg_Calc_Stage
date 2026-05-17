@@ -1,0 +1,218 @@
+.v4-structure-truss {
+  display: grid;
+  gap: var(--feg-gap-md);
+}
+
+.v4-truss-template-split {
+  display: grid !important;
+  grid-template-columns: minmax(260px, 1fr) minmax(260px, 1fr) minmax(260px, 0.9fr);
+  gap: var(--feg-gap-md) !important;
+  align-items: start;
+}
+
+.v4-truss-template-card {
+  padding: 12px !important;
+  min-width: 0;
+}
+
+.v4-truss-template-card-head {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.v4-truss-template-card-head span {
+  color: var(--feg-text-muted) !important;
+  font-size: 11px !important;
+}
+
+.v4-truss-layout {
+  display: grid !important;
+  grid-template-columns: minmax(260px, 340px) minmax(520px, 1fr);
+  gap: var(--feg-gap-md) !important;
+  align-items: start;
+}
+
+.v4-truss-sidebar,
+.v4-truss-workspace {
+  min-width: 0;
+}
+
+.v4-truss-library,
+.v4-truss-edit-tools {
+  background: var(--feg-panel) !important;
+  border: 1px solid var(--feg-border) !important;
+  border-radius: var(--feg-radius-lg) !important;
+  padding: 10px !important;
+}
+
+.v4-truss-library {
+  display: grid;
+  gap: 10px;
+  max-height: 62dvh;
+  overflow: auto;
+}
+
+.v4-truss-library button,
+.v4-truss-edit-tools button,
+.v4-truss-template-card button {
+  min-width: 0;
+}
+
+.v4-truss-edit-tools {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.v4-truss-edit-row,
+.v4-truss-mode-actions {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px !important;
+}
+
+.v4-truss-mode-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.v4-truss-field-wrap {
+  min-height: 460px;
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .v4-structure-truss,
+  .v4-truss-template-panel,
+  .v4-truss-layout,
+  .v4-truss-sidebar,
+  .v4-truss-workspace {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .v4-truss-template-panel { padding: 10px !important; }
+
+  .v4-truss-template-split {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .v4-truss-template-card {
+    padding: 10px !important;
+  }
+
+  .v4-truss-template-card .v4-grid-2,
+  .v4-truss-template-card .v4-grid-4,
+  .v4-truss-stool-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .v4-truss-template-card .v4-template-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px !important;
+  }
+
+  .v4-truss-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .v4-truss-library {
+    max-height: none !important;
+  }
+
+  .v4-truss-field-wrap {
+    min-height: 330px !important;
+    max-height: 58dvh !important;
+  }
+
+  [data-truss-summary] .v4-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  [data-truss-summary] .v4-mini {
+    padding: 8px !important;
+  }
+
+  [data-truss-summary] .v4-mini b { font-size: 13px !important; }
+  [data-truss-summary] .v4-mini span { font-size: 9px !important; }
+  [data-truss-summary] .v4-mini small { display: none !important; }
+}
+
+/* v3.1.17 — semantic Truss stool row; component-level, not per-screen hotfix. */
+.v4-truss-stool-dimensions-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  align-items: end !important;
+}
+
+.v4-truss-stool-action-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, .9fr) !important;
+  gap: 8px !important;
+  align-items: end !important;
+  margin-top: 8px !important;
+}
+
+.v4-truss-stool-action-row .v4-field,
+.v4-truss-stool-action-row button {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.v4-truss-stool-note {
+  display: block;
+  margin-top: 6px;
+}
+
+
+/* v3.1.19 — shared selected-state restore for straight trusses / 2D nodes / 3D nodes. */
+.v4-structure-truss .v4-truss-group.active {
+  border-color: rgba(201,164,107,.46) !important;
+  box-shadow: 0 0 0 1px rgba(201,164,107,.12) inset !important;
+}
+
+.v4-structure-truss .v4-truss-group.active summary {
+  background: linear-gradient(135deg, rgba(201,164,107,.14), rgba(14,165,233,.08)) !important;
+}
+
+.v4-structure-truss .v4-truss-group.active summary b,
+.v4-structure-truss .v4-truss-group.active summary em,
+.v4-structure-truss .v4-truss-group.active .v4-truss-group-mark {
+  color: #f3d49a !important;
+}
+
+.v4-structure-truss .v4-truss-group-body button.active,
+.v4-structure-truss .v4-truss-group-body button.is-active,
+.v4-structure-truss .v4-truss-library button.active,
+.v4-structure-truss .v4-truss-library button.is-active {
+  background: linear-gradient(135deg, rgba(201,164,107,.34), rgba(14,165,233,.16)) !important;
+  border-color: rgba(243,198,78,.9) !important;
+  box-shadow: 0 0 0 2px rgba(243,198,78,.14) inset, 0 8px 18px rgba(14,165,233,.12) !important;
+}
+
+.v4-structure-truss .v4-truss-group-body button.active .v4-truss-btn-icon,
+.v4-structure-truss .v4-truss-group-body button.is-active .v4-truss-btn-icon,
+.v4-structure-truss .v4-truss-library button.active .v4-truss-btn-icon,
+.v4-structure-truss .v4-truss-library button.is-active .v4-truss-btn-icon {
+  color: #fff4d6 !important;
+  text-shadow: 0 1px 10px rgba(243,198,78,.18);
+  transform: scale(1.04);
+}
+
+
+/* v3.1.20 — component rhythm: stool template header uses the same compact title-to-fields distance as portal/frame. */
+.v4-truss-template-card--stool .v4-truss-template-card-head {
+  margin-bottom: 6px !important;
+}
+
+.v4-truss-template-card--stool .v4-truss-stool-dimensions-grid {
+  margin-top: 0 !important;
+}

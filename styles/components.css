@@ -1,0 +1,386 @@
+.feg-btn,
+button,
+.btn-secondary,
+.btn-primary,
+.v4-mode-btn,
+.v4-icon-btn {
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: var(--feg-radius-sm) !important;
+  border: 1px solid var(--feg-border) !important;
+  background: var(--feg-panel-2) !important;
+  color: var(--feg-text) !important;
+  font-weight: 700;
+  line-height: 1.1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 140ms ease, border-color 140ms ease, transform 120ms ease, box-shadow 140ms ease;
+}
+
+.feg-btn:active,
+button:active,
+.btn-secondary:active,
+.btn-primary:active,
+.v4-mode-btn:active,
+.v4-icon-btn:active {
+  transform: translateY(1px) scale(0.99) !important;
+}
+
+.feg-btn-primary,
+.btn-primary {
+  background: linear-gradient(180deg, #F6D36A, #C99A2E) !important;
+  color: #111214 !important;
+  border-color: rgba(255,255,255,0.18) !important;
+  box-shadow: 0 8px 22px rgba(201,154,46,0.18) !important;
+}
+
+.feg-btn-secondary,
+.btn-secondary {
+  background: var(--feg-panel-2) !important;
+  color: var(--feg-text) !important;
+}
+
+.feg-btn-tool,
+.v4-icon-btn {
+  min-height: 34px;
+  padding: 6px 10px;
+  background: var(--feg-panel) !important;
+  border-color: #30343B !important;
+}
+
+.feg-btn-danger,
+.btn-danger,
+.danger,
+.v4-icon-btn.danger,
+button.danger {
+  background: rgba(240,90,90,0.12) !important;
+  color: #FF8A8A !important;
+  border-color: rgba(240,90,90,0.45) !important;
+}
+
+.feg-btn-active,
+.feg-btn.is-active,
+.v4-mode-btn.active,
+.v4-mode-btn.is-active,
+.v4-stage-tool-buttons button.active,
+.v4-stage-tool-buttons button.is-active,
+.v4-truss-library button.active,
+.v4-truss-library button.is-active,
+.v4-led-part-chip.active {
+  background: rgba(243,198,78,0.14) !important;
+  color: var(--feg-gold-2) !important;
+  border-color: rgba(243,198,78,0.75) !important;
+}
+
+button:hover,
+.btn-secondary:hover,
+.btn-primary:hover {
+  border-color: rgba(243,198,78,0.55) !important;
+  transform: translateY(-1px);
+}
+
+.feg-field,
+input,
+select,
+textarea {
+  background: var(--feg-field) !important;
+  color: var(--feg-text) !important;
+  border: 1px solid #2B3037 !important;
+  border-radius: var(--feg-radius-sm) !important;
+  min-height: 38px;
+  padding: 8px 10px;
+}
+
+.feg-field:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none !important;
+  border-color: rgba(243,198,78,0.8) !important;
+  box-shadow: 0 0 0 3px rgba(243,198,78,0.12) !important;
+}
+
+label,
+.feg-label,
+.v4-field,
+.v4-field span:first-child {
+  color: var(--feg-text-2) !important;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.v4-field,
+.feg-field-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 6px;
+}
+
+.v4-field small,
+.v4-muted,
+.v4-note,
+.v4-kicker,
+small {
+  color: var(--feg-text-2) !important;
+}
+
+.v4-kicker,
+.feg-kicker {
+  color: var(--feg-gold) !important;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.feg-section,
+.v4-card,
+.v4-stage-template-panel,
+.v4-truss-template-panel,
+.v4-truss-template-card,
+.v4-led-panel-block,
+.v4-led-canvas-panel,
+.v4-truss-load-dialog-card,
+.v4-truss-zoom-panel,
+.v4-mini,
+.v4-stage-frame-auto-card {
+  background: linear-gradient(180deg, var(--feg-panel), var(--feg-surface)) !important;
+  border: 1px solid var(--feg-border) !important;
+  border-radius: var(--feg-radius-lg) !important;
+  color: var(--feg-text) !important;
+}
+
+.feg-section-title,
+.v4-card h3,
+.v4-card h4,
+.v4-structure-toolbar h4,
+.v4-led-constructor h3,
+.v4-led-panel-block h4,
+.v4-led-grid-head h4,
+.v4-truss-template-card-head b,
+.v4-mini b {
+  color: var(--feg-text) !important;
+  font-weight: 800;
+}
+
+.feg-metrics-grid,
+.v4-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--feg-gap-sm);
+}
+
+.feg-metric-card,
+.v4-mini {
+  background: var(--feg-panel) !important;
+  border: 1px solid var(--feg-border-soft) !important;
+  border-radius: var(--feg-radius-md) !important;
+  padding: 10px 12px !important;
+}
+
+.feg-metric-label,
+.v4-mini span {
+  color: var(--feg-text-muted) !important;
+  font-size: 10px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.feg-metric-value,
+.v4-mini b {
+  color: var(--feg-text) !important;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.v4-table-wrap,
+.feg-table-wrap,
+.table-wrap,
+.bom-table-wrap,
+.summary-table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--feg-border);
+  border-radius: var(--feg-radius-md);
+  background: var(--feg-surface);
+}
+
+.v4-table,
+table {
+  color: var(--feg-text) !important;
+  border-collapse: collapse;
+}
+
+.v4-table th,
+.v4-table td,
+table th,
+table td {
+  border-color: var(--feg-border-soft) !important;
+}
+
+.v4-table th,
+table th {
+  background: var(--feg-panel-2) !important;
+  color: var(--feg-text-2) !important;
+}
+
+.v4-table td,
+table td {
+  background: var(--feg-surface) !important;
+  color: var(--feg-text) !important;
+}
+
+@media (max-width: 768px) {
+  .v4-table-wrap table,
+  .feg-table-wrap table,
+  .table-wrap table,
+  .bom-table-wrap table,
+  .summary-table-wrap table {
+    min-width: 680px;
+  }
+
+  button,
+  .feg-btn,
+  .btn-secondary,
+  .btn-primary {
+    min-height: 34px;
+    padding: 7px 9px;
+    font-size: 12px;
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+  }
+
+  input,
+  select,
+  textarea {
+    min-width: 0 !important;
+    width: 100%;
+    min-height: 36px;
+    font-size: 13px;
+  }
+}
+
+
+.v4-structure-toolbar,
+.v4-led-grid-head,
+.v4-truss-template-head,
+.v4-truss-dialog-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-bottom: 12px !important;
+  padding: 14px !important;
+  border-radius: var(--feg-radius-lg) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  background: linear-gradient(180deg, rgba(25,29,35,0.98), rgba(15,18,22,0.98)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+
+.v4-structure-toolbar h4,
+.v4-led-grid-head h4 {
+  margin: 4px 0 0 !important;
+  font-size: 22px !important;
+  letter-spacing: -0.03em !important;
+}
+
+.v4-kicker { font-size: 10px !important; }
+
+.v4-card,
+.v4-stage-template-panel,
+.v4-truss-template-panel,
+.v4-truss-template-card,
+.v4-led-panel-block,
+.v4-led-canvas-panel,
+.v4-truss-load-dialog-card,
+.v4-truss-zoom-panel,
+.v4-mini,
+.v4-stage-frame-auto-card,
+.v4-truss-library,
+.v4-truss-edit-tools,
+.v4-stage-tool-box {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 10px 24px rgba(0,0,0,0.18) !important;
+}
+
+.v4-stage-template-panel,
+.v4-truss-template-panel,
+.v4-led-panel-block,
+.v4-led-canvas-panel {
+  padding: 14px !important;
+}
+
+.v4-stage-template-panel label,
+.v4-truss-template-panel label,
+.v4-led-panel-block label {
+  gap: 6px;
+}
+
+.v4-mini {
+  min-height: 88px;
+  display: grid;
+  align-content: center;
+  gap: 4px;
+}
+
+.v4-mini b {
+  font-size: 24px !important;
+  letter-spacing: -0.03em;
+}
+
+.v4-mini span { font-size: 11px !important; }
+
+.v4-mini small {
+  color: var(--feg-text-2) !important;
+  font-size: 11px;
+}
+
+[data-stage-summary] .v4-summary-grid,
+[data-truss-summary] .v4-summary-grid,
+[data-led-result] .v4-summary-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+}
+
+.v4-table th,
+.v4-table td,
+table th,
+table td {
+  padding: 10px 12px !important;
+}
+
+.v4-load-indicator {
+  display: inline-grid !important;
+  gap: 2px;
+  text-align: left;
+}
+
+.v4-load-indicator span {
+  color: var(--feg-text-2) !important;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .v4-structure-toolbar,
+  .v4-led-grid-head,
+  .v4-truss-template-head,
+  .v4-truss-dialog-head {
+    padding: 10px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .v4-structure-toolbar h4,
+  .v4-led-grid-head h4 {
+    font-size: 18px !important;
+  }
+
+  .v4-mini {
+    min-height: 74px;
+  }
+
+  .v4-mini b {
+    font-size: 18px !important;
+  }
+}

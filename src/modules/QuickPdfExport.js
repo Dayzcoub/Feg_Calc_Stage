@@ -5,7 +5,7 @@
   'use strict';
 
   const ROOT = (global.FEGModules = global.FEGModules || {});
-  const QUICK_PDF_EXPORT_VERSION = '3.17.54-quick-pdf-clean-pricing-auto-orientation';
+  const QUICK_PDF_EXPORT_VERSION = '3.1.17-quick-pdf-readable-hero-truss-scheme';
   const KIND_LABELS = {
     stage: 'Сцена',
     truss: 'Фермы',
@@ -383,8 +383,111 @@
     return `<div class="quick-pdf-visual-label">Схема из конструктора</div><div class="quick-pdf-scheme-svg-wrap"><svg class="quick-pdf-scheme-svg" xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(title)}"><rect x="0.5" y="0.5" width="${w - 1}" height="${h - 1}" rx="14" fill="#ffffff" stroke="#d9e1ec"/><text x="12" y="20" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="800" fill="#111827">${esc(title)}</text>${rects.join('')}</svg></div>`;
   }
 
+  function getTrussSpecs() {
+    const mod = ROOT.TrussBlockConstructor || null;
+    return mod && mod.getDefaultSpecs ? (mod.getDefaultSpecs() || {}) : {};
+  }
+
+  function safeTrussItems(section) {
+    const input = section && section.input || {};
+    const list = Array.isArray(input.items) ? input.items : (Array.isArray(section && section.items) ? section.items : []);
+    return list.map(item => ({
+      type:String(item && item.type || ''),
+      x:Math.round(num(item && item.x, 0)),
+      y:Math.round(num(item && item.y, 0)),
+      o:String(item && item.o || 'n'),
+      r:num(item && item.r, 0)
+    })).filter(item => item.type && Number.isFinite(item.x) && Number.isFinite(item.y));
+  }
+
+  function trussItemExtent(item, specs, cellM) {
+    const spec = specs && specs[item.type] || {};
+    let w = 1;
+    let h = 1;
+    if (spec.kind === 'straight') {
+      const cells = Math.max(1, Math.round(num(spec.length, 0.5) / Math.max(0.25, cellM || 0.5)));
+      if (item.o === 'v') h = cells;
+      else w = cells;
+    }
+    return { x:item.x, y:item.y, w, h, spec };
+  }
+
+  function trussBoundsFromItems(items, specs, cellM) {
+    if (!items.length) return null;
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    items.forEach(item => {
+      const ex = trussItemExtent(item, specs, cellM);
+      minX = Math.min(minX, ex.x); minY = Math.min(minY, ex.y);
+      maxX = Math.max(maxX, ex.x + ex.w); maxY = Math.max(maxY, ex.y + ex.h);
+    });
+    if (!Number.isFinite(minX)) return null;
+    return { minX, minY, maxX, maxY, cols:Math.max(1, maxX - minX), rows:Math.max(1, maxY - minY) };
+  }
+
+  function trussFill(type, spec) {
+    if (String(type || '') === 'base' || spec.kind === 'base') return '#475569';
+    if (spec.kind === 'straight') return '#d7dde6';
+    if (spec.kind === 'node') return '#cbd5e1';
+    return '#e5e7eb';
+  }
+
+  function buildTrussSchemeSvg(section) {
+    const items = safeTrussItems(section);
+    if (!items.length) return '';
+    const specs = getTrussSpecs();
+    const input = section && section.input || {};
+    const cellM = Math.max(0.25, num(input.cellMeters || input.state && input.state.cellMeters || 0.5, 0.5));
+    const bounds = trussBoundsFromItems(items, specs, cellM);
+    if (!bounds) return '';
+    const pad = 1;
+    const cols = bounds.cols + pad * 2;
+    const rows = bounds.rows + pad * 2;
+    const cell = Math.max(12, Math.min(24, Math.floor(Math.min(430 / cols, 290 / rows))));
+    const gap = Math.max(2, Math.round(cell * 0.10));
+    const labelH = 34;
+    const w = cols * (cell + gap) + gap;
+    const h = rows * (cell + gap) + gap + labelH;
+    const grid = [];
+    for (let y = 0; y < rows; y += 1) {
+      for (let x = 0; x < cols; x += 1) {
+        const px = gap + x * (cell + gap);
+        const py = gap + y * (cell + gap) + labelH;
+        grid.push(svgRect(px, py, cell, cell, '#f8fafc', '#e5e7eb'));
+      }
+    }
+    const parts = items.map(item => {
+      const ex = trussItemExtent(item, specs, cellM);
+      const spec = ex.spec || {};
+      const x = gap + (ex.x - bounds.minX + pad) * (cell + gap);
+      const y = gap + (ex.y - bounds.minY + pad) * (cell + gap) + labelH;
+      const fill = trussFill(item.type, spec);
+      const stroke = spec.kind === 'straight' ? '#64748b' : '#334155';
+      if (String(item.type) === 'base' || spec.kind === 'base') {
+        const cx = x + cell / 2;
+        const cy = y + cell / 2;
+        return `<circle cx="${cx}" cy="${cy}" r="${Math.max(4, cell * 0.36)}" fill="${fill}" stroke="#0f172a" stroke-width="1.2"/><circle cx="${cx}" cy="${cy}" r="${Math.max(1.8, cell * 0.12)}" fill="#ffffff" opacity="0.82"/>`;
+      }
+      if (spec.kind === 'straight') {
+        const ww = (item.o === 'v' ? cell : ex.w * (cell + gap) - gap);
+        const hh = (item.o === 'v' ? ex.h * (cell + gap) - gap : cell);
+        const inset = Math.max(2, Math.round(cell * 0.20));
+        const rx = item.o === 'v' ? x + inset : x;
+        const ry = item.o === 'v' ? y : y + inset;
+        const rw = item.o === 'v' ? cell - inset * 2 : ww;
+        const rh = item.o === 'v' ? hh : cell - inset * 2;
+        return `<rect x="${rx}" y="${ry}" width="${Math.max(2, rw)}" height="${Math.max(2, rh)}" rx="${Math.max(2, Math.round(cell * 0.12))}" fill="${fill}" stroke="${stroke}" stroke-width="1.2"/><path d="M${rx + Math.max(2, rw) * 0.12} ${ry + Math.max(2, rh) * 0.28} L${rx + Math.max(2, rw) * 0.88} ${ry + Math.max(2, rh) * 0.72} M${rx + Math.max(2, rw) * 0.12} ${ry + Math.max(2, rh) * 0.72} L${rx + Math.max(2, rw) * 0.88} ${ry + Math.max(2, rh) * 0.28}" stroke="#94a3b8" stroke-width="1" stroke-linecap="round" opacity="0.75"/>`;
+      }
+      return svgRect(x, y, cell, cell, fill, stroke, ' opacity="0.96"');
+    }).join('');
+    const result = section && section.result || {};
+    const boundsM = result.physicalBounds || {};
+    const title = `Фермы ${metric(boundsM.width || 0, 2)} × ${metric(boundsM.height || 0, 2)} м · элементов ${items.length}`;
+    return `<div class="quick-pdf-visual-label">Схема из конструктора</div><div class="quick-pdf-scheme-svg-wrap"><svg class="quick-pdf-scheme-svg" xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(title)}"><rect x="0.5" y="0.5" width="${w - 1}" height="${h - 1}" rx="14" fill="#ffffff" stroke="#d9e1ec"/><text x="12" y="21" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="800" fill="#111827">${esc(title)}</text>${grid.join('')}${parts}</svg></div>`;
+  }
+
   function buildSchemeSvgFallback(kind, section) {
     if (kind === 'stage') return buildStageSchemeSvg(section);
+    if (kind === 'truss') return buildTrussSchemeSvg(section);
     if (kind === 'led') return buildLedSchemeSvg(section);
     return '';
   }
@@ -393,7 +496,7 @@
     const opts = options || {};
     const shot = opts.schemeSnapshot || null;
     const fallbackSvg = buildSchemeSvgFallback(kind, opts.section || null);
-    if ((kind === 'stage' || kind === 'led') && fallbackSvg) return fallbackSvg;
+    if ((kind === 'stage' || kind === 'truss' || kind === 'led') && fallbackSvg) return fallbackSvg;
     if (shot && shot.dataUrl) {
       const ratio = shot.width && shot.height ? Math.min(1, 430 / shot.width, 520 / shot.height) : 1;
       const width = shot.width ? Math.max(1, Math.round(shot.width * ratio)) : 420;
@@ -439,9 +542,9 @@
     const summary = text(section && section.summary, pricing ? 'Текущий быстрый конфиг рассчитан с ручным коммерческим блоком и без клиентского КП.' : 'Текущий быстрый конфиг рассчитан без цен, клиентов, склада и дефицита.');
     return `<div class="quick-pdf-doc ${orientationClass}" data-pdf-orientation="${orientation}">
       <style>${pdfStyle()}</style>
-      <section class="quick-pdf-hero">
-        <div><div class="quick-pdf-brand"><span>FEG</span> Stage PRO</div><h1>${esc(title)}</h1><p>${esc(summary)}</p></div>
-        <div class="quick-pdf-meta"><b>${esc(KIND_LABELS[normalizedKind])}</b><span>${esc(now.toLocaleString('ru-RU'))}</span><span>${pricing ? 'quick calculator · manual prices' : 'quick calculator · no prices'}</span><span>${esc(orientationLabel(orientation))} ориентация</span></div>
+      <section class="quick-pdf-hero" style="background:#ffffff!important;color:#111827!important;border:1px solid #d9e1ec!important;">
+        <div style="color:#111827!important;"><div class="quick-pdf-brand" style="color:#111827!important;"><span style="color:#8a5a1f!important;">FEG</span> Stage PRO</div><h1 style="color:#111827!important;">${esc(title)}</h1><p style="color:#334155!important;">${esc(summary)}</p></div>
+        <div class="quick-pdf-meta" style="background:#f8fafc!important;color:#111827!important;border:1px solid #d9e1ec!important;"><b style="color:#111827!important;">${esc(KIND_LABELS[normalizedKind])}</b><span style="color:#334155!important;">${esc(now.toLocaleString('ru-RU'))}</span><span style="color:#334155!important;">${pricing ? 'quick calculator · manual prices' : 'quick calculator · no prices'}</span><span style="color:#334155!important;">${esc(orientationLabel(orientation))} ориентация</span></div>
       </section>
       <section class="quick-pdf-summary">${cards.map(card => `<div style="color:#111827!important;background:#ffffff!important;border:1px solid #d9e1ec!important;"><span style="display:block;color:#334155!important;font-size:11px!important;text-transform:uppercase!important;letter-spacing:.04em!important;font-weight:700!important;opacity:1!important;">${esc(card.label)}</span><b style="display:block;color:#111827!important;font-size:18px!important;font-weight:800!important;margin:4px 0!important;opacity:1!important;">${esc(card.value)}</b><small style="display:block;color:#475569!important;font-size:11px!important;line-height:1.25!important;opacity:1!important;">${esc(card.note)}</small></div>`).join('')}</section>
       <section class="quick-pdf-main">
@@ -456,8 +559,8 @@
     return `
       .quick-pdf-doc{font-family:Inter,Arial,sans-serif;color:#111827;background:#fff;padding:24px;width:1120px;box-sizing:border-box;}
       .quick-pdf-doc,.quick-pdf-doc *{color:#111827!important;text-shadow:none!important}.quick-pdf-doc h1,.quick-pdf-doc h2,.quick-pdf-doc h3,.quick-pdf-doc p,.quick-pdf-doc span,.quick-pdf-doc small,.quick-pdf-doc b,.quick-pdf-doc td,.quick-pdf-doc th,.quick-pdf-doc footer{color:#111827!important;}
-      .quick-pdf-hero{display:grid;grid-template-columns:1fr 260px;gap:18px;align-items:stretch;background:#f8fafc;color:#111827;border:1px solid #d9e1ec;border-radius:22px;padding:24px;margin-bottom:16px;}
-      .quick-pdf-brand{font-size:24px;font-weight:900;letter-spacing:.02em;margin-bottom:8px;color:#111827!important}.quick-pdf-brand span{color:#8a5a1f!important}.quick-pdf-hero h1{font-size:30px;line-height:1.12;margin:0 0 8px;color:#111827!important}.quick-pdf-hero p{margin:0;color:#334155!important;font-size:13px;line-height:1.4}.quick-pdf-meta{display:flex;flex-direction:column;gap:8px;background:#fff;border:1px solid #d9e1ec;border-radius:16px;padding:14px;font-size:12px}.quick-pdf-meta b{font-size:18px;color:#111827!important}.quick-pdf-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}.quick-pdf-summary div{border:1px solid #d9e1ec;background:#fff;border-radius:14px;padding:12px;min-height:72px}.quick-pdf-summary span{display:block;color:#334155!important;font-size:11px;text-transform:uppercase;letter-spacing:.04em;font-weight:700!important;opacity:1!important}.quick-pdf-summary b{display:block;color:#111827!important;font-size:18px;margin:4px 0;font-weight:800!important;opacity:1!important}.quick-pdf-summary small{display:block;color:#475569!important;font-size:11px;line-height:1.25;opacity:1!important}.quick-pdf-summary div,.quick-pdf-summary div *{-webkit-text-fill-color:currentColor!important;filter:none!important}.quick-pdf-main{display:grid;grid-template-columns:42% 58%;gap:14px;align-items:start}.quick-pdf-visual,.quick-pdf-kit{border:1px solid #d9e1ec;border-radius:18px;padding:14px;background:#fff;overflow:hidden}.quick-pdf-doc h2{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:#1f2937!important;margin:0 0 10px}.quick-pdf-visual-label{font-size:11px;color:#334155!important;margin-bottom:8px}.quick-pdf-scheme-image-wrap{display:flex;align-items:flex-start;justify-content:flex-start;max-width:100%;overflow:hidden;border:1px solid #d9e1ec;border-radius:14px;background:#fff}.quick-pdf-scheme-image{display:block;object-fit:contain;background:#fff}.quick-pdf-scheme-svg-wrap{max-width:100%;overflow:hidden;border:1px solid #d9e1ec;border-radius:14px;background:#fff;padding:8px;box-sizing:border-box}.quick-pdf-scheme-svg{display:block;max-width:100%;height:auto;background:#fff}.quick-pdf-scheme-svg text{fill:#111827!important;stroke:none!important}.quick-pdf-visual-svg svg{max-width:100%;height:auto;display:block;border-radius:14px}.quick-pdf-visual-svg svg text{fill:#111827!important;stroke:none!important}.quick-pdf-table{width:100%;border-collapse:collapse;font-size:11px;color:#111827!important}.quick-pdf-table th{background:#f1f5f9!important;color:#111827!important;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.04em}.quick-pdf-table th,.quick-pdf-table td{background:#fff!important;border-bottom:1px solid #d9e1ec!important;padding:7px 6px!important;vertical-align:top!important;color:#111827!important}.quick-pdf-table td span{color:#334155!important;font-size:10px}.quick-pdf-empty{border:1px dashed #cbd5e1;border-radius:14px;padding:18px;color:#334155!important;background:#f8fafc;font-size:13px}.quick-pdf-doc-portrait{width:820px;padding:22px}.quick-pdf-doc-portrait .quick-pdf-hero{grid-template-columns:1fr}.quick-pdf-doc-portrait .quick-pdf-summary{grid-template-columns:repeat(2,1fr)}.quick-pdf-doc-portrait .quick-pdf-main{grid-template-columns:1fr}.quick-pdf-doc-portrait .quick-pdf-visual,.quick-pdf-doc-portrait .quick-pdf-kit{padding:12px}.quick-pdf-doc-landscape{width:1120px}footer{margin-top:14px;color:#475569!important;font-size:10px;text-align:right}`;
+      .quick-pdf-hero{display:grid;grid-template-columns:1fr 260px;gap:18px;align-items:stretch;background:#ffffff!important;color:#111827!important;border:1px solid #d9e1ec;border-radius:22px;padding:24px;margin-bottom:16px;}
+      .quick-pdf-brand{font-size:24px;font-weight:900;letter-spacing:.02em;margin-bottom:8px;color:#111827!important}.quick-pdf-brand span{color:#8a5a1f!important}.quick-pdf-hero h1{font-size:30px;line-height:1.12;margin:0 0 8px;color:#111827!important}.quick-pdf-hero p{margin:0;color:#334155!important;font-size:13px;line-height:1.4}.quick-pdf-meta{display:flex;flex-direction:column;gap:8px;background:#f8fafc!important;border:1px solid #d9e1ec;border-radius:16px;padding:14px;font-size:12px;color:#111827!important}.quick-pdf-meta b{font-size:18px;color:#111827!important}.quick-pdf-meta span{color:#334155!important}.quick-pdf-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}.quick-pdf-summary div{border:1px solid #d9e1ec;background:#fff;border-radius:14px;padding:12px;min-height:72px}.quick-pdf-summary span{display:block;color:#334155!important;font-size:11px;text-transform:uppercase;letter-spacing:.04em;font-weight:700!important;opacity:1!important}.quick-pdf-summary b{display:block;color:#111827!important;font-size:18px;margin:4px 0;font-weight:800!important;opacity:1!important}.quick-pdf-summary small{display:block;color:#475569!important;font-size:11px;line-height:1.25;opacity:1!important}.quick-pdf-summary div,.quick-pdf-summary div *{-webkit-text-fill-color:currentColor!important;filter:none!important}.quick-pdf-main{display:grid;grid-template-columns:42% 58%;gap:14px;align-items:start}.quick-pdf-visual,.quick-pdf-kit{border:1px solid #d9e1ec;border-radius:18px;padding:14px;background:#fff;overflow:hidden}.quick-pdf-doc h2{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:#1f2937!important;margin:0 0 10px}.quick-pdf-visual-label{font-size:11px;color:#334155!important;margin-bottom:8px}.quick-pdf-scheme-image-wrap{display:flex;align-items:flex-start;justify-content:flex-start;max-width:100%;overflow:hidden;border:1px solid #d9e1ec;border-radius:14px;background:#fff}.quick-pdf-scheme-image{display:block;object-fit:contain;background:#fff}.quick-pdf-scheme-svg-wrap{max-width:100%;overflow:hidden;border:1px solid #d9e1ec;border-radius:14px;background:#fff;padding:8px;box-sizing:border-box}.quick-pdf-scheme-svg{display:block;max-width:100%;height:auto;background:#fff}.quick-pdf-scheme-svg text{fill:#111827!important;stroke:none!important}.quick-pdf-visual-svg svg{max-width:100%;height:auto;display:block;border-radius:14px}.quick-pdf-visual-svg svg text{fill:#111827!important;stroke:none!important}.quick-pdf-table{width:100%;border-collapse:collapse;font-size:11px;color:#111827!important}.quick-pdf-table th{background:#f1f5f9!important;color:#111827!important;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.04em}.quick-pdf-table th,.quick-pdf-table td{background:#fff!important;border-bottom:1px solid #d9e1ec!important;padding:7px 6px!important;vertical-align:top!important;color:#111827!important}.quick-pdf-table td span{color:#334155!important;font-size:10px}.quick-pdf-empty{border:1px dashed #cbd5e1;border-radius:14px;padding:18px;color:#334155!important;background:#f8fafc;font-size:13px}.quick-pdf-doc-portrait{width:820px;padding:22px}.quick-pdf-doc-portrait .quick-pdf-hero{grid-template-columns:1fr}.quick-pdf-doc-portrait .quick-pdf-summary{grid-template-columns:repeat(2,1fr)}.quick-pdf-doc-portrait .quick-pdf-main{grid-template-columns:1fr}.quick-pdf-doc-portrait .quick-pdf-visual,.quick-pdf-doc-portrait .quick-pdf-kit{padding:12px}.quick-pdf-doc-landscape{width:1120px}footer{margin-top:14px;color:#475569!important;font-size:10px;text-align:right}`;
   }
 
   function ensureHiddenContainer() {
@@ -633,8 +736,9 @@
         { key:'action_html', ok: renderActionHtml('stage').includes('data-quick-pdf-action="stage"'), label:'stage action button is renderable' },
         { key:'pdf_builder', ok: buildSectionPdfHtml('truss', { status:'configured', bomRows:[] }).includes('Сводная таблица комплектации'), label:'section PDF html includes summary table block' },
         { key:'constructor_scheme', ok: buildSectionPdfHtml('stage', { status:'configured', input:{ modules:[{x:0,y:0}], stairs:[] }, result:{ widthMeters:1.2, depthMeters:1.2 }, bomRows:[] }, { schemeSnapshot:{ dataUrl:'data:image/png;base64,AAAA', width:100, height:50 } }).includes('quick-pdf-scheme-svg'), label:'quick PDF uses constructor scheme/fallback, not project visualizer export' },
+        { key:'truss_scheme_fallback', ok: buildSectionPdfHtml('truss', { status:'configured', input:{ items:[{ type:'truss3', x:0, y:0, o:'h' }] }, result:{ physicalBounds:{ width:3, height:0.5 } }, bomRows:[] }).includes('Фермы 3,00 × 0,50 м'), label:'truss PDF has deterministic SVG scheme fallback' },
         { key:'share_modal', ok: typeof openSectionPreview === 'function' && typeof sharePreparedPdf === 'function', label:'preview/share handlers are exposed' },
-        { key:'modal_backdrop', ok: typeof ensureModalStyles === 'function' && QUICK_PDF_EXPORT_VERSION.includes('clean-pricing-auto-orientation'), label:'preview modal is fixed overlay with backdrop' },
+        { key:'modal_backdrop', ok: typeof ensureModalStyles === 'function' && QUICK_PDF_EXPORT_VERSION.includes('truss-scheme'), label:'preview modal is fixed overlay with backdrop' },
         { key:'pricing_codes_hidden', ok: !buildSectionPdfHtml('truss', { quickPricing:{ enabled:true, visible:true, rows:[{ code:'TRUSS-QPRICE-RENTAL', name:'Фермы · прокат конструкции', qty:1, unit:'компл.', unitPrice:1000, total:1000 }], total:1000 }, bomRows:[] }).includes('TRUSS-QPRICE-RENTAL'), label:'quick PDF hides technical pricing codes in visible tables' },
         { key:'auto_orientation', ok: resolvePdfOrientation('truss', { bomRows:new Array(24).fill(0).map((_, i) => ({ name:'row '+i, qty:1 })) }) === 'p', label:'long quick PDF table switches to portrait orientation' }
       ]

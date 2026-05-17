@@ -1,0 +1,319 @@
+.v4-quick-modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 3000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 18px !important;
+  background: rgba(0,0,0,0.72) !important;
+  backdrop-filter: blur(12px);
+}
+
+.v4-quick-modal,
+.feg-constructor-modal {
+  width: min(1480px, calc(100vw - 36px)) !important;
+  max-height: min(920px, calc(100dvh - 36px)) !important;
+  background: var(--feg-surface) !important;
+  color: var(--feg-text) !important;
+  border: 1px solid var(--feg-border) !important;
+  border-radius: var(--feg-radius-xl) !important;
+  box-shadow: var(--feg-shadow) !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.v4-quick-modal-head,
+.feg-constructor-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: var(--feg-gap-md) !important;
+  padding: 14px 16px !important;
+  border-bottom: 1px solid var(--feg-border) !important;
+  background: linear-gradient(180deg, #12151A, #0D0F12) !important;
+  flex: 0 0 auto !important;
+}
+
+.v4-quick-modal-head h3,
+.feg-constructor-title {
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  color: var(--feg-text) !important;
+  margin: 0 !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.close-modal,
+.v4-quick-modal-head .close-modal {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  border-radius: 14px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  font-size: 24px !important;
+  background: var(--feg-panel-2) !important;
+}
+
+.v4-quick-modal-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: auto !important;
+  padding: 14px !important;
+  background: var(--feg-bg-2) !important;
+}
+
+.v4-structure-editor,
+.v4-led-constructor,
+.v4-quick-config {
+  max-width: 100%;
+  color: var(--feg-text) !important;
+}
+
+.v4-structure-toolbar,
+.v4-led-grid-head,
+.v4-truss-template-head {
+  border-color: var(--feg-border) !important;
+  color: var(--feg-text) !important;
+}
+
+.v4-truss-zoom-panel,
+.v4-stage-zoom-panel,
+.v4-led-zoom-panel {
+  display: grid !important;
+  grid-template-columns: minmax(150px, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 10px !important;
+  margin: 10px 0 !important;
+}
+
+.v4-truss-zoom-panel > div:first-child,
+.v4-stage-zoom-panel > div:first-child,
+.v4-led-zoom-panel > div:first-child {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.v4-truss-zoom-panel b,
+.v4-stage-zoom-panel b,
+.v4-led-zoom-panel b {
+  color: var(--feg-text) !important;
+  font-size: 13px;
+}
+
+.v4-truss-zoom-panel span,
+.v4-stage-zoom-panel span,
+.v4-led-zoom-panel span {
+  color: var(--feg-cyan) !important;
+  font-weight: 800;
+}
+
+.v4-truss-zoom-controls,
+.v4-stage-zoom-controls,
+.v4-led-zoom-controls {
+  display: grid !important;
+  grid-template-columns: auto minmax(120px, 1fr) auto auto auto auto;
+  gap: 8px !important;
+  align-items: center !important;
+  min-width: 0;
+}
+
+.v4-truss-zoom-controls input[type="range"],
+.v4-stage-zoom-controls input[type="range"],
+.v4-led-zoom-controls input[type="range"] {
+  min-width: 0 !important;
+  width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.v4-stage-canvas-wrap,
+.v4-truss-field-wrap,
+.v4-led-grid-wrap {
+  max-width: 100%;
+  overflow: auto !important;
+  border: 1px solid rgba(86,199,216,0.24) !important;
+  border-radius: var(--feg-radius-lg) !important;
+  background:
+    linear-gradient(rgba(86,199,216,0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(86,199,216,0.055) 1px, transparent 1px),
+    var(--feg-field) !important;
+  background-size: 22px 22px !important;
+  overscroll-behavior: contain;
+  touch-action: pan-x pan-y;
+}
+
+.v4-visual-stage-grid,
+.v4-truss-field,
+.v4-led-grid {
+  max-width: none !important;
+}
+
+.v4-stage-cell,
+.v4-led-cell,
+.v4-truss-grid-cell {
+  touch-action: none;
+}
+
+.v4-led-cell.filled,
+.v4-stage-cell.selected {
+  border-color: rgba(243,198,78,0.75) !important;
+}
+
+[data-v4-bom-inspector],
+[data-v4-quick-visual-preview] {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .v4-quick-modal-backdrop {
+    padding: 0 !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
+  }
+
+  .v4-quick-modal,
+  .feg-constructor-modal {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  .v4-quick-modal-head,
+  .feg-constructor-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 20 !important;
+    padding: calc(env(safe-area-inset-top, 0px) + 10px) 12px 10px !important;
+  }
+
+  .v4-quick-modal-head h3,
+  .feg-constructor-title {
+    font-size: 18px !important;
+  }
+
+  .v4-quick-modal-body {
+    padding: 10px !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .v4-structure-toolbar p,
+  .v4-stage-draw-help,
+  .v4-truss-workspace > p.v4-muted,
+  .v4-led-panel-block > p.v4-muted,
+  .v4-truss-template-panel > small.v4-muted,
+  .v4-template-actions small.v4-muted,
+  [data-v4-bom-inspector],
+  [data-v4-quick-visual-preview],
+  .v4-led-construction-report .v4-kicker,
+  .v4-led-construction-report [class*="bridge"],
+  .v4-bom-contract-card,
+  .v4-shared-bom-card,
+  .v4-stage-bridge-card {
+    display: none !important;
+  }
+
+  .v4-truss-zoom-panel,
+  .v4-stage-zoom-panel,
+  .v4-led-zoom-panel {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+    padding: 9px !important;
+    margin: 8px 0 !important;
+  }
+
+  .v4-truss-zoom-controls,
+  .v4-stage-zoom-controls,
+  .v4-led-zoom-controls {
+    grid-template-columns: 34px minmax(0, 1fr) 34px !important;
+    grid-auto-rows: minmax(34px, auto);
+  }
+
+  .v4-truss-zoom-controls > button:nth-of-type(n+3),
+  .v4-stage-zoom-controls > button:nth-of-type(n+3),
+  .v4-led-zoom-controls > button:nth-of-type(n+3),
+  .v4-truss-autofit,
+  .v4-stage-autofit,
+  .v4-led-autofit {
+    grid-column: auto !important;
+  }
+
+  .v4-truss-zoom-controls button[data-truss-zoom-action="fit"],
+  .v4-stage-zoom-controls button[data-stage-zoom-action="fit"],
+  .v4-led-zoom-controls button[data-led-zoom-action="fit"] { grid-column: 1 / 2; }
+
+  .v4-truss-zoom-controls button[data-truss-zoom-action="center"],
+  .v4-stage-zoom-controls button[data-stage-zoom-action="center"],
+  .v4-led-zoom-controls button[data-led-zoom-action="center"] { grid-column: 2 / 3; }
+
+  .v4-truss-autofit,
+  .v4-stage-autofit,
+  .v4-led-autofit {
+    grid-column: 3 / 4 !important;
+    min-width: 0;
+    display: inline-flex !important;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px !important;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .v4-stage-canvas-wrap,
+  .v4-truss-field-wrap,
+  .v4-led-grid-wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 56dvh !important;
+    min-height: 300px !important;
+  }
+}
+
+
+.v4-structure-editor {
+  display: grid;
+  gap: 12px;
+}
+
+.v4-stage-canvas-wrap,
+.v4-truss-field-wrap,
+.v4-led-grid-wrap {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), inset 0 0 0 1px rgba(86,199,216,0.08), 0 12px 26px rgba(0,0,0,0.18) !important;
+}
+
+.v4-truss-zoom-panel,
+.v4-stage-zoom-panel,
+.v4-led-zoom-panel {
+  border-radius: var(--feg-radius-lg) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  background: linear-gradient(180deg, rgba(20,23,28,0.98), rgba(13,15,18,0.98)) !important;
+}
+
+.v4-stage-zoom-controls label,
+.v4-truss-zoom-controls label,
+.v4-led-zoom-controls label {
+  min-height: 38px;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px;
+  padding: 0 10px;
+  border-radius: var(--feg-radius-sm);
+  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--feg-panel-2);
+  color: var(--feg-text-2) !important;
+}

@@ -1,0 +1,97 @@
+@media (max-width: 768px) {
+  .v4-grid-2,
+  .v4-grid-3,
+  .v4-grid-4,
+  .v4-doc-actions,
+  .v4-actions {
+    max-width: 100% !important;
+  }
+
+  .v4-grid-3 {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .v4-doc-actions,
+  .v4-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .v4-doc-actions button,
+  .v4-actions button {
+    flex: 1 1 auto;
+    min-width: min(100%, 120px);
+  }
+
+  .v4-field,
+  label,
+  input,
+  select,
+  textarea {
+    min-width: 0 !important;
+  }
+
+  .v4-field span,
+  .v4-field small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .v4-table-wrap,
+  .table-wrap,
+  .bom-table-wrap,
+  .summary-table-wrap {
+    overflow-x: auto !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1180px) {
+  .feg-home-shell,
+  .v4-quick-panel,
+  .v4-truss-layout,
+  .v4-led-workbench {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .v4-stage-controls-layout,
+  .v4-truss-template-split {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+
+@media (max-width: 768px) {
+  [data-stage-summary] .v4-summary-grid,
+  [data-truss-summary] .v4-summary-grid,
+  [data-led-result] .v4-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+
+/* v3.1.5 — mobile order: load check stays below scale controls. */
+@media (max-width: 768px) {
+  body.v4-only-body.quick-standalone-body .feg-hero-card {
+    min-height: 96px !important;
+    display: grid !important;
+    place-items: center !important;
+  }
+  body.v4-only-body.quick-standalone-body .feg-hero-art {
+    min-height: 0 !important;
+    max-height: 92px !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-truss-load-slot {
+    order: 3 !important;
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-truss-load-slot .v4-load-indicator {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}

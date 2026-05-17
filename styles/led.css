@@ -1,0 +1,273 @@
+.v4-led-constructor {
+  padding: 14px !important;
+  display: grid;
+  gap: var(--feg-gap-md);
+}
+
+.v4-led-constructor > h3,
+.v4-led-constructor > p {
+  margin-top: 0 !important;
+}
+
+.v4-led-workbench {
+  display: grid !important;
+  grid-template-columns: minmax(280px, 360px) minmax(520px, 1fr);
+  gap: var(--feg-gap-md) !important;
+  align-items: start;
+}
+
+.v4-led-side-panel,
+.v4-led-canvas-panel {
+  min-width: 0;
+}
+
+.v4-led-side-panel {
+  display: grid;
+  gap: var(--feg-gap-md);
+}
+
+.v4-led-template-grid,
+.v4-led-panel-block .v4-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px !important;
+}
+
+.v4-led-canvas-panel {
+  padding: 12px !important;
+}
+
+.v4-led-grid-wrap {
+  min-height: 470px;
+  padding: 10px;
+}
+
+.v4-led-parts-list {
+  display: grid;
+  gap: 6px;
+}
+
+.v4-led-part-chip {
+  width: 100%;
+  justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .v4-led-constructor,
+  .v4-led-workbench,
+  .v4-led-side-panel,
+  .v4-led-canvas-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .v4-led-constructor {
+    padding: 10px !important;
+  }
+
+  .v4-led-constructor > p.v4-muted {
+    display: none !important;
+  }
+
+  .v4-led-constructor > .v4-grid-3 {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .v4-led-workbench {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .v4-led-template-grid,
+  .v4-led-panel-block .v4-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .v4-led-grid-wrap {
+    min-height: 320px !important;
+    max-height: 56dvh !important;
+  }
+
+  [data-led-result] .v4-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  [data-led-result] .v4-mini {
+    padding: 8px !important;
+  }
+}
+
+
+/* v3.1.21 — LED active construction color/selection rhythm.
+   Shared LED component styling: active select, active indicator and construction chips. */
+.v4-led-panel-block.has-led-active-construction {
+  border-color: rgba(243,198,78,.34) !important;
+  box-shadow: 0 0 0 1px rgba(243,198,78,.08) inset !important;
+}
+
+.v4-led-active-field select.active,
+.v4-led-active-field select.is-active,
+.v4-led-panel-block[data-led-active-color] [data-led-active] {
+  border-color: rgba(243,198,78,.68) !important;
+  background:
+    linear-gradient(90deg, var(--feg-led-active-color, rgba(243,198,78,.26)) 0 5px, transparent 5px),
+    var(--feg-field) !important;
+  box-shadow: 0 0 0 2px rgba(243,198,78,.10) inset !important;
+  color: var(--feg-text) !important;
+  font-weight: 800 !important;
+}
+
+.v4-led-active-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 30px;
+  margin: 2px 0 8px;
+  padding: 7px 9px;
+  border: 1px solid rgba(148,163,184,.18);
+  border-radius: 11px;
+  background: rgba(255,255,255,.035);
+  color: var(--feg-text);
+  min-width: 0;
+}
+
+.v4-led-active-indicator b {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.v4-led-active-indicator em {
+  color: var(--feg-text-2);
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.v4-led-color-dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border-radius: 999px;
+  background: var(--feg-led-dot, #67e8f9);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--feg-led-dot, #67e8f9) 22%, transparent);
+}
+
+.v4-led-part-chip {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  border-left-width: 4px !important;
+  border-left-color: var(--feg-led-dot, #67e8f9) !important;
+}
+
+.v4-led-part-chip.active,
+.v4-led-part-chip.is-active {
+  background: linear-gradient(135deg, rgba(243,198,78,.16), rgba(255,255,255,.045)) !important;
+  border-color: rgba(243,198,78,.78) !important;
+  border-left-color: var(--feg-led-dot, #67e8f9) !important;
+  color: var(--feg-gold-2) !important;
+  box-shadow: 0 0 0 2px rgba(243,198,78,.14) inset !important;
+}
+
+.v4-led-part-chip.active b,
+.v4-led-part-chip.is-active b {
+  color: #fff4d6 !important;
+}
+
+.v4-led-part-chip span:not(.v4-led-color-dot) {
+  justify-self: end;
+}
+
+/* Semantic LED palette reused by grid cells, chips, active selector and indicator. */
+.v4-led-part-chip.color-main,
+.v4-led-cell.color-main,
+.v4-led-color-dot.color-main,
+.v4-led-panel-block[data-led-active-color="main"],
+[data-led-active][data-active-color="main"] {
+  --feg-led-dot: #60a5fa;
+  --feg-led-active-color: rgba(96,165,250,.30);
+}
+
+.v4-led-part-chip.color-side,
+.v4-led-cell.color-side,
+.v4-led-color-dot.color-side,
+.v4-led-panel-block[data-led-active-color="side"],
+[data-led-active][data-active-color="side"] {
+  --feg-led-dot: #86efac;
+  --feg-led-active-color: rgba(134,239,172,.28);
+}
+
+.v4-led-part-chip.color-side2,
+.v4-led-cell.color-side2,
+.v4-led-color-dot.color-side2,
+.v4-led-panel-block[data-led-active-color="side2"],
+[data-led-active][data-active-color="side2"] {
+  --feg-led-dot: #c4b5fd;
+  --feg-led-active-color: rgba(196,181,253,.30);
+}
+
+.v4-led-part-chip.color-top,
+.v4-led-cell.color-top,
+.v4-led-color-dot.color-top,
+.v4-led-panel-block[data-led-active-color="top"],
+[data-led-active][data-active-color="top"] {
+  --feg-led-dot: #fdba74;
+  --feg-led-active-color: rgba(253,186,116,.30);
+}
+
+.v4-led-part-chip.color-bottom,
+.v4-led-cell.color-bottom,
+.v4-led-color-dot.color-bottom,
+.v4-led-panel-block[data-led-active-color="bottom"],
+[data-led-active][data-active-color="bottom"] {
+  --feg-led-dot: #f9a8d4;
+  --feg-led-active-color: rgba(249,168,212,.30);
+}
+
+.v4-led-part-chip.color-custom,
+.v4-led-cell.color-custom,
+.v4-led-color-dot.color-custom,
+.v4-led-panel-block[data-led-active-color="custom"],
+[data-led-active][data-active-color="custom"] {
+  --feg-led-dot: #67e8f9;
+  --feg-led-active-color: rgba(103,232,249,.28);
+}
+
+@media (max-width: 768px) {
+  .v4-led-active-indicator {
+    min-height: 26px;
+    padding: 6px 8px;
+    margin: 1px 0 7px;
+  }
+
+  .v4-led-active-indicator b {
+    font-size: 10px;
+  }
+
+  .v4-led-active-indicator em {
+    font-size: 9px;
+  }
+
+  .v4-led-part-chip {
+    min-height: 30px;
+    padding: 6px 8px !important;
+    border-radius: 9px !important;
+  }
+
+  .v4-led-part-chip b,
+  .v4-led-part-chip span:not(.v4-led-color-dot) {
+    font-size: 9px !important;
+  }
+}

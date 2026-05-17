@@ -1,0 +1,81 @@
+@media (min-width: 1181px) {
+  .v4-quick-modal-body {
+    padding: 16px !important;
+  }
+
+  .v4-structure-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .v4-stage-template-panel,
+  .v4-truss-template-panel,
+  .v4-led-constructor {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
+  }
+
+  .v4-stage-canvas-wrap,
+  .v4-truss-field-wrap,
+  .v4-led-grid-wrap {
+    min-height: 500px;
+  }
+}
+
+
+/* v3.1.5 — clean workspace, desktop scroll restore, compact FEG 3.0 artwork, load check inside scale panel. */
+@media (min-width: 769px) {
+  html,
+  body.v4-only-body.quick-standalone-body {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+  body.v4-only-body.quick-standalone-body #quickStandalonePage {
+    min-height: 100dvh !important;
+    overflow: visible !important;
+  }
+  body.v4-only-body.quick-standalone-body .standalone-window,
+  body.v4-only-body.quick-standalone-body .standalone-body,
+  body.v4-only-body.quick-standalone-body .standalone-main,
+  body.v4-only-body.quick-standalone-body #quickStandaloneMount,
+  body.v4-only-body.quick-standalone-body .standalone-mount,
+  body.v4-only-body.quick-standalone-body .feg-dashboard,
+  body.v4-only-body.quick-standalone-body .feg-workspace-shell,
+  body.v4-only-body.quick-standalone-body .feg-workspace-stage,
+  body.v4-only-body.quick-standalone-body .feg-workspace-body {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  body.v4-only-body.quick-standalone-body .feg-hero-card {
+    min-height: 150px !important;
+    display: grid !important;
+    place-items: center !important;
+  }
+  body.v4-only-body.quick-standalone-body .feg-hero-art {
+    min-height: 0 !important;
+    max-height: 150px !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-truss-zoom-panel {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-truss-load-slot {
+    order: -1 !important;
+    flex: 0 0 min(260px, 28vw) !important;
+    min-width: 0 !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-truss-zoom-panel > div:first-child {
+    order: 0 !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-truss-zoom-controls {
+    order: 1 !important;
+    flex: 1 1 auto !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-truss-load-slot .v4-load-indicator {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}

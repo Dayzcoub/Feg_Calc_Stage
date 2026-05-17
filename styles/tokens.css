@@ -1,0 +1,37 @@
+:root {
+  --feg-bg: #07090B;
+  --feg-bg-2: #090B0E;
+  --feg-surface: #0D0F12;
+  --feg-surface-2: #101318;
+  --feg-panel: #121417;
+  --feg-panel-2: #171A1F;
+  --feg-panel-3: #1C2026;
+  --feg-field: #0A0C0F;
+  --feg-border: #272B31;
+  --feg-border-strong: #3A4048;
+  --feg-border-soft: rgba(255,255,255,0.08);
+  --feg-text: #F2F4F7;
+  --feg-text-2: #A6ADB8;
+  --feg-text-muted: #707783;
+  --feg-text-disabled: #4E545D;
+  --feg-gold: #F3C64E;
+  --feg-gold-2: #FFD86B;
+  --feg-gold-dark: #B98220;
+  --feg-green: #20C878;
+  --feg-cyan: #56C7D8;
+  --feg-red: #F05A5A;
+  --feg-warning: #FFB84A;
+  --feg-radius-xs: 8px;
+  --feg-radius-sm: 10px;
+  --feg-radius-md: 14px;
+  --feg-radius-lg: 18px;
+  --feg-radius-xl: 24px;
+  --feg-gap-xs: 4px;
+  --feg-gap-sm: 8px;
+  --feg-gap-md: 12px;
+  --feg-gap-lg: 16px;
+  --feg-gap-xl: 24px;
+  --feg-shadow: 0 18px 60px rgba(0,0,0,0.45);
+  --feg-shadow-soft: 0 10px 32px rgba(0,0,0,0.32);
+  --feg-font: Inter, SF Pro Display, SF Pro Text, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}

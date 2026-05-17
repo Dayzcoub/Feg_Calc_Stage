@@ -1848,6 +1848,25 @@ body.v4-only-body .v4-project-crew-row .btn-secondary {
   body.v4-only-body .v4-site-field--wide { grid-column:auto !important; }
   body.v4-only-body .v4-site-checklist-list { position:static !important; }
 }
+
+/* v3.1.5 load slot inside truss scale panel. */
+body.v4-only-body .v4-truss-load-slot {
+  min-width:0 !important;
+}
+body.v4-only-body .v4-truss-load-slot .v4-load-indicator {
+  width:100% !important;
+  min-width:0 !important;
+}
+@media (min-width: 769px) {
+  body.v4-only-body .v4-truss-zoom-panel { display:flex !important; align-items:center !important; gap:10px !important; }
+  body.v4-only-body .v4-truss-load-slot { order:-1 !important; flex:0 0 min(260px, 28vw) !important; }
+  body.v4-only-body .v4-truss-zoom-panel > div:first-child { order:0 !important; }
+  body.v4-only-body .v4-truss-zoom-controls { order:1 !important; flex:1 1 auto !important; }
+}
+@media (max-width: 768px) {
+  body.v4-only-body .v4-truss-load-slot { order:3 !important; flex:1 1 100% !important; width:100% !important; }
+}
+
 `;
 
   function inject() {

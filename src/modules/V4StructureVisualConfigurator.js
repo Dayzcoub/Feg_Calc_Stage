@@ -6,7 +6,7 @@
   'use strict';
   const GLOBAL = typeof window !== 'undefined' ? window : globalThis;
   const ROOT = (GLOBAL.FEGModules = GLOBAL.FEGModules || {});
-  const VERSION = '3.15.51';
+  const VERSION = '3.15.52';
   const DEFAULT_STAGE_GRID_COLS = 14;
   const DEFAULT_STAGE_GRID_ROWS = 10;
   const DEFAULT_STAGE_HEIGHT_M = 0.8;
@@ -39,11 +39,11 @@
     if (!mod || !quickPricingVisible('stage', opts || {})) return '';
     const values = mod.fieldsFromPricing ? mod.fieldsFromPricing('stage', quickPricingSource(input || {}), opts || {}) : { visible:true, unitPrice:850, installCost:3500, deliveryCost:4000 };
     if (!values || values.visible === false) return '';
-    return `<div class="v4-stage-control-stack v4-stage-control-stack--pricing" data-stage-pricing-panel>
-      <div class="v4-kicker">стоимость быстрого расчёта</div>
-      <label class="v4-field">Стоимость за 1 модуль, ₽<input data-stage-pricing="quickUnitPrice" type="number" min="0" step="50" value="${attr(values.unitPrice)}"></label>
-      <label class="v4-field">Монтаж, ₽<input data-stage-pricing="quickInstallCost" type="number" min="0" step="100" value="${attr(values.installCost)}"></label>
-      <label class="v4-field">Доставка, ₽<input data-stage-pricing="quickDeliveryCost" type="number" min="0" step="100" value="${attr(values.deliveryCost)}"><small>Коммерческий блок скрывается для ролей без права цен.</small></label>
+    return `<div class="v4-stage-control-stack v4-stage-control-stack--pricing feg-control-grid feg-control-grid--3" data-stage-pricing-panel>
+      <div class="v4-kicker feg-control-section-title">стоимость быстрого расчёта</div>
+      <label class="v4-field v4-field--price-unit">1 модуль, ₽<input data-stage-pricing="quickUnitPrice" type="number" min="0" step="50" value="${attr(values.unitPrice)}"></label>
+      <label class="v4-field v4-field--price-install">Монтаж, ₽<input data-stage-pricing="quickInstallCost" type="number" min="0" step="100" value="${attr(values.installCost)}"></label>
+      <label class="v4-field v4-field--price-delivery">Доставка, ₽<input data-stage-pricing="quickDeliveryCost" type="number" min="0" step="100" value="${attr(values.deliveryCost)}"><small>Коммерческий блок скрывается для ролей без права цен.</small></label>
     </div>`;
   }
   function readStageQuickPricing(root, opts) {
@@ -165,6 +165,21 @@
   }
   function optionHtml(items, selected) {
     return (Array.isArray(items) ? items : []).map(item => `<option value="${attr(item.key)}"${String(selected || '') === String(item.key) ? ' selected' : ''}>${esc(item.label || item.key)}</option>`).join('');
+  }
+
+  const STAGE_COMPACT_OPTION_LABELS = Object.freeze({
+    deck:Object.freeze({ stage_deck_1200:'1.2×1.2 м' }),
+    support:Object.freeze({ stage_support_low:'Низкий', stage_support_middle:'Регулируемый', stage_support_high:'Высокий' }),
+    edge:Object.freeze({ fabric_skirt:'Тканевая юбка', raus_banner:'Раус-баннер' })
+  });
+
+  function stageOptionHtml(kind, items, selected) {
+    const dict = STAGE_COMPACT_OPTION_LABELS[kind] || {};
+    return (Array.isArray(items) ? items : []).map(item => {
+      const full = item && (item.label || item.key) || '';
+      const label = dict[item && item.key] || full;
+      return `<option value="${attr(item.key)}" title="${attr(full)}"${String(selected || '') === String(item.key) ? ' selected' : ''}>${esc(label)}</option>`;
+    }).join('');
   }
 
   function subrentorRows() {
@@ -429,61 +444,33 @@
     root._v4StructureVisual = { kind:'stage', state, options:opts };
     root.innerHTML = `
       <div class="v4-structure-editor v4-structure-stage v4-stage-polish" data-v4-structure-stage>
-        ${compactQuote ? '' : `<div class="v4-structure-toolbar">
-          <div>
-            <div class="v4-kicker">${esc('technician quick stage configurator')}</div>
-            <h4>${esc(opts.title || 'Сцена · визуальный конструктор')}</h4>
-            <p class="v4-muted">Сцена v4 теперь работает как чистый блочный конструктор: добавляй/удаляй модули, собирай пресеты, а BOM сразу идёт в общий контракт STG-901…911.</p>
-          </div>
-        </div>`}
-        <div class="v4-stage-template-panel">
+        <div class="v4-stage-template-panel feg-control-panel">
           <div class="v4-truss-template-head">
             <div class="v4-kicker">быстрое построение сцены</div>
             <div class="v4-truss-mode-pill v4-stage-draw-pill" data-stage-draw-label>Клик / протяжка: добавить или удалить</div>
           </div>
           <div class="v4-stage-controls-layout">
-            <div class="v4-stage-control-stack v4-stage-control-stack--build">
-              <label class="v4-field">Тип настила<select data-stage-deck>${optionHtml(stageCatalog().deckVariants, input.deckKey || 'stage_deck_1200')}</select></label>
-              <label class="v4-field">Тип столбов<select data-stage-support>${optionHtml(stageCatalog().supportVariants, initialSupportKey)}</select></label>
+            <div class="v4-stage-control-stack v4-stage-control-stack--build feg-control-grid feg-control-grid--rows">
+              <label class="v4-field v4-field--deck">Тип настила<select data-stage-deck>${stageOptionHtml('deck', stageCatalog().deckVariants, input.deckKey || 'stage_deck_1200')}</select></label>
+              <label class="v4-field v4-field--support">Тип столбов<select data-stage-support>${stageOptionHtml('support', stageCatalog().supportVariants, initialSupportKey)}</select></label>
               <div class="v4-stage-frame-auto-card v4-stage-frame-auto-card--compact">
                 <input type="hidden" data-stage-frame value="${attr(initialFrameKey)}">
                 <span>Перекладина</span>
                 <b data-stage-frame-label>${esc(stageFrameLabelForKey(initialFrameKey))}</b>
-                <small data-stage-frame-dependency-note class="v4-stage-frame-note">${esc(stageFrameDependencyText(initialSupportKey))}</small>
               </div>
             </div>
-            <div class="v4-stage-control-stack v4-stage-control-stack--dimensions">
-              <label class="v4-field">Ширина, мод.<input data-stage-preset="w" type="number" min="1" step="1" value="${attr(input.widthModules || 4)}"></label>
-              <label class="v4-field">Глубина, мод.<input data-stage-preset="d" type="number" min="1" step="1" value="${attr(input.depthModules || 3)}"></label>
-              <label class="v4-field">Высота сцены, м<input data-stage-height type="number" min="0" step="0.1" value="${attr(initialHeightM)}"><small data-stage-height-default-note>${esc(stageHeightDefaultText(initialSupportKey))}</small></label>
+            <div class="v4-stage-control-stack v4-stage-control-stack--dimensions feg-control-grid feg-control-grid--3">
+              <label class="v4-field v4-field--width">Ширина, мод.<input data-stage-preset="w" type="number" min="1" step="1" value="${attr(input.widthModules || 4)}"></label>
+              <label class="v4-field v4-field--depth">Глубина, мод.<input data-stage-preset="d" type="number" min="1" step="1" value="${attr(input.depthModules || 3)}"></label>
+              <label class="v4-field v4-field--height">Высота сцены, м<input data-stage-height type="number" min="0" step="0.1" value="${attr(initialHeightM)}"><small data-stage-height-default-note>${esc(stageHeightDefaultText(initialSupportKey))}</small></label>
             </div>
-            <div class="v4-stage-control-stack v4-stage-control-stack--closure">
+            <div class="v4-stage-control-stack v4-stage-control-stack--closure feg-control-grid feg-control-grid--2">
               <label class="v4-stage-check v4-stage-check--edge"><input data-stage-edge-enabled type="checkbox"${opts.input && opts.input.edgeClosureEnabled ? ' checked' : ''}> Включить закрытие торцов</label>
-              <label class="v4-field">Тип закрытия торцов<select data-stage-edge-type>${optionHtml(stageCatalog().edgeClosureVariants, opts.input && opts.input.edgeClosureType || 'fabric_skirt')}</select></label>
+              <label class="v4-field v4-field--edge-type"><span class="v4-field-label">Тип закрытия торцов</span><select data-stage-edge-type>${stageOptionHtml('edge', stageCatalog().edgeClosureVariants, opts.input && opts.input.edgeClosureType || 'fabric_skirt')}</select></label>
             </div>
             ${renderQuickStagePricingControls(input, opts)}
           </div>
-          <div class="v4-stage-secondary-layout">
-            <div class="v4-stage-tool-box">
-              <span>Блок построения</span>
-              <div class="v4-stage-tool-buttons">
-                <button type="button" data-stage-tool="deck">Настил</button>
-                <button type="button" data-stage-tool="stair">Лестница</button>
-              </div>
-            </div>
-            <div class="v4-stage-draw-help"><b>Рисование как в v3:</b> в режиме «Настил» клик добавляет/удаляет настил. В режиме «Лестница» клик ставит/убирает отдельный блок лестницы на плане.</div>
-          </div>
-          <div class="v4-template-actions">
-            <button type="button" class="btn-secondary" data-stage-action="rect">Собрать прямоугольник</button>
-            <button type="button" class="btn-secondary" data-stage-action="walkway">Полоса / подиум</button>
-            <button type="button" class="btn-secondary" data-stage-template="2x2">2×2</button>
-            <button type="button" class="btn-secondary" data-stage-template="4x3">4×3</button>
-            <button type="button" class="btn-secondary" data-stage-template="6x4">6×4</button>
-            <small class="v4-muted">Пресеты сначала очищают поле, затем строят сцену. Размер поля расширяется автоматически.</small>
-            <button type="button" class="btn-secondary danger v4-stage-clear-action" data-stage-action="clear">Очистить</button>
-          </div>
-        </div>
-        ${compactQuote ? '' : `<div class="v4-truss-zoom-panel v4-stage-zoom-panel" data-stage-zoom-panel>
+          ${compactQuote ? '' : `<div class="v4-truss-zoom-panel v4-stage-zoom-panel" data-stage-zoom-panel>
           <div><b>Масштаб поля</b><span data-stage-zoom-value>100%</span></div>
           <div class="v4-truss-zoom-controls v4-stage-zoom-controls">
             <button type="button" class="v4-icon-btn" data-stage-zoom-action="out" title="Уменьшить масштаб" aria-label="Уменьшить масштаб">−</button>
@@ -494,9 +481,37 @@
             <label class="v4-truss-autofit v4-stage-autofit"><input data-stage-autofit type="checkbox" checked> авто-fit</label>
           </div>
         </div>`}
+          <div class="v4-stage-secondary-layout">
+            <div class="v4-stage-tool-box">
+              <span>Блок построения</span>
+              <div class="v4-stage-tool-buttons">
+                <button type="button" data-stage-tool="deck">Настил</button>
+                <button type="button" data-stage-tool="stair">Лестница</button>
+                <button type="button" class="danger v4-stage-clear-action v4-stage-clear-action--toolbar" data-stage-action="clear">Очистить</button>
+              </div>
+            </div>
+            <div class="v4-stage-draw-help"><b>Рисование как в v3:</b> в режиме «Настил» клик добавляет/удаляет настил. В режиме «Лестница» клик ставит/убирает отдельный блок лестницы на плане.</div>
+          </div>
+          <div class="v4-template-actions">
+            <button type="button" class="btn-secondary v4-stage-preset-btn v4-stage-preset-btn--rect" data-stage-action="rect"><span class="v4-stage-preset-icon" aria-hidden="true">▭</span><span>Собрать прямоугольник</span></button>
+            <button type="button" class="btn-secondary v4-stage-preset-btn v4-stage-preset-btn--walkway" data-stage-action="walkway"><span class="v4-stage-preset-icon" aria-hidden="true">▬</span><span>Полоса / подиум</span></button>
+            <button type="button" class="btn-secondary v4-stage-preset-btn v4-stage-preset-btn--2x2" data-stage-template="2x2"><span class="v4-stage-preset-icon" aria-hidden="true">⊞</span><span>2×2</span></button>
+            <button type="button" class="btn-secondary v4-stage-preset-btn v4-stage-preset-btn--4x3" data-stage-template="4x3"><span class="v4-stage-preset-icon" aria-hidden="true">▦</span><span>4×3</span></button>
+            <button type="button" class="btn-secondary v4-stage-preset-btn v4-stage-preset-btn--6x4" data-stage-template="6x4"><span class="v4-stage-preset-icon" aria-hidden="true">▩</span><span>6×4</span></button>
+            <small class="v4-muted">Пресеты сначала очищают поле, затем строят сцену. Размер поля расширяется автоматически.</small>
+            <button type="button" class="btn-secondary danger v4-stage-clear-action v4-stage-clear-action--templates" data-stage-action="clear">Очистить</button>
+          </div>
+        </div>
         <div class="v4-stage-canvas-wrap" data-stage-canvas-wrap><div class="v4-visual-stage-grid" data-stage-grid></div></div>
         <div data-stage-summary></div>
       </div>`;
+    syncStageResponsiveToolOrder(root);
+    if (typeof window !== 'undefined' && !root._v4StageResponsiveToolOrderBound) {
+      root._v4StageResponsiveToolOrderBound = true;
+      const syncResponsiveOrder = () => syncStageResponsiveToolOrder(root);
+      window.addEventListener('resize', syncResponsiveOrder, { passive:true });
+      if (window.visualViewport && window.visualViewport.addEventListener) window.visualViewport.addEventListener('resize', syncResponsiveOrder, { passive:true });
+    }
     root.querySelectorAll('[data-stage-action]').forEach(btn => btn.addEventListener('click', () => handleStageAction(root, btn.getAttribute('data-stage-action'))));
     root.querySelectorAll('[data-stage-zoom-action]').forEach(btn => btn.addEventListener('click', () => handleStageZoomAction(root, btn.getAttribute('data-stage-zoom-action'))));
     root.querySelectorAll('[data-stage-zoom]').forEach(input => input.addEventListener('input', () => {
@@ -556,6 +571,30 @@
   }
 
 
+  function isStagePreDesktopLayout() {
+    if (typeof window === 'undefined' || !window.matchMedia) return false;
+    return window.matchMedia('(max-width: 1179px)').matches;
+  }
+
+  function syncStageResponsiveToolOrder(root) {
+    if (!root || !root.querySelector) return;
+    const panel = root.querySelector('.v4-stage-template-panel');
+    const secondary = root.querySelector('.v4-stage-secondary-layout');
+    const actions = root.querySelector('.v4-template-actions');
+    const canvas = root.querySelector('[data-stage-canvas-wrap]') || root.querySelector('.v4-stage-canvas-wrap');
+    if (!panel || !secondary || !canvas) return;
+    const preDesktop = isStagePreDesktopLayout();
+    if (preDesktop) {
+      if (secondary.parentElement !== canvas.parentElement || secondary.previousElementSibling !== canvas) {
+        canvas.insertAdjacentElement('afterend', secondary);
+      }
+    } else if (secondary.parentElement !== panel || (actions && secondary.nextElementSibling !== actions)) {
+      if (actions) panel.insertBefore(secondary, actions);
+      else panel.appendChild(secondary);
+    }
+  }
+
+
   function clampStageZoom(value) {
     const raw = Math.round(num(value, 100));
     return Math.max(35, Math.min(220, raw || 100));
@@ -603,8 +642,9 @@
       if (reason === 'manual' && current !== 100) { state.zoom = 100; return true; }
       return false;
     }
-    const availableW = Math.max(260, Math.floor(num(wrap && wrap.clientWidth, 760) - 28));
-    const availableH = Math.max(240, Math.floor(num(wrap && wrap.clientHeight, 520) - 28));
+    const isMobileStageViewport = typeof window !== 'undefined' && window.innerWidth <= 768;
+    const availableW = Math.max(isMobileStageViewport ? 180 : 260, Math.floor(num(wrap && wrap.clientWidth, 760) - 28));
+    const availableH = Math.max(isMobileStageViewport ? 150 : 240, Math.floor(num(wrap && wrap.clientHeight, 520) - 28));
     const contentW = Math.max(1, (Number(content.columns || 1) + 3) * basePx);
     const contentH = Math.max(1, (Number(content.rows || 1) + 3) * basePx);
     const target = clampStageZoom(Math.floor(Math.min(220, 100, availableW / contentW * 100, availableH / contentH * 100)));
@@ -748,6 +788,7 @@
     const svc = structure();
     const grid = root.querySelector('[data-stage-grid]');
     if (!state || !calc || !grid || !svc) return;
+    syncStageResponsiveToolOrder(root);
     ensureStageCanvasFits(state, getStagePlanPoints(state), 2);
     if (state.autoFit !== false) fitStageCanvasToViewport(root, 'auto');
     renderStageToolState(root);
@@ -802,26 +843,26 @@
     const contractStatus = section.readyFor && section.readyFor.bomContract ? 'ready' : 'not checked';
     const summary = root.querySelector('[data-stage-summary]');
     if (summary) summary.innerHTML = `
-      <div class="v4-summary-grid">
-        <div class="v4-mini"><b>${esc(geometry.sheets || 0)}</b><span>${esc((section.stageConfig && section.stageConfig.deckLabel) || 'Листы')}</span></div>
-        <div class="v4-mini"><b>${esc(geometry.columns || 0)}</b><span>${esc((section.stageConfig && section.stageConfig.supportLabel) || 'Опоры')}</span></div>
-        <div class="v4-mini"><b>${esc(geometry.frames || 0)}</b><span>${esc((section.stageConfig && section.stageConfig.frameLabel) || 'Перекладины')}</span></div>
-        <div class="v4-mini"><b>${esc(geometry.studs || 0)} / ${esc(geometry.feet || 0)}</b><span>Шпильки / пятки</span></div>
-        <div class="v4-mini"><b>${esc(Number(result.widthMeters || 0).toFixed(1))}×${esc(Number(result.depthMeters || 0).toFixed(1))} м</b><span>Габарит · модуль ${esc((section.stageConfig && section.stageConfig.moduleWidthM) || 1.2)}×${esc((section.stageConfig && section.stageConfig.moduleDepthM) || 1.2)} м</span></div>
-        <div class="v4-mini"><b>${esc(stageHeightText(section.stageHeightM || state.stageHeightM))}</b><span>Высота сцены</span></div>
-        <div class="v4-mini"><b>${esc((geometry.stairs || 0))} шт</b><span>Лестницы на плане</span></div>
-        <div class="v4-mini"><b>${esc(Number(geometry.edgeClosureMeters || 0).toFixed(2))} м.п.</b><span>Закрытие торцов</span><small>${esc(section.stageConfig && section.stageConfig.edgeClosureEnabled ? section.stageConfig.edgeClosureLabel : 'не выбрано')}</small></div>
-        <div class="v4-mini"><b>${weight(section.weightKg)}</b><span>Вес</span></div>
-        ${renderQuickPricingCards(quickPricing)}
-        <div class="v4-mini"><b>${esc(bridgeTotals.rows || 0)} строк</b><span>Shared BOM stage</span><small>quote_items: по кнопке Общий BOM</small></div>
-        <div class="v4-mini"><b>${esc(contractStatus)}</b><span>BOM contract</span><small>лёгкий режим без авто-пересчёта</small></div>
+      <div class="v4-stage-summary-metrics">
+        <div class="v4-summary-grid">
+          <div class="v4-mini"><b>${esc(geometry.sheets || 0)}</b><span>${esc((section.stageConfig && section.stageConfig.deckLabel) || 'Листы')}</span></div>
+          <div class="v4-mini"><b>${esc(geometry.columns || 0)}</b><span>${esc((section.stageConfig && section.stageConfig.supportLabel) || 'Опоры')}</span></div>
+          <div class="v4-mini"><b>${esc(geometry.frames || 0)}</b><span>${esc((section.stageConfig && section.stageConfig.frameLabel) || 'Перекладины')}</span></div>
+          <div class="v4-mini"><b>${esc(geometry.studs || 0)} / ${esc(geometry.feet || 0)}</b><span>Шпильки / пятки</span></div>
+          <div class="v4-mini"><b>${esc(Number(result.widthMeters || 0).toFixed(1))}×${esc(Number(result.depthMeters || 0).toFixed(1))} м</b><span>Габарит · модуль ${esc((section.stageConfig && section.stageConfig.moduleWidthM) || 1.2)}×${esc((section.stageConfig && section.stageConfig.moduleDepthM) || 1.2)} м</span></div>
+          <div class="v4-mini"><b>${esc(stageHeightText(section.stageHeightM || state.stageHeightM))}</b><span>Высота сцены</span></div>
+          <div class="v4-mini"><b>${esc((geometry.stairs || 0))} шт</b><span>Лестницы на плане</span></div>
+          <div class="v4-mini"><b>${esc(Number(geometry.edgeClosureMeters || 0).toFixed(2))} м.п.</b><span>Закрытие торцов</span><small>${esc(section.stageConfig && section.stageConfig.edgeClosureEnabled ? section.stageConfig.edgeClosureLabel : 'не выбрано')}</small></div>
+          <div class="v4-mini"><b>${weight(section.weightKg)}</b><span>Вес</span></div>
+          ${renderQuickPricingCards(quickPricing)}
+        </div>
       </div>
-      <div class="v4-note"><b>Связь столб/перекладина:</b> ${esc(section.stageConfig && section.stageConfig.frameDependency && section.stageConfig.frameDependency.rule || stageFrameDependencyText(section.stageConfig && section.stageConfig.supportKey))}</div>
-      <div class="v4-note"><b>Stage BOM bridge:</b> quote.stage → shared BOM → quote_items → складской лист. Сцена стартует с чистого листа; старый v3 и складские движения не затрагиваются.</div>
-      ${renderBomRows(section.bomRows)}
-      ${renderQuickPricingTable(quickPricing)}
-      ${ctx.options && ctx.options.mode === 'quote' ? '' : (ROOT.QuickPdfExport && ROOT.QuickPdfExport.renderActionHtml ? ROOT.QuickPdfExport.renderActionHtml('stage') : '')}
-      <div class="v4-note">${esc(section.summary || 'Сцена готова к сохранению.')}</div>`;
+      <div class="v4-stage-summary-details">
+        ${renderBomRows(section.bomRows)}
+        ${renderQuickPricingTable(quickPricing)}
+        ${ctx.options && ctx.options.mode === 'quote' ? '' : (ROOT.QuickPdfExport && ROOT.QuickPdfExport.renderActionHtml ? ROOT.QuickPdfExport.renderActionHtml('stage') : '')}
+        <div class="v4-note">${esc(section.summary || 'Сцена готова к сохранению.')}</div>
+      </div>`;
     if (ROOT.QuickPdfExport && ROOT.QuickPdfExport.bindAction) {
       ROOT.QuickPdfExport.bindAction(summary, { kind:'stage', title:'Быстрый технический расчёт сцены', getSection:() => readStageSection(root) });
     }
@@ -999,9 +1040,6 @@
             <h4>${esc(opts.title || 'Фермы · блочный конструктор')}</h4>
             <p class="v4-muted">Это v4-обёртка над блочной логикой: библиотека блоков, snap, поворот, удаление, базы и BOM. В quick-режиме используется идеальный локальный каталог без проверки склада.</p>
           </div>`}
-          <div class="v4-structure-toolbar-actions v4-truss-load-toolbar">
-            <button type="button" class="btn-secondary v4-load-indicator" data-truss-load-open data-truss-load-indicator><b>⚖ Проверка нагрузок</b><span>открыть расчёт</span></button>
-          </div>
         </div>
 
         <div class="v4-truss-template-panel">
@@ -1021,18 +1059,18 @@
                 <button type="button" class="btn-secondary" data-truss-template-action="frame">Добавить раму</button>
               </div>
             </div>
-            <div class="v4-truss-template-card" data-truss-template-card="stool">
+            <div class="v4-truss-template-card v4-truss-template-card--stool" data-truss-template-card="stool">
               <div class="v4-truss-template-card-head"><b>Табуретка</b><span>3D: ширина + глубина + высота + ноги</span></div>
-              <div class="v4-grid-4 v4-truss-stool-grid">
+              <div class="v4-grid-3 v4-truss-stool-grid v4-truss-stool-dimensions-grid">
                 <label class="v4-field">Ширина, м<input data-truss-stool-width type="number" min="0.5" step="0.5" value="6"></label>
                 <label class="v4-field">Глубина, м<input data-truss-stool-depth data-truss-template-depth type="number" min="0.5" step="0.5" value="3"></label>
                 <label class="v4-field">Высота, м<input data-truss-stool-height type="number" min="0.5" step="0.5" value="3"></label>
+              </div>
+              <div class="v4-truss-stool-action-row">
                 <label class="v4-field">Кол-во ног<input data-truss-stool-legs type="number" min="0" step="1" value="" placeholder="авто"></label>
-              </div>
-              <div class="v4-template-actions">
                 <button type="button" class="btn-secondary" data-truss-template-action="stool">Добавить табуретку</button>
-                <small class="v4-muted">Пустое поле ног = текущая автоматическая логика. Если указать количество, расчёт добавит нужное число стоек и баз.</small>
               </div>
+              <small class="v4-muted v4-truss-stool-note">Пустое поле ног = текущая автоматическая логика. Если указать количество, расчёт добавит нужное число стоек и баз.</small>
             </div>
             ${renderQuickTrussPricingControls(state.quickPricing || opts.input || {}, opts)}
           </div>
@@ -1061,7 +1099,11 @@
                 <input data-truss-zoom type="range" min="35" max="220" step="5" value="100" aria-label="Масштаб поля конструктора">
                 <button type="button" class="v4-icon-btn" data-truss-zoom-action="in" title="Увеличить масштаб" aria-label="Увеличить масштаб">+</button>
                 <button type="button" class="btn-secondary" data-truss-zoom-action="fit">По размеру</button>
+                <button type="button" class="btn-secondary" data-truss-zoom-action="center">Центр</button>
                 <label class="v4-truss-autofit"><input data-truss-autofit type="checkbox" checked> авто-fit</label>
+              </div>
+              <div class="v4-truss-load-slot">
+                <button type="button" class="btn-secondary v4-load-indicator" data-truss-load-open data-truss-load-indicator><b>⚖ Проверка нагрузок</b><span>открыть расчёт</span></button>
               </div>
             </div>`}
             <div class="v4-truss-field-wrap" data-truss-field-wrap>
@@ -1177,7 +1219,8 @@
         <div class="v4-truss-group-body">${items.map(spec => {
           const icon = v4Icons[spec.id] || spec.icon || '□';
           const title = spec.label || spec.short || spec.id;
-          return `<button type="button" class="${state.selected === spec.id ? 'active' : ''}" data-kind="${attr(spec.kind || '')}" data-truss-type="${attr(spec.id)}" title="${attr(title)}" aria-label="${attr(title)}"><span class="v4-truss-btn-icon">${esc(icon)}</span></button>`;
+          const isSelected = state.selected === spec.id;
+          return `<button type="button" class="${isSelected ? 'active is-active' : ''}" data-kind="${attr(spec.kind || '')}" data-truss-type="${attr(spec.id)}" title="${attr(title)}" aria-label="${attr(title)}" aria-pressed="${isSelected ? 'true' : 'false'}"><span class="v4-truss-btn-icon">${esc(icon)}</span></button>`;
         }).join('')}</div>
       </details>`;
     }).join('');
@@ -1250,6 +1293,68 @@
     return { minX, minY, maxX, maxY, width:Math.max(1, maxX - minX), height:Math.max(1, maxY - minY) };
   }
 
+  function centerTrussItemsInCanvas(state, specs, truss) {
+    if (!state || !Array.isArray(state.items) || !state.items.length) return false;
+    const content = getTrussContentCellBounds(state, specs || {}, truss || null);
+    if (!content || content.empty) return false;
+    const pad = 2;
+    const cols = Math.max(Number(state.cols || 18), Math.ceil(Number(content.width || 1)) + pad * 2, 18);
+    const rows = Math.max(Number(state.rows || 10), Math.ceil(Number(content.height || 1)) + pad * 2, 10);
+    const targetMinX = Math.max(pad, Math.round((cols - Number(content.width || 1)) / 2));
+    const targetMinY = Math.max(pad, Math.round((rows - Number(content.height || 1)) / 2));
+    const dx = Math.round(targetMinX - Number(content.minX || 0));
+    const dy = Math.round(targetMinY - Number(content.minY || 0));
+    if (!dx && !dy) {
+      state.cols = cols;
+      state.rows = rows;
+      return false;
+    }
+    state.items = state.items.map(item => item ? Object.assign({}, item, {
+      x:Math.max(0, Math.round(num(item.x, 0) + dx)),
+      y:Math.max(0, Math.round(num(item.y, 0) + dy))
+    }) : item);
+    state.cols = cols;
+    state.rows = rows;
+    return true;
+  }
+
+  function alignTrussFieldInsideViewport(wrap, field) {
+    if (!wrap || !field) return { offsetX:0, offsetY:0 };
+    const fieldW = Math.max(0, Number(field.offsetWidth || field.scrollWidth || 0));
+    const fieldH = Math.max(0, Number(field.offsetHeight || field.scrollHeight || 0));
+    const extraX = Math.max(0, Math.floor((Number(wrap.clientWidth || 0) - fieldW) / 2));
+    const extraY = Math.max(0, Math.floor((Number(wrap.clientHeight || 0) - fieldH) / 2));
+    field.style.marginLeft = `${extraX}px`;
+    field.style.marginRight = extraX ? `${extraX}px` : '0px';
+    field.style.marginTop = `${extraY}px`;
+    field.style.marginBottom = extraY ? `${extraY}px` : '0px';
+    return { offsetX:extraX, offsetY:extraY };
+  }
+
+  function centerTrussViewport(root) {
+    if (!root || !root.querySelector) return false;
+    const ctx = root._v4StructureVisual;
+    const state = ctx && ctx.state;
+    const wrap = root.querySelector('[data-truss-field-wrap]');
+    const field = root.querySelector('[data-truss-field]');
+    if (!state || !wrap || !field) return false;
+    const { truss, specs } = trussHelpers(root);
+    const content = getTrussContentCellBounds(state, specs, truss);
+    const cellPx = getTrussRenderCellPx(state);
+    const aligned = alignTrussFieldInsideViewport(wrap, field);
+    let centerX = aligned.offsetX + field.scrollWidth / 2;
+    let centerY = aligned.offsetY + field.scrollHeight / 2;
+    if (content && !content.empty) {
+      centerX = aligned.offsetX + (Number(content.minX || 0) + Number(content.width || 1) / 2) * cellPx;
+      centerY = aligned.offsetY + (Number(content.minY || 0) + Number(content.height || 1) / 2) * cellPx;
+    }
+    const maxLeft = Math.max(0, wrap.scrollWidth - wrap.clientWidth);
+    const maxTop = Math.max(0, wrap.scrollHeight - wrap.clientHeight);
+    wrap.scrollLeft = Math.max(0, Math.min(maxLeft, Math.round(centerX - wrap.clientWidth / 2)));
+    wrap.scrollTop = Math.max(0, Math.min(maxTop, Math.round(centerY - wrap.clientHeight / 2)));
+    return true;
+  }
+
   function fitTrussCanvasToViewport(root, reason) {
     if (!isQuickTrussMode(root)) return false;
     const ctx = root && root._v4StructureVisual;
@@ -1301,6 +1406,9 @@
     } else if (action === 'reset') {
       state.autoFit = false;
       state.zoom = 100;
+    } else if (action === 'center') {
+      centerTrussViewport(root);
+      return;
     }
     renderTrussState(root);
   }
@@ -1435,6 +1543,11 @@
     }
     syncTrussZoomControls(root);
     renderTrussSummary(root);
+    if (isQuickTrussMode(root) && state.autoFit !== false) {
+      const centerNow = () => centerTrussViewport(root);
+      if (typeof requestAnimationFrame === 'function') requestAnimationFrame(centerNow);
+      else setTimeout(centerNow, 0);
+    }
   }
 
   function renderTrussFieldOnly(root) {
@@ -1876,6 +1989,7 @@
     state.items = state.items.concat(normalized);
     state.cols = Math.max(state.cols || 18, rightX + 3, pairStartX + legPairGroups.length * pairGap + 2);
     state.rows = Math.max(state.rows || 10, legBlockStartY + legCells + 2);
+    centerTrussItemsInCanvas(state, specs, truss);
   }
 
   function addTrussTemplate(root, kind) {
@@ -1959,6 +2073,7 @@
     state.items = state.items.concat(normalized);
     state.cols = Math.max(state.cols || 18, rightX + 3);
     state.rows = Math.max(state.rows || 10, (kind === 'portal' ? bottomY + 2 : bottomY + 2));
+    centerTrussItemsInCanvas(state, specs, truss);
     state.selectedItemId = null;
     renderTrussState(root);
   }

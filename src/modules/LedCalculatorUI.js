@@ -89,16 +89,17 @@
         <h3>Гибкий конструктор LED-экрана</h3>
         <p class="v4-muted">Рисуй основной экран и отдельные LED-конструкции: боковые вертикальные полосы, верх/низ, дополнительные блоки. Общие формулы LED сохранены, итог складывается из активных кабинетов.</p>
 
-        <div class="v4-grid-3">
-          <label class="v4-field"><span>Ширина основного экрана, м</span><input type="number" min="0.1" step="0.1" data-led="widthM" value="${escapeHtml(seed.base.widthM)}"></label>
-          <label class="v4-field"><span>Высота основного экрана, м</span><input type="number" min="0.1" step="0.1" data-led="heightM" value="${escapeHtml(seed.base.heightM)}"></label>
-          <label class="v4-field"><span>Форм-фактор</span><select data-led="format">${Object.values(calc.CABINET_FORMATS).map(f => `<option value="${f.id}" ${f.id === seed.base.format ? 'selected' : ''}>${escapeHtml(f.name)}</option>`).join('')}</select></label>
-          <label class="v4-field"><span>Шаг пикселя</span><select data-led="pitch">${Object.values(calc.PIXEL_PITCHES).map(p => `<option value="${p.id}" ${p.id === seed.base.pitch ? 'selected' : ''}>${escapeHtml(p.name)}</option>`).join('')}</select></label>
-          <label class="v4-field"><span>Вес кабинета, кг</span><input type="number" min="0" step="0.1" data-led="cabinetWeightKg" value="${escapeHtml(seed.base.cabinetWeightKg)}"></label>
-          <label class="v4-field"><span>Мощность кабинета, Вт</span><input type="number" min="0" step="10" data-led="cabinetPowerW" value="${escapeHtml(seed.base.cabinetPowerW)}"></label>
-          <label class="v4-field"><span>Пусковая мощность, Вт</span><input type="number" min="0" step="10" data-led="cabinetStartupPowerW" value="${escapeHtml(seed.base.cabinetStartupPowerW)}"></label>
-          <label class="v4-field"><span>Тип ног</span><select data-led="legType">${Object.values(calc.LEG_TYPES || {}).map(leg => `<option value="${leg.id}" ${leg.id === seed.base.legType ? 'selected' : ''}>${escapeHtml(leg.name)}</option>`).join('')}</select><span class="v4-field-subspan">Монтаж LED</span><select data-led="mountMode">${getMountModeOptionsHtml(resolveMountModeValue(seed.base))}</select></label>
-          <label class="v4-field"><span>Количество ног</span><input type="number" min="0" step="1" data-led="legCount" value="${escapeHtml(seed.base.legCount)}"></label>
+        <div class="v4-grid-3 v4-led-input-grid" data-led-input-grid>
+          <label class="v4-field v4-led-field--size"><span>Ширина, м</span><input type="number" min="0.1" step="0.1" data-led="widthM" value="${escapeHtml(seed.base.widthM)}"></label>
+          <label class="v4-field v4-led-field--size"><span>Высота, м</span><input type="number" min="0.1" step="0.1" data-led="heightM" value="${escapeHtml(seed.base.heightM)}"></label>
+          <label class="v4-field v4-led-field--cabinet"><span>Кабинет</span><select data-led="format">${Object.values(calc.CABINET_FORMATS).map(f => `<option value="${f.id}" ${f.id === seed.base.format ? 'selected' : ''}>${escapeHtml(f.name)}</option>`).join('')}</select></label>
+          <label class="v4-field v4-led-field--cabinet"><span>Шаг</span><select data-led="pitch">${Object.values(calc.PIXEL_PITCHES).map(p => `<option value="${p.id}" ${p.id === seed.base.pitch ? 'selected' : ''}>${escapeHtml(p.name)}</option>`).join('')}</select></label>
+          <label class="v4-field v4-led-field--technical"><span>Вес, кг</span><input type="number" min="0" step="0.1" data-led="cabinetWeightKg" value="${escapeHtml(seed.base.cabinetWeightKg)}"></label>
+          <label class="v4-field v4-led-field--technical"><span>Мощность, Вт</span><input type="number" min="0" step="10" data-led="cabinetPowerW" value="${escapeHtml(seed.base.cabinetPowerW)}"></label>
+          <label class="v4-field v4-led-field--technical"><span>Пуск, Вт</span><input type="number" min="0" step="10" data-led="cabinetStartupPowerW" value="${escapeHtml(seed.base.cabinetStartupPowerW)}"></label>
+          <label class="v4-field v4-led-field--mount"><span>Тип ног</span><select data-led="legType">${Object.values(calc.LEG_TYPES || {}).map(leg => `<option value="${leg.id}" ${leg.id === seed.base.legType ? 'selected' : ''}>${escapeHtml(leg.name)}</option>`).join('')}</select></label>
+          <label class="v4-field v4-led-field--mount"><span>Монтаж LED</span><select data-led="mountMode">${getMountModeOptionsHtml(resolveMountModeValue(seed.base))}</select></label>
+          <label class="v4-field v4-led-field--mount"><span>Ноги, шт</span><input type="number" min="0" step="1" data-led="legCount" value="${escapeHtml(seed.base.legCount)}"></label>
         </div>
         ${renderQuickLedPricingControls(seed, initialOptions)}
 
@@ -122,7 +123,8 @@
             <div class="v4-led-panel-block">
               <div class="v4-kicker">active construction</div>
               <h4>Рисование от руки</h4>
-              <label class="v4-field"><span>Активная конструкция</span><select data-led-active></select></label>
+              <label class="v4-field v4-led-active-field"><span>Активная конструкция</span><select data-led-active></select></label>
+              <div class="v4-led-active-indicator" data-led-active-indicator></div>
               <div class="v4-actions">
                 <button type="button" class="btn-secondary" data-led-action="rename">Переименовать</button>
                 <button type="button" class="btn-secondary" data-led-action="copy-active">Копировать</button>
@@ -785,10 +787,34 @@
     if (!state || !select) return;
     const parts = state.parts || [];
     if (!state.activeId && parts[0]) state.activeId = parts[0].id;
+    const active = parts.find(part => part.id === state.activeId) || parts[0] || null;
+    if (active && state.activeId !== active.id) state.activeId = active.id;
     select.innerHTML = parts.length ? parts.map(part => `<option value="${escapeHtml(part.id)}" ${part.id === state.activeId ? 'selected' : ''}>${escapeHtml(part.name)} · ${part.cells.length} каб.</option>`).join('') : '<option value="">Нет конструкций</option>';
-    const list = select.closest('.v4-led-panel-block') ? select.closest('.v4-led-panel-block').querySelector('[data-led-parts-list]') : null;
+
+    const block = select.closest('.v4-led-panel-block');
+    const activeColor = active ? (active.colorKey || 'custom') : 'empty';
+    select.dataset.activeColor = activeColor;
+    select.classList.toggle('active', !!active);
+    select.classList.toggle('is-active', !!active);
+    if (block) {
+      block.setAttribute('data-led-active-color', activeColor);
+      block.classList.toggle('has-led-active-construction', !!active);
+    }
+
+    const indicator = block ? block.querySelector('[data-led-active-indicator]') : null;
+    if (indicator) {
+      indicator.innerHTML = active
+        ? `<span class="v4-led-color-dot color-${escapeHtml(activeColor)}" aria-hidden="true"></span><b>${escapeHtml(active.name)}</b><em>${formatNumber((active.cells || []).length, 0)} каб.</em>`
+        : '<span class="v4-muted">Нет активной LED-конструкции</span>';
+    }
+
+    const list = block ? block.querySelector('[data-led-parts-list]') : null;
     if (list) {
-      list.innerHTML = parts.length ? parts.map(part => `<button type="button" class="v4-led-part-chip color-${escapeHtml(part.colorKey || 'custom')}${part.id === state.activeId ? ' active' : ''}" data-led-part-select="${escapeHtml(part.id)}"><b>${escapeHtml(part.name)}</b><span>${formatNumber((part.cells || []).length, 0)} каб.</span></button>`).join('') : '<span class="v4-muted">Нет LED-конструкций</span>';
+      list.innerHTML = parts.length ? parts.map(part => {
+        const colorKey = part.colorKey || 'custom';
+        const isActive = part.id === state.activeId;
+        return `<button type="button" class="v4-led-part-chip color-${escapeHtml(colorKey)}${isActive ? ' active is-active' : ''}" data-led-part-select="${escapeHtml(part.id)}" aria-pressed="${isActive ? 'true' : 'false'}"><span class="v4-led-color-dot color-${escapeHtml(colorKey)}" aria-hidden="true"></span><b>${escapeHtml(part.name)}</b><span>${formatNumber((part.cells || []).length, 0)} каб.</span></button>`;
+      }).join('') : '<span class="v4-muted">Нет LED-конструкций</span>';
     }
   }
 
@@ -893,27 +919,14 @@
           <tbody>${rows.map(row => `<tr><td><b>${escapeHtml(row.name)}</b><br><span class="v4-muted">${escapeHtml(row.code)}</span></td><td>${formatNumber(row.qty, 0)} ${escapeHtml(row.unit)}</td><td>${formatNumber(row.weightKg, 1)} кг</td><td>${row.powerW ? formatNumber(row.powerW / 1000, 2) + ' кВт' : '—'}</td><td>${row.startupPowerW ? formatNumber(row.startupPowerW / 1000, 2) + ' кВт' : '—'}</td><td>${escapeHtml(row.note)}</td></tr>`).join('')}</tbody>
         </table>
       </div>
-      <div class="v4-actions">
-        <button type="button" class="btn-secondary" data-led-show-tech>Показать техлист без цен</button>
-        <button type="button" class="btn-secondary" data-led-show-warehouse>Показать складской лист LED</button>
-        <button type="button" class="btn-secondary" data-led-show-bom>Показать LED BOM bridge</button>
-      </div>
       ${input && input.catalogMode === 'quote' ? '' : (ROOT.QuickPdfExport && ROOT.QuickPdfExport.renderActionHtml ? ROOT.QuickPdfExport.renderActionHtml('led') : '')}
       <div data-led-export></div>`;
 
     if (ROOT.QuickPdfExport && ROOT.QuickPdfExport.bindAction && (!input || input.catalogMode !== 'quote')) {
       ROOT.QuickPdfExport.bindAction(box, { kind:'led', title:'Быстрый технический расчёт LED-экрана', getSection:() => getLedSection(root) });
     }
-    const techBtn = box.querySelector('[data-led-show-tech]');
-    const warehouseBtn = box.querySelector('[data-led-show-warehouse]');
-    const bomBtn = box.querySelector('[data-led-show-bom]');
-    if (techBtn) techBtn.addEventListener('click', () => {
-      if (calc.buildLedTechSheet) renderSheetPanel(box, calc.buildLedTechSheet(result));
-    });
-    if (warehouseBtn) warehouseBtn.addEventListener('click', () => {
-      if (calc.buildLedWarehouseSheet) renderSheetPanel(box, calc.buildLedWarehouseSheet(result));
-    });
-    if (bomBtn) bomBtn.addEventListener('click', () => renderLedBomBridgePanel(box, section));
+    // v3.1.17: quick LED keeps only the unified PDF action visible.
+    // Technical sheet / warehouse sheet / BOM bridge renderers remain available internally for quote diagnostics.
   }
 
   function renderConstructionReport(result) {
