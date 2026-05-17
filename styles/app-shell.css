@@ -948,3 +948,679 @@ body.v4-only-body.quick-standalone-body .feg-hero-art {
   object-position: center center !important;
   display: block !important;
 }
+
+/* v3.1.84 — hidden FEG TECH RUN mini-game with local fallback and Supabase leaderboard. */
+body.v4-only-body.quick-standalone-body .feg-hero-card[data-feg-runner-open] {
+  position: relative;
+  cursor: pointer;
+  outline: none;
+}
+
+body.v4-only-body.quick-standalone-body .feg-hero-card[data-feg-runner-open]::after {
+  content: 'FEG TECH RUN';
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(243,198,78,0.32);
+  background: rgba(8,10,13,0.74);
+  color: var(--feg-gold-2);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .18s ease, transform .18s ease;
+  pointer-events: none;
+}
+
+body.v4-only-body.quick-standalone-body .feg-hero-card[data-feg-runner-open]:hover::after,
+body.v4-only-body.quick-standalone-body .feg-hero-card[data-feg-runner-open]:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.v4-only-body.quick-standalone-body .feg-hero-card[data-feg-runner-open]:focus-visible {
+  box-shadow: 0 0 0 3px rgba(243,198,78,0.28), var(--feg-card-shadow, 0 18px 48px rgba(0,0,0,0.28));
+}
+
+.feg-runner-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0,0,0,0.72);
+  backdrop-filter: blur(14px);
+}
+
+.feg-runner-modal {
+  width: min(1120px, 100%);
+  max-height: min(860px, calc(100vh - 36px));
+  overflow: auto;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(243,198,78,0.10), transparent 30%),
+    linear-gradient(180deg, rgba(20,23,28,0.98), rgba(8,10,13,0.98));
+  box-shadow: 0 34px 90px rgba(0,0,0,0.56);
+  color: var(--feg-text);
+}
+
+.feg-runner-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.feg-runner-kicker {
+  color: var(--feg-gold-2);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.feg-runner-head h2 {
+  margin: 0 0 8px;
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.02;
+}
+
+.feg-runner-head p {
+  max-width: 720px;
+  margin: 0;
+  color: var(--feg-text-2);
+  line-height: 1.45;
+}
+
+.feg-runner-close {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border-radius: 14px !important;
+  font-size: 26px !important;
+  line-height: 1 !important;
+  color: var(--feg-text) !important;
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+}
+
+.feg-runner-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  gap: 18px;
+  padding: 20px 24px 24px;
+}
+
+.feg-runner-game-panel,
+.feg-runner-score-panel {
+  min-width: 0;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 22px;
+  background: rgba(255,255,255,0.035);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.feg-runner-game-panel {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.feg-runner-canvas-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: #07090c;
+}
+
+.feg-runner-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 45 / 16;
+}
+
+.feg-runner-start-panel {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: linear-gradient(180deg, rgba(7,9,12,0.20), rgba(7,9,12,0.62));
+  pointer-events: none;
+}
+
+.feg-runner-start-panel[hidden] {
+  display: none !important;
+}
+
+.feg-runner-start-card {
+  width: min(360px, 100%);
+  border: 1px solid rgba(243,198,78,0.28);
+  border-radius: 20px;
+  padding: 18px;
+  background: rgba(7,9,12,0.82);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.42);
+  text-align: center;
+}
+
+.feg-runner-start-card span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--feg-gold-2);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+
+.feg-runner-start-card strong {
+  display: block;
+  color: #fff;
+  font-size: 28px;
+  line-height: 1.05;
+}
+
+.feg-runner-start-card small {
+  display: block;
+  margin-top: 9px;
+  color: rgba(255,255,255,0.72) !important;
+  line-height: 1.35;
+}
+
+.feg-runner-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.feg-runner-name-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.feg-runner-name-field span {
+  color: var(--feg-text-2);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.feg-runner-name-field input {
+  width: 100%;
+  min-height: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.18);
+  color: var(--feg-text);
+  padding: 0 14px;
+  font-weight: 700;
+}
+
+.feg-runner-primary,
+.feg-runner-secondary {
+  min-height: 42px;
+  border-radius: 14px !important;
+  padding: 0 16px !important;
+  font-weight: 850 !important;
+}
+
+.feg-runner-primary {
+  background: linear-gradient(180deg, #f5d06a, #c28a27) !important;
+  border-color: rgba(243,198,78,0.42) !important;
+  color: #1a1305 !important;
+}
+
+.feg-runner-secondary {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+  color: var(--feg-text) !important;
+}
+
+.feg-runner-hint {
+  color: var(--feg-text-2);
+  font-size: 12px;
+}
+
+.feg-runner-score-panel {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: 16px;
+}
+
+.feg-runner-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.feg-runner-stat-grid div,
+.feg-runner-message,
+.feg-runner-leaderboard,
+.feg-runner-cloud {
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 18px;
+  background: rgba(0,0,0,0.16);
+}
+
+.feg-runner-stat-grid div {
+  padding: 14px;
+}
+
+.feg-runner-stat-grid span,
+.feg-runner-leaderboard-head span,
+.feg-runner-cloud-head span,
+.feg-runner-cloud-settings span {
+  display: block;
+  color: var(--feg-text-2);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+
+.feg-runner-stat-grid strong,
+.feg-runner-leaderboard-head strong,
+.feg-runner-cloud-head strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--feg-text);
+  font-size: 22px;
+  line-height: 1.05;
+}
+
+.feg-runner-message {
+  padding: 14px;
+  color: var(--feg-text-2);
+  line-height: 1.4;
+}
+
+.feg-runner-leaderboard,
+.feg-runner-cloud {
+  padding: 14px;
+}
+
+.feg-runner-leaderboard-head,
+.feg-runner-cloud-head {
+  margin-bottom: 12px;
+}
+
+.feg-runner-leaderboard-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feg-runner-leaderboard-list li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  min-height: 34px;
+  padding: 7px 8px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.045);
+}
+
+.feg-runner-leaderboard-rank {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  color: #1a1305;
+  background: var(--feg-gold-2);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.feg-runner-leaderboard-name {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--feg-text);
+  font-weight: 760;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feg-runner-leaderboard-list strong {
+  color: var(--feg-gold-2);
+  font-size: 13px;
+}
+
+.feg-runner-empty {
+  padding: 16px;
+  border: 1px dashed rgba(255,255,255,0.14);
+  border-radius: 14px;
+  color: var(--feg-text-2);
+  line-height: 1.4;
+}
+
+.feg-runner-cloud {
+  display: grid;
+  gap: 12px;
+}
+
+.feg-runner-cloud-head strong {
+  font-size: 16px;
+}
+
+.feg-runner-cloud p {
+  margin: 0;
+  color: var(--feg-text-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.feg-runner-cloud-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.feg-runner-cloud-actions .feg-runner-secondary {
+  width: 100%;
+}
+
+.feg-runner-cloud-settings {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 10px;
+}
+
+.feg-runner-cloud-settings summary {
+  cursor: pointer;
+  color: var(--feg-text);
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.feg-runner-cloud-settings label {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.feg-runner-cloud-settings input {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  background: rgba(0,0,0,0.20);
+  color: var(--feg-text);
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.feg-runner-cloud-settings button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-hero-card[data-feg-runner-open]::after {
+  background: rgba(255,255,255,0.78);
+  border-color: rgba(194,138,39,0.30);
+  color: #9a6a13;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-backdrop {
+  background: rgba(15,23,42,0.32);
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-modal {
+  border-color: rgba(15,23,42,0.12);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(194,138,39,0.12), transparent 30%),
+    linear-gradient(180deg, #ffffff, #f4f6fa);
+  box-shadow: 0 30px 78px rgba(15,23,42,0.26);
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-head,
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-game-panel,
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-score-panel,
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-canvas-wrap,
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-stat-grid div,
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-message,
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-leaderboard,
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-cloud {
+  border-color: rgba(15,23,42,0.10);
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-game-panel,
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-score-panel {
+  background: rgba(255,255,255,0.70);
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-stat-grid div,
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-message,
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-leaderboard,
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-cloud,
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-name-field input,
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-cloud-settings input {
+  background: rgba(255,255,255,0.82);
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-start-card {
+  background: rgba(255,255,255,0.86);
+  box-shadow: 0 18px 50px rgba(15,23,42,0.18);
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-start-card strong {
+  color: #0f172a;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-start-card small {
+  color: #475569 !important;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-leaderboard-list li {
+  background: rgba(15,23,42,0.045);
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-runner-cloud-settings {
+  border-top-color: rgba(15,23,42,0.08);
+}
+
+@media (max-width: 767px) {
+  .feg-runner-backdrop {
+    padding: 10px;
+    place-items: stretch;
+  }
+
+  .feg-runner-modal {
+    max-height: calc(100vh - 20px);
+    border-radius: 22px;
+  }
+
+  .feg-runner-head {
+    padding: 18px;
+  }
+
+  .feg-runner-layout {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+
+  .feg-runner-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .feg-runner-primary,
+  .feg-runner-secondary {
+    width: 100%;
+  }
+
+  .feg-runner-stat-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* v3.1.85 — runner Supabase hard queue + mobile fullscreen landscape pass */
+body.feg-runner-mobile-active {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] {
+  touch-action: manipulation;
+}
+
+.feg-runner-canvas-wrap {
+  touch-action: manipulation;
+}
+
+@media (max-width: 767px) {
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] {
+    padding: 0;
+    place-items: stretch;
+    background: #07090c;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-modal {
+    width: 100dvw;
+    max-width: none;
+    height: 100dvh;
+    max-height: 100dvh;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-head {
+    min-height: 54px;
+    align-items: center;
+    padding: 8px 10px;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-head h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-kicker,
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-head p {
+    display: none;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-close {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px !important;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-layout {
+    min-height: 0;
+    height: 100%;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    overflow: hidden;
+    padding: 8px;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-game-panel {
+    min-height: 0;
+    grid-template-rows: minmax(0, 1fr) auto auto;
+    padding: 8px;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-canvas-wrap {
+    min-height: 0;
+    height: 100%;
+    border-radius: 16px;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-canvas {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-controls {
+    grid-template-columns: minmax(0, 1fr) 96px 96px;
+    gap: 8px;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-name-field span,
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-hint {
+    display: none;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-name-field input,
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-primary,
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-secondary {
+    min-height: 40px;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-score-panel {
+    max-height: 30dvh;
+    overflow: auto;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-cloud {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) and (orientation: landscape) {
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-modal {
+    grid-template-rows: 1fr;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-head {
+    position: fixed;
+    z-index: 3;
+    top: 8px;
+    right: 8px;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-head > div {
+    display: none;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-layout {
+    grid-template-columns: minmax(0, 1fr) 218px;
+    gap: 8px;
+    height: 100dvh;
+    padding: 8px;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-score-panel {
+    max-height: none;
+    overflow: auto;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-message,
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-leaderboard,
+  .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-stat-grid div {
+    padding: 9px;
+    border-radius: 14px;
+  }
+}

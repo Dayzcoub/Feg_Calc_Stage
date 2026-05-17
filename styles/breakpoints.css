@@ -3889,3 +3889,130 @@ body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-close {
     grid-template-columns: minmax(0, 1fr) !important;
   }
 }
+
+/* v3.1.82 — detailed in-app constructor documentation, formulas and conditions. */
+body.v4-only-body.quick-standalone-body .feg-user-guide-grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+body.v4-only-body.quick-standalone-body .feg-user-guide-card--wide {
+  min-height: 0 !important;
+}
+
+body.v4-only-body.quick-standalone-body .feg-user-guide-section b,
+body.v4-only-body.quick-standalone-body .feg-user-guide-card b {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  font-weight: 900 !important;
+}
+
+body.v4-only-body.quick-standalone-body .feg-user-guide-table-wrap {
+  width: 100% !important;
+  overflow-x: auto !important;
+  margin: 10px 0 12px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  background: rgba(0,0,0,.16) !important;
+}
+
+body.v4-only-body.quick-standalone-body .feg-user-guide-table {
+  width: 100% !important;
+  min-width: 520px !important;
+  border-collapse: collapse !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+
+body.v4-only-body.quick-standalone-body .feg-user-guide-table th,
+body.v4-only-body.quick-standalone-body .feg-user-guide-table td {
+  padding: 9px 10px !important;
+  vertical-align: top !important;
+  border-bottom: 1px solid rgba(255,255,255,.07) !important;
+  color: #d6dee7 !important;
+  -webkit-text-fill-color: #d6dee7 !important;
+}
+
+body.v4-only-body.quick-standalone-body .feg-user-guide-table tr:last-child th,
+body.v4-only-body.quick-standalone-body .feg-user-guide-table tr:last-child td {
+  border-bottom: 0 !important;
+}
+
+body.v4-only-body.quick-standalone-body .feg-user-guide-table th {
+  width: 34% !important;
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  font-weight: 900 !important;
+  text-align: left !important;
+  background: rgba(255,255,255,.045) !important;
+}
+
+body.v4-only-body.quick-standalone-body .feg-user-guide-table thead th {
+  background: rgba(242,199,91,.12) !important;
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+}
+
+body.v4-only-body.quick-standalone-body .feg-user-guide-table--compact {
+  min-width: 620px !important;
+}
+
+body.v4-only-body.quick-standalone-body .feg-user-guide-card p,
+body.v4-only-body.quick-standalone-body .feg-user-guide-section li {
+  color: #d6dee7 !important;
+  -webkit-text-fill-color: #d6dee7 !important;
+  font-size: 13px !important;
+  line-height: 1.48 !important;
+}
+
+body.v4-only-body.quick-standalone-body .feg-user-guide-card p {
+  margin: 8px 0 0 !important;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-section b,
+body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-card b,
+body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-table th,
+body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-table thead th {
+  color: #13201b !important;
+  -webkit-text-fill-color: #13201b !important;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-table-wrap {
+  background: rgba(255,255,255,.58) !important;
+  border-color: rgba(24,39,34,.12) !important;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-table th,
+body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-table td {
+  border-bottom-color: rgba(24,39,34,.10) !important;
+  color: #40514a !important;
+  -webkit-text-fill-color: #40514a !important;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-table th {
+  background: rgba(24,39,34,.045) !important;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-table thead th {
+  background: rgba(212,157,54,.14) !important;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-card p,
+body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-section li {
+  color: #40514a !important;
+  -webkit-text-fill-color: #40514a !important;
+}
+
+@media (min-width: 768px) and (max-width: 1180px) {
+  body.v4-only-body.quick-standalone-body .feg-user-guide-grid--two {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  body.v4-only-body.quick-standalone-body .feg-user-guide-grid--two {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  body.v4-only-body.quick-standalone-body .feg-user-guide-table {
+    min-width: 520px !important;
+  }
+}
