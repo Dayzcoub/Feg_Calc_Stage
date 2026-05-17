@@ -1,4 +1,4 @@
-# v3.1.86 — FEG TECH RUN: встроенная Supabase-база и общий TOP-20
+# v3.1.87 — FEG TECH RUN: встроенная Supabase-база и общий TOP-20
 
 ## Что изменено
 
@@ -131,7 +131,7 @@ begin
     coalesce(p_client_created_at, now()),
     now()
   )
-  on conflict (workspace_key, client_score_id) do update set
+  on conflict on constraint runner_scores_workspace_client_unique do update set
     player_name = excluded.player_name,
     score = excluded.score,
     distance = excluded.distance,
