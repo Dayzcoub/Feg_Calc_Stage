@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.6.2 — TransportSettings module
+// FEG Stage PRO v3.1.88 — TransportSettings module
 // Responsibility: shared transport settings, transport modal helpers and transport cost/label calculation.
 // Classic-compatible module: attaches API to window.FEGModules.TransportSettings.
 (function (global) {

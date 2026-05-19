@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.15.43 — V4BomContract
+// FEG Stage PRO v3.1.88 — V4BomContract
 // Final read-only BOM contract and readiness validator for v4 shared BOM flows.
 (function () {
   'use strict';

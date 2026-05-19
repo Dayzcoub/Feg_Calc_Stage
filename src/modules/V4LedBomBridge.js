@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.17.38 — V4LedBomBridge
+// FEG Stage PRO v3.1.88 — V4LedBomBridge
 // Connects single and freeform LED constructions to the shared v4 BOM/quote_items/warehouse/contract flow without changing LED formulas.
 (function () {
   'use strict';

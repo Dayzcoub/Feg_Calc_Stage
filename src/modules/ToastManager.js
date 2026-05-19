@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.6.44 — ToastManager module
+// FEG Stage PRO v3.1.88 — ToastManager module
 // Responsibility: shared lightweight toast notifications.
 // Classic-compatible module: attaches API to window.FEGModules.ToastManager.
 (function (global) {

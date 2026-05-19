@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.17.38 — QuickIdealCatalog
+// FEG Stage PRO v3.1.88 — QuickIdealCatalog
 // Local ideal catalog for quick technical calculators. It mirrors the shared
 // construction keys but intentionally does not bind quick rows to the real
 // equipment database, warehouse stock, reservations or deficits.

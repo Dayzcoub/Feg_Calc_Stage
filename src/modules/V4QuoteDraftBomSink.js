@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.15.52 — V4QuoteDraftBomSink
+// FEG Stage PRO v3.1.88 — V4QuoteDraftBomSink
 // Attaches a compact unified v4 BOM snapshot to quote drafts as quote.v4Bom without touching legacy/v3 flows.
 (function () {
   'use strict';

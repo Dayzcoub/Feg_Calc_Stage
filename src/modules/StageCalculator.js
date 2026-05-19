@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.6.5 — StageCalculator module
+// FEG Stage PRO v3.1.88 — StageCalculator module
 // Responsibility: pure stage geometry helpers, grid shape transforms and stage quote snapshot calculations.
 // Classic-compatible module: attaches API to window.FEGModules.StageCalculator.
 (function (global) {

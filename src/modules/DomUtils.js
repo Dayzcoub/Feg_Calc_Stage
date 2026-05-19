@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.6.46 — DomUtils module
+// FEG Stage PRO v3.1.88 — DomUtils module
 // Responsibility: shared safe DOM access helpers for legacy bridge code.
 // Classic-compatible module: attaches API to window.FEGModules.DomUtils.
 (function (global) {
@@ -55,6 +55,11 @@
         return el;
     }
 
+    /**
+     * @deprecated UNSAFE with user data. Only use with trusted static HTML.
+     * For user-provided content, use setText() instead.
+     * v3.1.88 audit: potential XSS vector if user data is passed.
+     */
     function setHtml(id, value, root) {
         const el = getElementById(id, root);
         if (el) el.innerHTML = value == null ? '' : String(value);

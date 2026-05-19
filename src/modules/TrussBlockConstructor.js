@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.15.34 — TrussBlockConstructor module, phase 21
+// FEG Stage PRO v3.1.88 — TrussBlockConstructor module, phase 21
 // Responsibility: block catalog, legacy type aliases, object library grouping, geometry helpers, BOM calculation helpers, selection/edit helpers, snap helpers, SVG generators, render helpers, drag helpers, action helpers and UI summary helpers, draft/display/export helpers.
 // Classic-compatible module: attaches API to window.FEGModules.TrussBlockConstructor.
 (function (global) {

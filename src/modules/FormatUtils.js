@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.6.45 — FormatUtils module
+// FEG Stage PRO v3.1.88 — FormatUtils module
 // Responsibility: shared HTML/string/date/number formatting helpers.
 // Classic-compatible module: attaches API to window.FEGModules.FormatUtils.
 (function (global) {

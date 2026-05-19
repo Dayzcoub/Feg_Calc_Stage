@@ -19,6 +19,10 @@
   const CLOUD_SOURCE = 'mini_runner';
   const CLOUD_RPC_SUBMIT = 'submit_runner_score';
   const CLOUD_RPC_LIST = 'get_runner_scores';
+  // v3.1.88 audit: Supabase anon key is hardcoded for game scores persistence.
+  // The 'sb_publishable_' key is NOT a secret (it's meant for client code).
+  // For future: consider moving to config.json or environment variable if this
+  // module is reused in other contexts or if key rotation is needed.
   const HARDWIRED_CLOUD_SETTINGS = Object.freeze({
     url: 'https://kabfyzmdxwhjjynclope.supabase.co',
     anonKey: 'sb_publishable_gl-yxy7GGVRlbACN5gMY5g_MD8Eqvoj',
@@ -621,8 +625,16 @@
     this.cloudInputs = {};
     this.raf = 0;
     this.state = this.makeState();
+    // Bound methods for proper cleanup (v3.1.88 audit fix)
     this.boundFrame = this.frame.bind(this);
     this.boundKey = this.onKey.bind(this);
+    this.boundJump = () => this.jump();
+    this.boundCanvasTouchJump = (event) => { event.preventDefault(); this.jump(); };
+    this.boundCanvasPointerJump = (event) => {
+      if (isInteractiveTarget(event.target)) return;
+      if (event.pointerType === 'touch' || event.pointerType === 'pen' || isMobileViewport()) this.jump();
+    };
+    this.boundRefreshLeaderboard = () => this.refreshLeaderboard();
   }
 
   RunnerGame.prototype.makeState = function () {
@@ -755,19 +767,16 @@
 
   RunnerGame.prototype.bind = function () {
     if (this.startButton) this.startButton.addEventListener('click', () => this.start());
-    if (this.jumpButton) this.jumpButton.addEventListener('click', () => this.jump());
+    if (this.jumpButton) this.jumpButton.addEventListener('click', this.boundJump);
     if (this.canvas) {
-      this.canvas.addEventListener('click', () => this.jump());
-      this.canvas.addEventListener('touchstart', event => { event.preventDefault(); this.jump(); }, { passive: false });
+      this.canvas.addEventListener('click', this.boundJump);
+      this.canvas.addEventListener('touchstart', this.boundCanvasTouchJump, { passive: false });
     }
     const canvasWrap = this.modal.querySelector('.feg-runner-canvas-wrap');
     if (canvasWrap) {
-      canvasWrap.addEventListener('pointerdown', event => {
-        if (isInteractiveTarget(event.target)) return;
-        if (event.pointerType === 'touch' || event.pointerType === 'pen' || isMobileViewport()) this.jump();
-      });
+      canvasWrap.addEventListener('pointerdown', this.boundCanvasPointerJump);
     }
-    if (this.cloudRefreshButton) this.cloudRefreshButton.addEventListener('click', () => this.refreshLeaderboard());
+    if (this.cloudRefreshButton) this.cloudRefreshButton.addEventListener('click', this.boundRefreshLeaderboard);
     window.addEventListener('keydown', this.boundKey);
     this.draw();
     this.refreshLeaderboard();
@@ -775,6 +784,17 @@
 
   RunnerGame.prototype.destroy = function () {
     this.stop();
+    // Clean up event listeners (v3.1.88 audit fix)
+    if (this.jumpButton) this.jumpButton.removeEventListener('click', this.boundJump);
+    if (this.canvas) {
+      this.canvas.removeEventListener('click', this.boundJump);
+      this.canvas.removeEventListener('touchstart', this.boundCanvasTouchJump);
+    }
+    const canvasWrap = this.modal.querySelector('.feg-runner-canvas-wrap');
+    if (canvasWrap) {
+      canvasWrap.removeEventListener('pointerdown', this.boundCanvasPointerJump);
+    }
+    if (this.cloudRefreshButton) this.cloudRefreshButton.removeEventListener('click', this.boundRefreshLeaderboard);
     window.removeEventListener('keydown', this.boundKey);
   };
 
@@ -821,6 +841,12 @@
       state.spawnTimer = Math.max(720, 1450 - state.elapsed / 60) + Math.random() * 620;
     }
     player.frame += dt;
+    // Physics step normalization: clamp(dt/16.67, 0.5, 2.25)
+    // At 60 FPS: dt ≈ 16.67ms → physicsStep = 1.0 (normal)
+    // At 30 FPS: dt ≈ 33ms → physicsStep = 2.0 (slowed down, no tunneling)
+    // At 15 FPS: dt ≈ 66ms → physicsStep = 2.25 (clamped, frame lag visible)
+    // On slow devices: game delays rather than skips obstacles.
+    // v3.1.88 audit note: frame() already clamps dt to 38ms max, so this is safe.
     const physicsStep = clamp(dt / 16.6667, 0.5, 2.25);
     if (!player.grounded && player.jumpHold > 0 && player.vy < 0) {
       player.jumpHold = Math.max(0, player.jumpHold - dt);

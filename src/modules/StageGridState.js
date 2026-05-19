@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.7.0 — StageGridState module
+// FEG Stage PRO v3.1.88 — StageGridState module
 // Responsibility: pure grid/shape helpers for the stage editor.
 // Classic-compatible module: attaches API to window.FEGModules.StageGridState.
 (function (global) {

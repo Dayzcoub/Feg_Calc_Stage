@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.15.49 — V4SharedBomBridge
+// FEG Stage PRO v3.1.88 — V4SharedBomBridge
 // Normalizes configured v4 sections into one BOM stream for quote_items, documents and warehouse flows.
 (function () {
   'use strict';

@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.6.32 — PdfGenerator bridge cleanup module
+// FEG Stage PRO v3.1.88 — PdfGenerator bridge cleanup module
 // Responsibility: shared PDF rendering, preview modal wiring, download/share/email helpers.
 // Classic-compatible module: attaches API to window.FEGModules.PdfGenerator.
 (function (global) {

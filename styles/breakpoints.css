@@ -1,6 +1,13 @@
 /* v3.1.12 — authoritative responsive breakpoint contract
    Global rule: mobile <= 767, desktop/tablet >= 768. No hybrid tablet breakpoint.
-   This file is loaded last and neutralizes older overlapping hotfix breakpoints. */
+   This file is loaded last and neutralizes older overlapping hotfix breakpoints.
+   
+   v3.1.88 audit note: This file contains 1899 × !important declarations.
+   This is a known CSS debt pattern. When refactoring:
+   1. Remove conflicting rules from mobile.css, app-shell.css, controls.css
+   2. Use proper CSS cascade instead of !important
+   3. Reduce breakpoints.css to ~100 lines of authoritative contract only
+   Strategy: defer CSS refactor to next major version after UI stabilizes. */
 
 :root {
   --feg-bp-mobile-max: 767px;

@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.6.4 — CalibrationManager module
+// FEG Stage PRO v3.1.88 — CalibrationManager module
 // Responsibility: file-based SVG calibration, local admin draft calibration and PIN access.
 // Classic-compatible module: attaches API to window.FEGModules.CalibrationManager.
 (function (global) {

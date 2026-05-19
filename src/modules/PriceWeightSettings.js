@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.6.3 — PriceWeightSettings module
+// FEG Stage PRO v3.1.88 — PriceWeightSettings module
 // Responsibility: stage rental/install pricing, stage height, stage item weights and stage price/weight modal helpers.
 // Classic-compatible module: attaches API to window.FEGModules.PriceWeightSettings.
 (function (global) {

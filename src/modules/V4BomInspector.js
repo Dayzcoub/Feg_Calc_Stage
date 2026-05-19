@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.15.45 — V4BomInspector
+// FEG Stage PRO v3.1.88 — V4BomInspector
 // Read-only diagnostic panel for the shared v4 BOM bridge, quote_items and warehouse pick list snapshots.
 (function () {
   'use strict';

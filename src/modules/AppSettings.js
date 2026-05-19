@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.6.2 — AppSettings module
+// FEG Stage PRO v3.1.88 — AppSettings module
 // Responsibility: app-level theme, app settings modal helpers and Supabase settings form state.
 // Classic-compatible module: attaches API to window.FEGModules.AppSettings and can also be parsed as an ES module.
 (function (global) {

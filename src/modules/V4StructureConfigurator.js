@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.17.43 — V4StructureConfigurator
+// FEG Stage PRO v3.1.88 — V4StructureConfigurator
 // Single v4 source of truth for stage/truss parts, BOM and quote sections.
 // v4-only shared structure engine for quick calculators and quote wizard.
 // v3.17.43 keeps stool real-dimension logic shared for quick and quote modes.

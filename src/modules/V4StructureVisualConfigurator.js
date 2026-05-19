@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.17.43 — V4StructureVisualConfigurator
+// FEG Stage PRO v3.1.88 — V4StructureVisualConfigurator
 // Shared visual stage/truss configurators for technicians and managers.
 // One UI layer, one V4StructureConfigurator BOM source, legacy v3 kept as fallback only.
 // v3.17.43: quick and quote truss stools share top-frame dimension policy.

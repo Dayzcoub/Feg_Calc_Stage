@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.17.54 — Quick PDF clean pricing rows and auto orientation
+// FEG Stage PRO v3.1.88 — Quick PDF clean pricing rows and auto orientation
 // Responsibility: PDF preview/download/share for quick Stage/Truss/LED calculators.
 // Boundary: quick technical export only; no quote save, no BOM mutation, no warehouse/reservation/backend writes.
 (function (global) {

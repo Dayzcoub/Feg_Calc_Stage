@@ -1,4 +1,4 @@
-// FEG Stage PRO v3.17.53 — Quick Stage/LED pricing + Truss install/delivery totals
+// FEG Stage PRO v3.1.88 — Quick Stage/LED pricing + Truss install/delivery totals
 // Keeps quick commercial values isolated from BOM/warehouse rows and guarded by role permissions.
 (function () {
   'use strict';
