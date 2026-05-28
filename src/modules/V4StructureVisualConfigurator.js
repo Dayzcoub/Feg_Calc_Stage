@@ -6,7 +6,7 @@
   'use strict';
   const GLOBAL = typeof window !== 'undefined' ? window : globalThis;
   const ROOT = (GLOBAL.FEGModules = GLOBAL.FEGModules || {});
-  const VERSION = '3.15.52';
+  const VERSION = '3.15.53';
   const DEFAULT_STAGE_GRID_COLS = 14;
   const DEFAULT_STAGE_GRID_ROWS = 10;
   const DEFAULT_STAGE_HEIGHT_M = 0.8;
@@ -168,8 +168,9 @@
   }
 
   const STAGE_COMPACT_OPTION_LABELS = Object.freeze({
-    deck:Object.freeze({ stage_deck_1200:'1.2×1.2 м' }),
-    support:Object.freeze({ stage_support_low:'Низкий', stage_support_middle:'Регулируемый', stage_support_high:'Высокий' }),
+    system:Object.freeze({ imlight_copy:'Imlight Copy', pkc_ship_paz:'PKC / ШИП-ПАЗ', pkc_paz_paz:'PKC / ПАЗ-ПАЗ' }),
+    deck:Object.freeze({ stage_deck_1200:'1.2×1.2 м', pkc_ps_2000_1000:'SS-PS 2×1', pkc_ps_1500_1000:'SS-PS 1.5×1', pkc_ps_1000_1000:'SS-PS 1×1', pkc_pp_2000_1000:'SS-PP 2×1', pkc_pp_1500_1000:'SS-PP 1.5×1', pkc_pp_1000_1000:'SS-PP 1×1' }),
+    support:Object.freeze({ stage_support_low:'Низкий', stage_support_middle:'Средний', stage_support_high:'Высокий', pkc_leg_vm:'SO-1-VM', pkc_leg_tv:'SO-1-TV', pkc_pp_leg_vm:'SO-2-VM', pkc_pp_leg_tv:'SO-2-TV' }),
     edge:Object.freeze({ fabric_skirt:'Тканевая юбка', raus_banner:'Раус-баннер' })
   });
 
@@ -180,6 +181,40 @@
       const label = dict[item && item.key] || full;
       return `<option value="${attr(item.key)}" title="${attr(full)}"${String(selected || '') === String(item.key) ? ' selected' : ''}>${esc(label)}</option>`;
     }).join('');
+  }
+
+  function stageItemsForSystem(kind, systemKey) {
+    const catalog = stageCatalog();
+    const map = { deck:'deckVariants', support:'supportVariants', frame:'frameVariants' };
+    const list = catalog[map[kind] || kind] || [];
+    const normalized = String(systemKey || 'imlight_copy');
+    return (Array.isArray(list) ? list : []).filter(item => {
+      const itemSystem = item && item.stageSystemKey;
+      if (!itemSystem) return true;
+      if (itemSystem === normalized) return true;
+      return itemSystem === 'pkc' && normalized.indexOf('pkc_') === 0;
+    });
+  }
+
+  function stageSystemFromInput(input) {
+    const src = input || {};
+    const svc = structure();
+    if (svc && svc.normalizeStageConfig) return svc.normalizeStageConfig(src).stageSystemKey || 'imlight_copy';
+    return src.stageSystemKey || src.stageSystem || 'imlight_copy';
+  }
+
+  function defaultStageItemKey(kind, systemKey, fallback) {
+    const list = stageItemsForSystem(kind, systemKey);
+    return list[0] && list[0].key || fallback || '';
+  }
+
+  function updateSelectOptions(select, kind, systemKey, selectedKey) {
+    if (!select) return '';
+    const list = stageItemsForSystem(kind, systemKey);
+    const selected = list.some(item => item && item.key === selectedKey) ? selectedKey : (list[0] && list[0].key || '');
+    select.innerHTML = stageOptionHtml(kind, list, selected);
+    if (selected) select.value = selected;
+    return selected;
   }
 
   function subrentorRows() {
@@ -217,13 +252,105 @@
   }
   function currentStageConfig(root) {
     const svc = structure();
-    if (!svc || !svc.normalizeStageConfig) return { deckKey:'stage_deck_1200', moduleWidthM:1.2, moduleDepthM:1.2, supportKey:'stage_support_middle', frameKey:'stage_frame_low' };
+    if (!svc || !svc.normalizeStageConfig) return { stageSystemKey:'imlight_copy', stageSystemLabel:'Imlight Copy', deckKey:'stage_deck_1200', moduleWidthM:1.2, moduleDepthM:1.2, supportKey:'stage_support_middle', frameKey:'stage_frame_low' };
     return svc.normalizeStageConfig({
+      stageSystemKey: root && root.querySelector('[data-stage-system]') && root.querySelector('[data-stage-system]').value,
       deckKey: root && root.querySelector('[data-stage-deck]') && root.querySelector('[data-stage-deck]').value,
       supportKey: root && root.querySelector('[data-stage-support]') && root.querySelector('[data-stage-support]').value,
-      frameKey: root && root.querySelector('[data-stage-frame]') && root.querySelector('[data-stage-frame]').value
+      frameKey: root && root.querySelector('[data-stage-frame]') && root.querySelector('[data-stage-frame]').value,
+      pkcDeckOrientation: root && root.querySelector('[data-stage-pkc-orientation]') && root.querySelector('[data-stage-pkc-orientation]').value
     });
   }
+
+  function isPkcStageKey(key) {
+    return String(key || '').indexOf('pkc_') === 0;
+  }
+
+  function isPkcStageState(state) {
+    return isPkcStageKey(state && state.stageSystemKey);
+  }
+
+  function getStageSystemKeyFromRoot(root) {
+    const el = root && root.querySelector ? root.querySelector('[data-stage-system]') : null;
+    return el && el.value || (root && root._v4StructureVisual && root._v4StructureVisual.state && root._v4StructureVisual.state.stageSystemKey) || 'imlight_copy';
+  }
+
+  function getStagePkcOrientation(root) {
+    const el = root && root.querySelector ? root.querySelector('[data-stage-pkc-orientation]') : null;
+    return el && el.value || (root && root._v4StructureVisual && root._v4StructureVisual.state && root._v4StructureVisual.state.pkcDeckOrientation) || 'landscape';
+  }
+
+  function getStagePkcFootprint(root) {
+    const svc = structure();
+    const deckEl = root && root.querySelector ? root.querySelector('[data-stage-deck]') : null;
+    const deckKey = deckEl && deckEl.value || 'pkc_ps_2000_1000';
+    const orientation = getStagePkcOrientation(root);
+    if (svc && svc.pkcDeckFootprint) return svc.pkcDeckFootprint(deckKey, orientation);
+    const is1500 = String(deckKey).indexOf('1500_1000') >= 0;
+    const is1000 = String(deckKey).indexOf('1000_1000') >= 0;
+    const w = is1000 ? 2 : (is1500 ? 3 : 4);
+    const d = 2;
+    return orientation === 'portrait' ? { deckKey, widthCells:d, depthCells:w, moduleWidthM:d * 0.5, moduleDepthM:w * 0.5, orientation } : { deckKey, widthCells:w, depthCells:d, moduleWidthM:w * 0.5, moduleDepthM:d * 0.5, orientation };
+  }
+
+  function getPkcModuleAtCell(state, x, y) {
+    const list = Array.isArray(state && state.pkcModules) ? state.pkcModules : [];
+    for (let i = list.length - 1; i >= 0; i -= 1) {
+      const m = list[i] || {};
+      const mx = Math.round(num(m.x, 0));
+      const my = Math.round(num(m.y, 0));
+      const w = Math.max(1, Math.round(num(m.widthCells || m.w, 1)));
+      const d = Math.max(1, Math.round(num(m.depthCells || m.d, 1)));
+      if (x >= mx && x < mx + w && y >= my && y < my + d) return { module:m, index:i };
+    }
+    return null;
+  }
+
+  function doesPkcFootprintFit(state, x, y, fp, ignoreIndex) {
+    const w = Math.max(1, Math.round(num(fp && fp.widthCells, 1)));
+    const d = Math.max(1, Math.round(num(fp && fp.depthCells, 1)));
+    const list = Array.isArray(state && state.pkcModules) ? state.pkcModules : [];
+    for (let i = 0; i < list.length; i += 1) {
+      if (i === ignoreIndex) continue;
+      const m = list[i] || {};
+      const mx = Math.round(num(m.x, 0));
+      const my = Math.round(num(m.y, 0));
+      const mw = Math.max(1, Math.round(num(m.widthCells || m.w, 1)));
+      const md = Math.max(1, Math.round(num(m.depthCells || m.d, 1)));
+      const separated = x + w <= mx || mx + mw <= x || y + d <= my || my + md <= y;
+      if (!separated) return false;
+    }
+    return true;
+  }
+
+  function makePkcStageModule(root, x, y) {
+    const fp = getStagePkcFootprint(root);
+    return {
+      id:makeId('pkc_stage'),
+      x:Math.max(0, Math.round(num(x, 0))),
+      y:Math.max(0, Math.round(num(y, 0))),
+      deckKey:fp.deckKey,
+      deckPartKey:fp.deckPartKey,
+      deckLabel:fp.deckLabel,
+      widthCells:Math.max(1, Math.round(num(fp.widthCells, 1))),
+      depthCells:Math.max(1, Math.round(num(fp.depthCells, 1))),
+      w:Math.max(1, Math.round(num(fp.widthCells, 1))),
+      d:Math.max(1, Math.round(num(fp.depthCells, 1))),
+      moduleWidthM:num(fp.moduleWidthM, Math.max(1, Math.round(num(fp.widthCells, 1))) * 0.5),
+      moduleDepthM:num(fp.moduleDepthM, Math.max(1, Math.round(num(fp.depthCells, 1))) * 0.5),
+      orientation:fp.orientation || getStagePkcOrientation(root),
+      stageGridCellM:0.5
+    };
+  }
+
+  function normalizePkcStageModules(raw, fallbackDeckKey, fallbackOrientation) {
+    const svc = structure();
+    const list = Array.isArray(raw) ? raw : [];
+    const cfg = { stageSystemKey:'pkc_ship_paz', deckKey:fallbackDeckKey || 'pkc_ps_2000_1000', pkcDeckOrientation:fallbackOrientation || 'landscape' };
+    if (svc && svc.normalizeStageDeckModules) return svc.normalizeStageDeckModules(list, cfg);
+    return list.map(item => Object.assign({}, item || {}));
+  }
+
 
 
   function stageFrameKeyForSupport(supportKey) {
@@ -233,7 +360,9 @@
   }
 
   function stageFrameDependencyText(supportKey) {
-    return String(supportKey || '') === 'stage_support_low'
+    const key = String(supportKey || '');
+    if (key.indexOf('pkc_') === 0) return 'PKC: перекладины Imlight Copy не используются.';
+    return key === 'stage_support_low'
       ? 'Низкий столб → низкая перекладина.'
       : 'Средний/высокий столб → средняя перекладина.';
   }
@@ -241,7 +370,9 @@
   function stageFrameLabelForKey(frameKey) {
     const variants = stageCatalog().frameVariants || [];
     const found = variants.find(item => item && item.key === frameKey);
-    return found && found.label || (frameKey === 'stage_frame_low' ? 'Перекладина низкая' : 'Перекладина средняя');
+    if (found && found.label) return found.label;
+    if (frameKey === 'stage_frame_none') return 'Не используется';
+    return frameKey === 'stage_frame_low' ? 'Перекладина низкая' : 'Перекладина средняя';
   }
 
   function stageHeightDefaultText(supportKey) {
@@ -291,10 +422,41 @@
     return { requiredFrameKey:required, changed:before !== required };
   }
 
+  function syncStageSystemControls(root, options) {
+    if (!root || !root.querySelector) return null;
+    const systemEl = root.querySelector('[data-stage-system]');
+    const deckEl = root.querySelector('[data-stage-deck]');
+    const supportEl = root.querySelector('[data-stage-support]');
+    const orientationWrap = root.querySelector('[data-stage-pkc-orientation-wrap]');
+    const orientationEl = root.querySelector('[data-stage-pkc-orientation]');
+    const state = root._v4StructureVisual && root._v4StructureVisual.state;
+    const previousSystem = state && state.stageSystemKey || 'imlight_copy';
+    const systemKey = systemEl && systemEl.value || 'imlight_copy';
+    const deckKey = updateSelectOptions(deckEl, 'deck', systemKey, deckEl && deckEl.value);
+    const supportKey = updateSelectOptions(supportEl, 'support', systemKey, supportEl && supportEl.value);
+    if (orientationWrap) orientationWrap.hidden = !isPkcStageKey(systemKey);
+    if (state) {
+      state.stageSystemKey = systemKey;
+      state.deckKey = deckKey;
+      state.pkcDeckOrientation = orientationEl && orientationEl.value || state.pkcDeckOrientation || 'landscape';
+      state.lastSupportKey = supportKey || state.lastSupportKey;
+      if (previousSystem !== systemKey) {
+        state.selected = new Set();
+        state.pkcModules = [];
+        state.stairs = new Set();
+        state.lastWarnings = [];
+      }
+    }
+    syncStageFrameWithSupport(root);
+    const opts = options || {};
+    if (opts.forceHeight) syncStageHeightWithSupport(root, { force:true });
+    return { stageSystemKey:systemKey, deckKey, supportKey };
+  }
+
   function stageModulesFromInput(input) {
     const calc = calcStage();
     const source = input || {};
-    if (Array.isArray(source.modules)) return source.modules.map(p => ({ x:num(p.x, 0), y:num(p.y, 0) }));
+    if (Array.isArray(source.modules)) return source.modules.map(p => Object.assign({}, p || {}, { x:num(p && p.x, 0), y:num(p && p.y, 0) }));
     if (source.explicitEmpty || source.startEmpty || source.cleanStart) return [];
     const hasPreset = source.widthModules != null || source.depthModules != null;
     if (!hasPreset) return [];
@@ -340,6 +502,7 @@
   function getStageModules(state) {
     const calc = calcStage();
     if (!state || !calc) return [];
+    if (isPkcStageState(state)) return clone(Array.isArray(state.pkcModules) ? state.pkcModules : []);
     return calc.modulesFromSet ? calc.modulesFromSet(state.selected || new Set()) : Array.from(state.selected || []).map(key => {
       const [x, y] = String(key).split(',').map(Number);
       return { x, y };
@@ -355,10 +518,10 @@
       state.gridRows = Math.max(DEFAULT_STAGE_GRID_ROWS, Math.round(num(state.gridRows, DEFAULT_STAGE_GRID_ROWS)));
       return;
     }
-    const maxX = Math.max(...list.map(p => Math.round(num(p.x, 0))));
-    const maxY = Math.max(...list.map(p => Math.round(num(p.y, 0))));
-    state.gridCols = Math.max(DEFAULT_STAGE_GRID_COLS, Math.round(num(state.gridCols, DEFAULT_STAGE_GRID_COLS)), maxX + 1 + pad);
-    state.gridRows = Math.max(DEFAULT_STAGE_GRID_ROWS, Math.round(num(state.gridRows, DEFAULT_STAGE_GRID_ROWS)), maxY + 1 + pad);
+    const maxX = Math.max(...list.map(p => Math.round(num(p.x, 0)) + Math.max(1, Math.round(num(p.widthCells || p.w, 1)))));
+    const maxY = Math.max(...list.map(p => Math.round(num(p.y, 0)) + Math.max(1, Math.round(num(p.depthCells || p.d, 1)))));
+    state.gridCols = Math.max(DEFAULT_STAGE_GRID_COLS, Math.round(num(state.gridCols, DEFAULT_STAGE_GRID_COLS)), maxX + pad);
+    state.gridRows = Math.max(DEFAULT_STAGE_GRID_ROWS, Math.round(num(state.gridRows, DEFAULT_STAGE_GRID_ROWS)), maxY + pad);
   }
 
   function centerStageModulesInCanvas(modules, state) {
@@ -393,11 +556,19 @@
   function normalizeStageState(input) {
     const calc = calcStage();
     const source = input || {};
+    const cfg = structure() && structure().normalizeStageConfig ? structure().normalizeStageConfig(source) : { stageSystemKey:source.stageSystemKey || 'imlight_copy', deckKey:source.deckKey || 'stage_deck_1200' };
     const modules = stageModulesFromInput(source);
-    const bounds = calc && calc.getStageBounds ? calc.getStageBounds(modules) : { width: 0, depth: 0 };
-    const cols = Math.max(DEFAULT_STAGE_GRID_COLS, clamp(source.gridCols, 6, 40, Math.max(DEFAULT_STAGE_GRID_COLS, (bounds.width || 0) + 4)));
-    const rows = Math.max(DEFAULT_STAGE_GRID_ROWS, clamp(source.gridRows, 6, 32, Math.max(DEFAULT_STAGE_GRID_ROWS, (bounds.depth || 0) + 3)));
-    const supportKey = source.supportKey || source.stageSupportKey || source.columnType && `stage_support_${source.columnType}` || 'stage_support_middle';
+    let pkcSourceModules = modules;
+    if (isPkcStageKey(cfg.stageSystemKey) && modules.length && !modules.some(item => item && (item.widthCells != null || item.depthCells != null || item.stageGridCellM != null))) {
+      const fp = structure() && structure().pkcDeckFootprint ? structure().pkcDeckFootprint(cfg.deckKey, source.pkcDeckOrientation || source.deckOrientation) : { widthCells:4, depthCells:2 };
+      pkcSourceModules = modules.map(item => Object.assign({}, item || {}, { x:Math.round(num(item && item.x, 0)) * Math.max(1, Math.round(num(fp.widthCells, 1))), y:Math.round(num(item && item.y, 0)) * Math.max(1, Math.round(num(fp.depthCells, 1))) }));
+    }
+    const initialPkcModules = isPkcStageKey(cfg.stageSystemKey) ? normalizePkcStageModules(pkcSourceModules, cfg.deckKey, source.pkcDeckOrientation || source.deckOrientation) : [];
+    const boundsSource = isPkcStageKey(cfg.stageSystemKey) ? initialPkcModules : modules;
+    const bounds = calc && calc.getStageBounds ? calc.getStageBounds(boundsSource) : { width: 0, depth: 0 };
+    const cols = Math.max(DEFAULT_STAGE_GRID_COLS, clamp(source.gridCols, 6, 80, Math.max(DEFAULT_STAGE_GRID_COLS, (bounds.width || 0) + 4)));
+    const rows = Math.max(DEFAULT_STAGE_GRID_ROWS, clamp(source.gridRows, 6, 60, Math.max(DEFAULT_STAGE_GRID_ROWS, (bounds.depth || 0) + 3)));
+    const supportKey = source.supportKey || source.stageSupportKey || source.columnType && `stage_support_${source.columnType}` || cfg.supportKey || 'stage_support_middle';
     const hasHeight = hasStageHeightValue(source);
     const state = {
       kind:'stage',
@@ -406,7 +577,11 @@
       gridRows:rows,
       mode:'toggle',
       activeTool:(source.activeTool === 'stair' ? 'stair' : 'deck'),
+      stageSystemKey:cfg.stageSystemKey || 'imlight_copy',
+      deckKey:cfg.deckKey || 'stage_deck_1200',
+      pkcDeckOrientation:source.pkcDeckOrientation || source.deckOrientation || 'landscape',
       selected:new Set(),
+      pkcModules:[],
       stairs:new Set(),
       stageHeightM:stageHeightFromSource(Object.assign({}, source, { supportKey })),
       heightWasManual:hasHeight,
@@ -420,8 +595,9 @@
       autoFit:source.autoFit === false || source.stageAutoFit === false ? false : true,
       pendingCenter:false
     };
-    const normalized = normalizeStageInputModules(modules, state, source);
-    state.selected = stageSetFromModules(normalized, calc);
+    const normalized = isPkcStageKey(state.stageSystemKey) ? initialPkcModules : normalizeStageInputModules(modules, state, source);
+    if (isPkcStageKey(state.stageSystemKey)) state.pkcModules = clone(normalized);
+    else state.selected = stageSetFromModules(normalized, calc);
     state.stairs = stageSetFromModules(stageStairsFromInput(source), calc);
     ensureStageCanvasFits(state, normalized.concat(getStageStairs(state)), 2);
     return state;
@@ -437,10 +613,13 @@
     const opts = options || {};
     const compactQuote = opts.mode === 'quote';
     const input = opts.input || { explicitEmpty:true };
-    const initialSupportKey = input.supportKey || input.stageSupportKey || input.columnType && `stage_support_${input.columnType}` || 'stage_support_middle';
+    const initialCfg = structure().normalizeStageConfig ? structure().normalizeStageConfig(input) : { stageSystemKey:'imlight_copy', deckKey:'stage_deck_1200', supportKey:'stage_support_middle', frameKey:'stage_frame_high' };
+    const initialSystemKey = initialCfg.stageSystemKey || stageSystemFromInput(input);
+    const initialDeckKey = initialCfg.deckKey || defaultStageItemKey('deck', initialSystemKey, 'stage_deck_1200');
+    const initialSupportKey = initialCfg.supportKey || defaultStageItemKey('support', initialSystemKey, 'stage_support_middle');
     const initialFrameKey = stageFrameKeyForSupport(initialSupportKey);
     const initialHeightM = stageHeightFromSource(Object.assign({}, input, { supportKey:initialSupportKey }));
-    const state = normalizeStageState(input);
+    const state = normalizeStageState(Object.assign({}, input, { stageSystemKey:initialSystemKey, deckKey:initialDeckKey, supportKey:initialSupportKey }));
     root._v4StructureVisual = { kind:'stage', state, options:opts };
     root.innerHTML = `
       <div class="v4-structure-editor v4-structure-stage v4-stage-polish" data-v4-structure-stage>
@@ -451,8 +630,10 @@
           <div class="v4-stage-controls-layout">
             <div class="v4-stage-main-controls-card" data-stage-main-controls-card>
               <div class="v4-stage-control-stack v4-stage-control-stack--build feg-control-grid feg-control-grid--rows">
-                <label class="v4-field v4-field--deck">Тип настила<select data-stage-deck>${stageOptionHtml('deck', stageCatalog().deckVariants, input.deckKey || 'stage_deck_1200')}</select></label>
-                <label class="v4-field v4-field--support">Тип столбов<select data-stage-support>${stageOptionHtml('support', stageCatalog().supportVariants, initialSupportKey)}</select></label>
+                <label class="v4-field v4-field--system">Система сцены<select data-stage-system>${stageOptionHtml('system', stageCatalog().systemVariants || [], initialSystemKey)}</select></label>
+                <label class="v4-field v4-field--deck">Тип настила<select data-stage-deck>${stageOptionHtml('deck', stageItemsForSystem('deck', initialSystemKey), initialDeckKey)}</select></label>
+                <label class="v4-field v4-field--pkc-orientation" data-stage-pkc-orientation-wrap${isPkcStageKey(initialSystemKey) ? '' : ' hidden'}>Ориентация PKC<select data-stage-pkc-orientation><option value="landscape"${(input.pkcDeckOrientation || input.deckOrientation) === 'portrait' ? '' : ' selected'}>длинной стороной по ширине</option><option value="portrait"${(input.pkcDeckOrientation || input.deckOrientation) === 'portrait' ? ' selected' : ''}>длинной стороной по глубине</option></select></label>
+                <label class="v4-field v4-field--support">Тип опор<select data-stage-support>${stageOptionHtml('support', stageItemsForSystem('support', initialSystemKey), initialSupportKey)}</select></label>
                 <div class="v4-stage-frame-auto-card v4-stage-frame-auto-card--compact">
                   <input type="hidden" data-stage-frame value="${attr(initialFrameKey)}">
                   <span>Перекладина</span>
@@ -534,8 +715,10 @@
       const [w, d] = String(btn.getAttribute('data-stage-template') || '').split('x').map(Number);
       buildStagePreset(root, w || 4, d || 3);
     }));
+    const systemSelect = root.querySelector('[data-stage-system]');
     const supportSelect = root.querySelector('[data-stage-support]');
     const frameSelect = root.querySelector('[data-stage-frame]');
+    if (systemSelect) systemSelect.addEventListener('change', () => { syncStageSystemControls(root, { forceHeight:true }); renderStageState(root); });
     if (supportSelect) supportSelect.addEventListener('change', () => { syncStageFrameWithSupport(root); syncStageHeightWithSupport(root); renderStageState(root); });
     if (frameSelect) frameSelect.addEventListener('change', () => { syncStageFrameWithSupport(root); renderStageState(root); });
     const heightControl = root.querySelector('[data-stage-height]');
@@ -546,7 +729,11 @@
         renderStageState(root);
       }));
     }
-    root.querySelectorAll('[data-stage-deck],[data-stage-edge-enabled],[data-stage-edge-type]').forEach(input => input.addEventListener('change', () => renderStageState(root)));
+    root.querySelectorAll('[data-stage-deck],[data-stage-pkc-orientation],[data-stage-edge-enabled],[data-stage-edge-type]').forEach(input => input.addEventListener('change', () => {
+      const st = root._v4StructureVisual && root._v4StructureVisual.state;
+      if (st && input.matches && input.matches('[data-stage-pkc-orientation]')) st.pkcDeckOrientation = input.value || 'landscape';
+      renderStageState(root);
+    }));
     root.querySelectorAll('[data-stage-pricing]').forEach(input => ['input','change'].forEach(eventName => input.addEventListener(eventName, () => renderStageState(root))));
     root.querySelectorAll('[data-stage-tool]').forEach(btn => btn.addEventListener('click', () => {
       const st = root._v4StructureVisual && root._v4StructureVisual.state;
@@ -565,6 +752,7 @@
       if (st) ensureStageCanvasFits(st, getStageModules(st), 2);
       renderStageState(root);
     }));
+    syncStageSystemControls(root);
     syncStageFrameWithSupport(root);
     syncStageHeightWithSupport(root, { force:state.stageHeightAutoForSupport });
     renderStageState(root);
@@ -618,6 +806,15 @@
     return Math.max(14, Math.round(getStageBaseCellPx(state) * getStageZoom(state) / 100));
   }
 
+  function getStageCellDimensions(state, cfg) {
+    const cellW = getStageRenderCellPx(state);
+    if (isPkcStageKey(cfg && cfg.stageSystemKey || state && state.stageSystemKey)) return { width:cellW, height:cellW, ratio:'1 / 1' };
+    const widthM = Math.max(0.1, num(cfg && cfg.moduleWidthM, 1.2));
+    const depthM = Math.max(0.1, num(cfg && cfg.moduleDepthM, 1.2));
+    const cellH = Math.max(12, Math.round(cellW * depthM / widthM));
+    return { width:cellW, height:cellH, ratio:`${widthM} / ${depthM}` };
+  }
+
   function getStageContentBounds(state) {
     const points = getStagePlanPoints(state);
     if (!points.length) return { minX:0, minY:0, maxX:Math.max(1, Number(state && state.gridCols || DEFAULT_STAGE_GRID_COLS)) - 1, maxY:Math.max(1, Number(state && state.gridRows || DEFAULT_STAGE_GRID_ROWS)) - 1, columns:Math.max(1, Number(state && state.gridCols || DEFAULT_STAGE_GRID_COLS)), rows:Math.max(1, Number(state && state.gridRows || DEFAULT_STAGE_GRID_ROWS)), empty:true };
@@ -625,8 +822,10 @@
     points.forEach(point => {
       const x = Math.max(0, Math.round(num(point && point.x, 0)));
       const y = Math.max(0, Math.round(num(point && point.y, 0)));
+      const w = Math.max(1, Math.round(num(point && (point.widthCells || point.w), 1)));
+      const d = Math.max(1, Math.round(num(point && (point.depthCells || point.d), 1)));
       minX = Math.min(minX, x); minY = Math.min(minY, y);
-      maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
+      maxX = Math.max(maxX, x + w - 1); maxY = Math.max(maxY, y + d - 1);
     });
     return { minX, minY, maxX, maxY, columns:Math.max(1, maxX - minX + 1), rows:Math.max(1, maxY - minY + 1), empty:false };
   }
@@ -637,6 +836,10 @@
     if (!state || !root || !root.querySelector) return false;
     const wrap = root.querySelector('[data-stage-canvas-wrap]') || root.querySelector('.v4-stage-canvas-wrap');
     const basePx = getStageBaseCellPx(state);
+    const cfg = currentStageConfig(root);
+    const widthM = Math.max(0.1, num(cfg && cfg.moduleWidthM, 1.2));
+    const depthM = Math.max(0.1, num(cfg && cfg.moduleDepthM, 1.2));
+    const baseHPx = isPkcStageKey(cfg && cfg.stageSystemKey) ? basePx : Math.max(12, Math.round(basePx * depthM / widthM));
     const content = getStageContentBounds(state);
     if (content.empty) {
       const current = getStageZoom(state);
@@ -647,7 +850,7 @@
     const availableW = Math.max(isMobileStageViewport ? 180 : 260, Math.floor(num(wrap && wrap.clientWidth, 760) - 28));
     const availableH = Math.max(isMobileStageViewport ? 150 : 240, Math.floor(num(wrap && wrap.clientHeight, 520) - 28));
     const contentW = Math.max(1, (Number(content.columns || 1) + 3) * basePx);
-    const contentH = Math.max(1, (Number(content.rows || 1) + 3) * basePx);
+    const contentH = Math.max(1, (Number(content.rows || 1) + 3) * baseHPx);
     const target = clampStageZoom(Math.floor(Math.min(220, 100, availableW / contentW * 100, availableH / contentH * 100)));
     const current = getStageZoom(state);
     if (reason === 'manual' || Math.abs(current - target) >= 2) {
@@ -670,17 +873,44 @@
     const ctx = root && root._v4StructureVisual;
     const state = ctx && ctx.state;
     const wrap = root && root.querySelector && (root.querySelector('[data-stage-canvas-wrap]') || root.querySelector('.v4-stage-canvas-wrap'));
-    if (!state || !wrap) return;
-    const bounds = getStageContentBounds(state);
-    if (bounds.empty) { wrap.scrollLeft = 0; wrap.scrollTop = 0; return; }
-    const cellPx = getStageRenderCellPx(state);
-    const gap = 4;
-    const centerX = (bounds.minX + bounds.columns / 2) * (cellPx + gap);
-    const centerY = (bounds.minY + bounds.rows / 2) * (cellPx + gap);
+    const grid = root && root.querySelector && root.querySelector('[data-stage-grid]');
+    if (!state || !wrap || !grid) return;
+    const selectedCells = Array.from(grid.querySelectorAll('.v4-stage-cell.selected'));
+    if (!selectedCells.length) {
+      wrap.scrollLeft = 0;
+      wrap.scrollTop = 0;
+      return;
+    }
+    let minLeft = Infinity;
+    let minTop = Infinity;
+    let maxRight = -Infinity;
+    let maxBottom = -Infinity;
+    const gridOffsetLeft = Number(grid.offsetLeft || 0);
+    const gridOffsetTop = Number(grid.offsetTop || 0);
+    selectedCells.forEach(cell => {
+      if (!cell) return;
+      const left = gridOffsetLeft + Number(cell.offsetLeft || 0);
+      const top = gridOffsetTop + Number(cell.offsetTop || 0);
+      const right = left + Number(cell.offsetWidth || 0);
+      const bottom = top + Number(cell.offsetHeight || 0);
+      if (left < minLeft) minLeft = left;
+      if (top < minTop) minTop = top;
+      if (right > maxRight) maxRight = right;
+      if (bottom > maxBottom) maxBottom = bottom;
+    });
+    if (!Number.isFinite(minLeft) || !Number.isFinite(minTop)) {
+      wrap.scrollLeft = 0;
+      wrap.scrollTop = 0;
+      return;
+    }
+    const centerX = (minLeft + maxRight) / 2;
+    const centerY = (minTop + maxBottom) / 2;
     const maxLeft = Math.max(0, wrap.scrollWidth - wrap.clientWidth);
     const maxTop = Math.max(0, wrap.scrollHeight - wrap.clientHeight);
-    wrap.scrollLeft = Math.max(0, Math.min(maxLeft, Math.round(centerX - wrap.clientWidth / 2)));
-    wrap.scrollTop = Math.max(0, Math.min(maxTop, Math.round(centerY - wrap.clientHeight / 2)));
+    const targetLeft = Math.round(centerX - wrap.clientWidth / 2);
+    const targetTop = Math.round(centerY - wrap.clientHeight / 2);
+    wrap.scrollLeft = Math.max(0, Math.min(maxLeft, targetLeft));
+    wrap.scrollTop = Math.max(0, Math.min(maxTop, targetTop));
   }
 
   function handleStageZoomAction(root, action) {
@@ -737,8 +967,31 @@
     if (!state || !calc) return;
     const w = Math.max(1, Math.round(num(width, 4)));
     const d = Math.max(1, Math.round(num(depth, 3)));
+    const cfg = currentStageConfig(root);
+    if (isPkcStageKey(cfg.stageSystemKey)) {
+      const fp = getStagePkcFootprint(root);
+      const moduleW = Math.max(1, Math.round(num(fp.widthCells, 1)));
+      const moduleD = Math.max(1, Math.round(num(fp.depthCells, 1)));
+      const totalW = w * moduleW;
+      const totalD = d * moduleD;
+      ensureStageGridForShape(state, totalW, totalD, 3);
+      const startX = Math.max(0, Math.floor((state.gridCols - totalW) / 2));
+      const startY = Math.max(0, Math.floor((state.gridRows - totalD) / 2));
+      const modules = [];
+      for (let row = 0; row < d; row += 1) {
+        for (let col = 0; col < w; col += 1) modules.push(Object.assign(makePkcStageModule(root, startX + col * moduleW, startY + row * moduleD), { id:makeId('pkc_preset') }));
+      }
+      state.pkcModules = modules;
+      state.selected = new Set();
+      state.stairs = new Set();
+      ensureStageCanvasFits(state, modules, 2);
+      state.pendingCenter = true;
+      renderStageState(root);
+      return;
+    }
     const modules = centeredStageRectModules(w, d, state);
     state.selected = stageSetFromModules(modules, calc);
+    state.pkcModules = [];
     state.stairs = new Set();
     ensureStageCanvasFits(state, modules, 2);
     state.pendingCenter = true;
@@ -755,7 +1008,7 @@
       renderStageState(root);
       return;
     }
-    if (action === 'clear') { state.selected.clear(); state.stairs = new Set(); }
+    if (action === 'clear') { state.selected.clear(); state.pkcModules = []; state.stairs = new Set(); }
     if (action === 'rect') {
       const w = Math.max(1, Math.round(num(root.querySelector('[data-stage-preset="w"]') && root.querySelector('[data-stage-preset="w"]').value, 4)));
       const d = Math.max(1, Math.round(num(root.querySelector('[data-stage-preset="d"]') && root.querySelector('[data-stage-preset="d"]').value, 3)));
@@ -770,12 +1023,14 @@
     if (action === 'rotate') {
       const rotated = calc.rotateModules ? (calc.rotateModules(getStageModules(state), state.gridCols, state.gridRows) || []) : [];
       ensureStageCanvasFits(state, rotated, 2);
-      state.selected = stageSetFromModules(rotated, calc);
+      if (isPkcStageState(state)) state.pkcModules = rotated;
+      else state.selected = stageSetFromModules(rotated, calc);
     }
     if (action === 'mirror') {
       const mirrored = calc.mirrorModules ? (calc.mirrorModules(getStageModules(state)) || []) : [];
       const centered = centerStageModulesInCanvas(mirrored, state);
-      state.selected = stageSetFromModules(centered, calc);
+      if (isPkcStageState(state)) state.pkcModules = centered;
+      else state.selected = stageSetFromModules(centered, calc);
     }
     ensureStageCanvasFits(state, getStagePlanPoints(state), 2);
     renderStageState(root);
@@ -802,34 +1057,103 @@
     const heightNote = root.querySelector('[data-stage-height-default-note]');
     if (heightNote) heightNote.textContent = `${stageHeightDefaultText(supportEl && supportEl.value || state.lastSupportKey)}${state.stageHeightAutoForSupport ? '' : ' · сейчас вручную скорректировано'}`;
     const cfg = currentStageConfig(root);
-    const renderCellPx = getStageRenderCellPx(state);
-    grid.style.gridTemplateColumns = `repeat(${state.gridCols}, ${renderCellPx}px)`;
-    grid.style.setProperty('--stage-cell-px', `${renderCellPx}px`);
-    grid.style.setProperty('--stage-cell-ratio', `${num(cfg.moduleWidthM, 1.2)} / ${num(cfg.moduleDepthM, 1.2)}`);
-    grid.style.backgroundSize = `${renderCellPx}px ${renderCellPx}px`;
+    state.stageSystemKey = cfg.stageSystemKey || state.stageSystemKey || 'imlight_copy';
+    state.deckKey = cfg.deckKey || state.deckKey;
+    state.pkcDeckOrientation = getStagePkcOrientation(root);
+    const isPkcGrid = isPkcStageKey(cfg.stageSystemKey);
+    const cellDims = getStageCellDimensions(state, cfg);
+    grid.style.gridTemplateColumns = `repeat(${state.gridCols}, ${cellDims.width}px)`;
+    grid.style.setProperty('--stage-cell-px', `${cellDims.width}px`);
+    grid.style.setProperty('--stage-cell-height-px', `${cellDims.height}px`);
+    grid.style.setProperty('--stage-cell-ratio', cellDims.ratio);
+    grid.style.backgroundSize = `${cellDims.width}px ${cellDims.height}px`;
     grid.innerHTML = '';
     for (let y = 0; y < state.gridRows; y += 1) {
       for (let x = 0; x < state.gridCols; x += 1) {
         const key = calc.moduleKey(x, y);
-        const selected = state.selected.has(key);
+        const pkcHit = isPkcGrid ? getPkcModuleAtCell(state, x, y) : null;
+        const selected = isPkcGrid ? !!pkcHit : state.selected.has(key);
         const hasStair = state.stairs && state.stairs.has(key);
+        const isOrigin = !!(pkcHit && pkcHit.module && Math.round(num(pkcHit.module.x, 0)) === x && Math.round(num(pkcHit.module.y, 0)) === y);
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = `v4-stage-cell${selected ? ' selected' : ''}${hasStair ? ' has-stair' : ''}`;
+        btn.className = `v4-stage-cell${selected ? ' selected' : ''}${hasStair ? ' has-stair' : ''}${isOrigin ? ' pkc-origin' : ''}`;
         btn.dataset.stageKey = key;
         btn.dataset.x = String(x);
         btn.dataset.y = String(y);
-        btn.style.width = `${renderCellPx}px`;
-        btn.style.minWidth = `${renderCellPx}px`;
-        btn.style.height = `${renderCellPx}px`;
-        btn.style.minHeight = `${renderCellPx}px`;
-        btn.style.aspectRatio = `${num(cfg.moduleWidthM, 1.2)} / ${num(cfg.moduleDepthM, 1.2)}`;
-        btn.innerHTML = hasStair ? '<span class="v4-stage-stair-icon" aria-hidden="true">▰</span>' : '';
-        btn.title = `${x + 1}:${y + 1} · ${hasStair ? 'лестница' : (selected ? 'настил' : 'пусто')} · клик/протяжка`;
+        btn.style.width = `${cellDims.width}px`;
+        btn.style.minWidth = `${cellDims.width}px`;
+        btn.style.height = `${cellDims.height}px`;
+        btn.style.minHeight = `${cellDims.height}px`;
+        btn.style.aspectRatio = cellDims.ratio;
+        if (isPkcGrid && pkcHit && pkcHit.module) {
+          const currentId = pkcHit.module.id || `pkc-${pkcHit.index}`;
+          const sameModuleAt = (cx, cy) => {
+            const hit = getPkcModuleAtCell(state, cx, cy);
+            if (!hit || !hit.module) return false;
+            const hitId = hit.module.id || `pkc-${hit.index}`;
+            return hitId === currentId;
+          };
+          const edgeTop = !sameModuleAt(x, y - 1);
+          const edgeRight = !sameModuleAt(x + 1, y);
+          const edgeBottom = !sameModuleAt(x, y + 1);
+          const edgeLeft = !sameModuleAt(x - 1, y);
+          btn.dataset.pkcModuleId = String(currentId);
+          btn.dataset.pkcEdgeTop = edgeTop ? '1' : '0';
+          btn.dataset.pkcEdgeRight = edgeRight ? '1' : '0';
+          btn.dataset.pkcEdgeBottom = edgeBottom ? '1' : '0';
+          btn.dataset.pkcEdgeLeft = edgeLeft ? '1' : '0';
+          if (selected) {
+            const internalCellShadows = [
+              '0 3px 10px rgba(0,0,0,.30)',
+              'inset 0 0 0 1px rgba(255,255,255,.08)'
+            ];
+            btn.style.setProperty('box-shadow', internalCellShadows.join(', '), 'important');
+            btn.style.setProperty('border-color', 'rgba(86,199,216,0.34)', 'important');
+          }
+        }
+        if (hasStair) btn.innerHTML = '<span class="v4-stage-stair-icon" aria-hidden="true">▰</span>';
+        else btn.innerHTML = '';
+        btn.title = isPkcGrid && pkcHit && pkcHit.module
+          ? `${x + 1}:${y + 1} · ${pkcHit.module.deckLabel || pkcHit.module.deckKey || 'PKC модуль'} · ${pkcHit.module.moduleWidthM || ''}×${pkcHit.module.moduleDepthM || ''} м · клик удаляет весь модуль`
+          : `${x + 1}:${y + 1} · ${hasStair ? 'лестница' : (selected ? 'настил' : 'пусто')} · клик/протяжка`;
         btn.addEventListener('pointerdown', event => handleStageCellPointerDown(root, event));
         btn.addEventListener('pointerenter', event => handleStageCellPointerEnter(root, event));
         grid.appendChild(btn);
       }
+    }
+    if (isPkcGrid && Array.isArray(state.pkcModules) && state.pkcModules.length) {
+      const getCell = (cx, cy) => grid.querySelector(`.v4-stage-cell[data-x="${String(cx)}"][data-y="${String(cy)}"]`);
+      const gridGapX = Math.max(0, num((typeof window !== 'undefined' && window.getComputedStyle ? window.getComputedStyle(grid).columnGap : '') || 3, 3));
+      const gridGapY = Math.max(0, num((typeof window !== 'undefined' && window.getComputedStyle ? window.getComputedStyle(grid).rowGap : '') || 3, 3));
+      const pitchX = cellDims.width + gridGapX;
+      const pitchY = cellDims.height + gridGapY;
+      state.pkcModules.forEach((module, index) => {
+        if (!module) return;
+        const x0 = Math.max(0, Math.round(num(module.x, 0)));
+        const y0 = Math.max(0, Math.round(num(module.y, 0)));
+        const w = Math.max(1, Math.round(num(module.widthCells || module.w, 1)));
+        const d = Math.max(1, Math.round(num(module.depthCells || module.d, 1)));
+        const firstCell = getCell(x0, y0);
+        const lastCell = getCell(x0 + w - 1, y0 + d - 1);
+        const left = firstCell ? Number(firstCell.offsetLeft || 0) : x0 * pitchX;
+        const top = firstCell ? Number(firstCell.offsetTop || 0) : y0 * pitchY;
+        const right = lastCell ? Number(lastCell.offsetLeft || 0) + Number(lastCell.offsetWidth || cellDims.width) : left + w * cellDims.width + Math.max(0, w - 1) * gridGapX;
+        const bottom = lastCell ? Number(lastCell.offsetTop || 0) + Number(lastCell.offsetHeight || cellDims.height) : top + d * cellDims.height + Math.max(0, d - 1) * gridGapY;
+        const outline = document.createElement('div');
+        outline.className = 'v4-stage-pkc-module-outline';
+        outline.dataset.pkcModuleId = String(module.id || `pkc-${index}`);
+        outline.style.left = `${Math.round(left)}px`;
+        outline.style.top = `${Math.round(top)}px`;
+        outline.style.width = `${Math.max(1, Math.round(right - left))}px`;
+        outline.style.height = `${Math.max(1, Math.round(bottom - top))}px`;
+        outline.title = module.deckLabel || module.deckKey || 'PKC модуль';
+        const label = document.createElement('span');
+        label.className = 'v4-stage-pkc-module-label';
+        label.textContent = `${String(num(module.moduleWidthM, w * 0.5)).replace(/\.0$/, '')}×${String(num(module.moduleDepthM, d * 0.5)).replace(/\.0$/, '')}`;
+        outline.appendChild(label);
+        grid.appendChild(outline);
+      });
     }
     const input = readStageInput(root);
     const section = svc.buildStageSection(input, { source: opts.mode === 'quote' ? 'quote-visual-stage-v4-polish' : 'quick-visual-stage-v4-polish', catalogMode: opts.mode === 'quote' ? 'quote' : 'quick' });
@@ -837,6 +1161,16 @@
     const result = section.result || {};
     const geometry = result.geometry || {};
     const quickPricing = attachQuickPricing(section, 'stage', input.quickPricing || input, { qty: geometry.sheets || 0 }, opts);
+    const cfgSummary = section.stageConfig || {};
+    const systemKey = cfgSummary.stageSystemKey || 'imlight_copy';
+    const connectorCard = systemKey === 'pkc_paz_paz'
+      ? `<div class="v4-mini"><b>T ${esc(geometry.pkcTConnectors || 0)} / X ${esc(geometry.pkcXConnectors || 0)} / С ${esc(geometry.pkcClamps || 0)}</b><span>Соединители PKC</span><small>T / X / струбцины</small></div>`
+      : (systemKey === 'pkc_ship_paz'
+        ? `<div class="v4-mini"><b>ШИП-ПАЗ</b><span>Соединение</span><small>без T/X/струбцин</small></div>`
+        : `<div class="v4-mini"><b>${esc(geometry.frames || 0)}</b><span>${esc((cfgSummary && cfgSummary.frameLabel) || 'Перекладины')}</span></div>`);
+    const hardwareCard = systemKey === 'imlight_copy'
+      ? `<div class="v4-mini"><b>${esc(geometry.studs || 0)} / ${esc(geometry.feet || 0)}</b><span>Шпильки / пятки</span></div>`
+      : `<div class="v4-mini"><b>750 кг/м²</b><span>PKC нагрузка</span><small>справочно по каталогу</small></div>`;
     // v3.15.45: keep the visual stage editor light. The full Stage flow
     // snapshot (shared BOM → quote_items → warehouse → contract) is now built
     // on demand by V4BomInspector / document buttons instead of on every cell click.
@@ -846,11 +1180,12 @@
     if (summary) summary.innerHTML = `
       <div class="v4-stage-summary-metrics">
         <div class="v4-summary-grid">
-          <div class="v4-mini"><b>${esc(geometry.sheets || 0)}</b><span>${esc((section.stageConfig && section.stageConfig.deckLabel) || 'Листы')}</span></div>
-          <div class="v4-mini"><b>${esc(geometry.columns || 0)}</b><span>${esc((section.stageConfig && section.stageConfig.supportLabel) || 'Опоры')}</span></div>
-          <div class="v4-mini"><b>${esc(geometry.frames || 0)}</b><span>${esc((section.stageConfig && section.stageConfig.frameLabel) || 'Перекладины')}</span></div>
-          <div class="v4-mini"><b>${esc(geometry.studs || 0)} / ${esc(geometry.feet || 0)}</b><span>Шпильки / пятки</span></div>
-          <div class="v4-mini"><b>${esc(Number(result.widthMeters || 0).toFixed(1))}×${esc(Number(result.depthMeters || 0).toFixed(1))} м</b><span>Габарит · модуль ${esc((section.stageConfig && section.stageConfig.moduleWidthM) || 1.2)}×${esc((section.stageConfig && section.stageConfig.moduleDepthM) || 1.2)} м</span></div>
+          <div class="v4-mini"><b>${esc(cfgSummary.stageSystemLabel || 'Imlight Copy')}</b><span>Система сцены</span><small>${esc(cfgSummary.stageSystemDescription || '')}</small></div>
+          <div class="v4-mini"><b>${esc(geometry.sheets || 0)}</b><span>${esc((cfgSummary && cfgSummary.deckLabel) || 'Листы')}</span></div>
+          <div class="v4-mini"><b>${esc(geometry.columns || 0)}</b><span>${esc((cfgSummary && cfgSummary.supportLabel) || 'Опоры')}</span></div>
+          ${connectorCard}
+          ${hardwareCard}
+          <div class="v4-mini"><b>${esc(Number(result.widthMeters || 0).toFixed(1))}×${esc(Number(result.depthMeters || 0).toFixed(1))} м</b><span>${isPkcStageKey(systemKey) ? 'Габарит · сетка PKC 0.5 м' : `Габарит · модуль ${esc((section.stageConfig && section.stageConfig.moduleWidthM) || 1.2)}×${esc((section.stageConfig && section.stageConfig.moduleDepthM) || 1.2)} м`}</span></div>
           <div class="v4-mini"><b>${esc(stageHeightText(section.stageHeightM || state.stageHeightM))}</b><span>Высота сцены</span></div>
           <div class="v4-mini"><b>${esc((geometry.stairs || 0))} шт</b><span>Лестницы на плане</span></div>
           <div class="v4-mini"><b>${esc(Number(geometry.edgeClosureMeters || 0).toFixed(2))} м.п.</b><span>Закрытие торцов</span><small>${esc(section.stageConfig && section.stageConfig.edgeClosureEnabled ? section.stageConfig.edgeClosureLabel : 'не выбрано')}</small></div>
@@ -859,6 +1194,7 @@
         </div>
       </div>
       <div class="v4-stage-summary-details">
+        ${Array.isArray(result.stageWarnings) && result.stageWarnings.length ? `<div class="v4-note v4-stage-warning">${result.stageWarnings.map(item => esc(item)).join('<br>')}</div>` : ''}
         ${renderBomRows(section.bomRows)}
         ${renderQuickPricingTable(quickPricing)}
         ${ctx.options && ctx.options.mode === 'quote' ? '' : (ROOT.QuickPdfExport && ROOT.QuickPdfExport.renderActionHtml ? ROOT.QuickPdfExport.renderActionHtml('stage') : '')}
@@ -920,14 +1256,30 @@
     state.lastDrawnKey = key;
     const shouldAdd = state.drawMode !== 'remove';
     const tool = state.drawTool === 'stair' || state.activeTool === 'stair' ? 'stair' : 'deck';
+    const x = Math.round(num(cell.dataset.x, 0));
+    const y = Math.round(num(cell.dataset.y, 0));
     if (tool === 'stair') {
       state.stairs = state.stairs || new Set();
       if (shouldAdd) state.stairs.add(key);
       else state.stairs.delete(key);
-    } else {
-      if (shouldAdd) state.selected.add(key);
-      else state.selected.delete(key);
+      updateStageCellVisual(cell, false, state.stairs && state.stairs.has(key));
+      return;
     }
+    if (isPkcStageState(state)) {
+      state.pkcModules = Array.isArray(state.pkcModules) ? state.pkcModules : [];
+      const hit = getPkcModuleAtCell(state, x, y);
+      if (shouldAdd) {
+        if (hit) return;
+        const module = makePkcStageModule(root, x, y);
+        ensureStageCanvasFits(state, [module], 2);
+        if (doesPkcFootprintFit(state, module.x, module.y, module)) state.pkcModules.push(module);
+      } else if (hit) {
+        state.pkcModules.splice(hit.index, 1);
+      }
+      return;
+    }
+    if (shouldAdd) state.selected.add(key);
+    else state.selected.delete(key);
     updateStageCellVisual(cell, state.selected.has(key), state.stairs && state.stairs.has(key));
   }
 
@@ -941,7 +1293,9 @@
     if (!cell) return;
     const key = cell.dataset.stageKey || `${cell.dataset.x},${cell.dataset.y}`;
     state.drawTool = state.activeTool === 'stair' ? 'stair' : 'deck';
-    state.drawMode = state.drawTool === 'stair' ? ((state.stairs && state.stairs.has(key)) ? 'remove' : 'add') : (state.selected.has(key) ? 'remove' : 'add');
+    if (state.drawTool === 'stair') state.drawMode = (state.stairs && state.stairs.has(key)) ? 'remove' : 'add';
+    else if (isPkcStageState(state)) state.drawMode = getPkcModuleAtCell(state, Math.round(num(cell.dataset.x, 0)), Math.round(num(cell.dataset.y, 0))) ? 'remove' : 'add';
+    else state.drawMode = state.selected.has(key) ? 'remove' : 'add';
     state.isDrawing = true;
     state.lastDrawnKey = null;
     startStageDrawTracking(root);
@@ -981,11 +1335,14 @@
     const modules = getStageModules(state);
     const cfg = currentStageConfig(root);
     const heightInput = root.querySelector('[data-stage-height]');
-    const stageHeightM = stageHeightFromSource({ stageHeightM: heightInput && heightInput.value != null ? heightInput.value : state.stageHeightM });
+    const supportEl = root.querySelector('[data-stage-support]');
+    const systemEl = root.querySelector('[data-stage-system]');
+    const stageHeightM = stageHeightFromSource({ stageHeightM: heightInput && heightInput.value != null ? heightInput.value : state.stageHeightM, supportKey:supportEl && supportEl.value || cfg.supportKey });
     state.stageHeightM = stageHeightM;
     const edgeEnabled = !!(root.querySelector('[data-stage-edge-enabled]') && root.querySelector('[data-stage-edge-enabled]').checked);
     const edgeTypeEl = root.querySelector('[data-stage-edge-type]');
-    return { modules, explicitEmpty: modules.length === 0, gridCols:state.gridCols, gridRows:state.gridRows, zoom:state.zoom, stageZoom:state.zoom, autoFit:state.autoFit !== false, stageAutoFit:state.autoFit !== false, baseCellPx:state.baseCellPx, stageBaseCellPx:state.baseCellPx, mode:'toggle', coordinateMode:'grid-preserve', preserveGridCoordinates:true, stageDraftMode:'grid-preserve', stageDraftVersion:'3.16.13-stage-coordinate-preserve', deckKey:cfg.deckKey, supportKey:cfg.supportKey, frameKey:cfg.frameKey, frameDependency:clone(cfg.frameDependency || {}), moduleWidthM:cfg.moduleWidthM, moduleDepthM:cfg.moduleDepthM, stageHeightM, stairs:getStageStairs(state), edgeClosureEnabled:edgeEnabled, edgeClosureType:edgeTypeEl && edgeTypeEl.value || 'fabric_skirt', quickPricing:readStageQuickPricing(root, ctx && ctx.options || {}) }; 
+    const orientationEl = root.querySelector('[data-stage-pkc-orientation]');
+    return { modules, explicitEmpty: modules.length === 0, gridCols:state.gridCols, gridRows:state.gridRows, zoom:state.zoom, stageZoom:state.zoom, autoFit:state.autoFit !== false, stageAutoFit:state.autoFit !== false, baseCellPx:state.baseCellPx, stageBaseCellPx:state.baseCellPx, mode:'toggle', coordinateMode:'grid-preserve', preserveGridCoordinates:true, stageDraftMode:'grid-preserve', stageDraftVersion:'3.16.13-stage-coordinate-preserve', stageSystemKey:systemEl && systemEl.value || cfg.stageSystemKey, stageSystemLabel:cfg.stageSystemLabel, deckKey:cfg.deckKey, supportKey:cfg.supportKey, frameKey:cfg.frameKey, frameDependency:clone(cfg.frameDependency || {}), moduleWidthM:cfg.moduleWidthM, moduleDepthM:cfg.moduleDepthM, stageGridCellM:isPkcStageKey(cfg.stageSystemKey) ? 0.5 : undefined, pkcDeckOrientation:orientationEl && orientationEl.value || state.pkcDeckOrientation || 'landscape', stageHeightM, stairs:getStageStairs(state), edgeClosureEnabled:edgeEnabled, edgeClosureType:edgeTypeEl && edgeTypeEl.value || 'fabric_skirt', quickPricing:readStageQuickPricing(root, ctx && ctx.options || {}) }; 
   }
 
   function readStageSection(target) {

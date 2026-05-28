@@ -6,7 +6,7 @@
 
   const GLOBAL = typeof window !== 'undefined' ? window : globalThis;
   const ROOT = (GLOBAL.FEGModules = GLOBAL.FEGModules || {});
-  const VISUAL_STAGE_ADAPTER_VERSION = '0.1.1-stage-stairs-plan-cells';
+  const VISUAL_STAGE_ADAPTER_VERSION = '0.1.2-stage-system-pkc';
   const DEFAULT_DECK_WIDTH_M = 1.2;
   const DEFAULT_DECK_DEPTH_M = 1.2;
 
@@ -26,9 +26,14 @@
   function normalizeCells(cells) {
     const seen = new Set();
     return (Array.isArray(cells) ? cells : [])
-      .map(cell => ({ x: Math.round(toNumber(cell && cell.x, 0)), y: Math.round(toNumber(cell && cell.y, 0)) }))
+      .map(cell => {
+        const src = cell || {};
+        const widthCells = Math.max(1, Math.round(toNumber(src.widthCells == null ? src.w : src.widthCells, 1)));
+        const depthCells = Math.max(1, Math.round(toNumber(src.depthCells == null ? src.d : src.depthCells, 1)));
+        return Object.assign({}, src, { x: Math.round(toNumber(src.x, 0)), y: Math.round(toNumber(src.y, 0)), widthCells, depthCells });
+      })
       .filter(cell => {
-        const key = moduleKey(cell);
+        const key = `${moduleKey(cell)}:${cell.widthCells}x${cell.depthCells}:${cell.deckKey || ''}`;
         if (seen.has(key)) return false;
         seen.add(key);
         return Number.isFinite(cell.x) && Number.isFinite(cell.y);
@@ -38,12 +43,10 @@
   function getBounds(cells) {
     const list = normalizeCells(cells);
     if (!list.length) return { minX: 0, minY: 0, maxX: -1, maxY: -1, columns: 0, rows: 0 };
-    const xs = list.map(cell => cell.x);
-    const ys = list.map(cell => cell.y);
-    const minX = Math.min(...xs);
-    const maxX = Math.max(...xs);
-    const minY = Math.min(...ys);
-    const maxY = Math.max(...ys);
+    const minX = Math.min(...list.map(cell => cell.x));
+    const minY = Math.min(...list.map(cell => cell.y));
+    const maxX = Math.max(...list.map(cell => cell.x + Math.max(1, cell.widthCells || 1) - 1));
+    const maxY = Math.max(...list.map(cell => cell.y + Math.max(1, cell.depthCells || 1) - 1));
     return { minX, minY, maxX, maxY, columns: maxX - minX + 1, rows: maxY - minY + 1 };
   }
 
@@ -56,8 +59,12 @@
       y: cell.y - bounds.minY,
       sourceX: cell.x,
       sourceY: cell.y,
-      widthM: moduleWidthM,
-      depthM: moduleDepthM,
+      widthCells: cell.widthCells || 1,
+      depthCells: cell.depthCells || 1,
+      widthM: nonNegative(cell.moduleWidthM, (cell.widthCells || 1) * moduleWidthM),
+      depthM: nonNegative(cell.moduleDepthM, (cell.depthCells || 1) * moduleDepthM),
+      deckKey: toText(cell.deckKey),
+      deckLabel: toText(cell.deckLabel),
       source: 'quote.sections.stage.input.modules'
     })).sort((a, b) => (a.y - b.y) || (a.x - b.x));
   }
@@ -184,6 +191,8 @@
       heightM,
       moduleWidthM,
       moduleDepthM,
+      stageSystemKey: toText(input.stageSystemKey || config.stageSystemKey, 'imlight_copy'),
+      stageSystemLabel: toText(input.stageSystemLabel || config.stageSystemLabel, 'Imlight Copy'),
       bounds,
       shape: 'grid',
       decks,

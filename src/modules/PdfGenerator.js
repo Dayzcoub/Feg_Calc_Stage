@@ -53,6 +53,70 @@
         return orientation === 'p' ? '820px' : '1120px';
     }
 
+
+    let pdfLibraryLoadPromise = null;
+
+    function getHtml2CanvasRef(ctx) {
+        return (ctx && ctx.html2canvas) || global.html2canvas || null;
+    }
+
+    function getJsPdfCtor(ctx) {
+        const jsPdfHost = (ctx && ctx.jspdf) || global.jspdf || null;
+        return (ctx && ctx.jsPDF) || (jsPdfHost && jsPdfHost.jsPDF) || global.jsPDF || null;
+    }
+
+    function loadScript(src) {
+        if (!global.document || !src) return Promise.resolve(false);
+        return new Promise((resolve) => {
+            const existing = Array.prototype.slice.call(global.document.scripts || []).find(script => script && script.getAttribute && script.getAttribute('src') === src);
+            if (existing && existing.dataset && existing.dataset.fegPdfLoaded === '1') {
+                resolve(true);
+                return;
+            }
+            const script = existing || global.document.createElement('script');
+            let settled = false;
+            const done = (ok) => {
+                if (settled) return;
+                settled = true;
+                if (ok && script.dataset) script.dataset.fegPdfLoaded = '1';
+                resolve(!!ok);
+            };
+            script.addEventListener('load', () => done(true), { once:true });
+            script.addEventListener('error', () => done(false), { once:true });
+            if (!existing) {
+                script.src = src;
+                script.async = false;
+                global.document.head.appendChild(script);
+            } else if (script.dataset && script.dataset.fegPdfLoaded !== '1') {
+                // If the original head script was blocked by SRI/CORS or browser cache policy,
+                // retry once with a clean local script tag without integrity/crossorigin attributes.
+                const retry = global.document.createElement('script');
+                retry.src = src;
+                retry.async = false;
+                retry.addEventListener('load', () => done(true), { once:true });
+                retry.addEventListener('error', () => done(false), { once:true });
+                global.document.head.appendChild(retry);
+            }
+        });
+    }
+
+    async function ensurePdfLibraries(ctx) {
+        let html2canvasRef = getHtml2CanvasRef(ctx);
+        let JsPdfCtor = getJsPdfCtor(ctx);
+        if (html2canvasRef && JsPdfCtor) return { html2canvasRef, JsPdfCtor };
+        if (!pdfLibraryLoadPromise) {
+            pdfLibraryLoadPromise = (async () => {
+                await loadScript('assets/vendor/jspdf.umd.min.js');
+                await loadScript('assets/vendor/html2canvas.min.js');
+                return true;
+            })();
+        }
+        await pdfLibraryLoadPromise.catch(() => false);
+        html2canvasRef = getHtml2CanvasRef(ctx);
+        JsPdfCtor = getJsPdfCtor(ctx);
+        return { html2canvasRef, JsPdfCtor };
+    }
+
     function prepareContainer(pdfContainer, ctx) {
         if (!pdfContainer) return null;
         const previous = {
@@ -100,11 +164,9 @@
         const pdfContainer = ctx.pdfContainer || (global.document && global.document.getElementById('pdfContent'));
         if (!pdfContainer) return null;
 
-        const html2canvasRef = ctx.html2canvas || global.html2canvas;
-        const jsPdfHost = ctx.jspdf || global.jspdf;
-        const JsPdfCtor = ctx.jsPDF || (jsPdfHost && jsPdfHost.jsPDF);
+        const { html2canvasRef, JsPdfCtor } = await ensurePdfLibraries(ctx);
         if (!html2canvasRef || !JsPdfCtor) {
-            alertFn('PDF-библиотеки ещё не загружены. Обновите страницу и попробуйте снова.');
+            alertFn('PDF-библиотеки не удалось загрузить. Проверьте, что папка assets/vendor лежит рядом с index.html, затем обновите страницу.');
             return null;
         }
 

@@ -5,7 +5,7 @@
   'use strict';
 
   const ROOT = (global.FEGModules = global.FEGModules || {});
-  const QUICK_PDF_EXPORT_VERSION = '3.1.17-quick-pdf-readable-hero-truss-scheme';
+  const QUICK_PDF_EXPORT_VERSION = '3.1.18-quick-pdf-pkc-module-footprint-scheme';
   const KIND_LABELS = {
     stage: 'Сцена',
     truss: 'Фермы',
@@ -182,12 +182,20 @@
   function buildStageSummaryCards(section) {
     const result = section && section.result || {};
     const geometry = result.geometry || section && section.geometry || {};
+    const cfg = section && section.stageConfig || {};
+    const systemKey = cfg.stageSystemKey || 'imlight_copy';
+    const connectorCard = systemKey === 'pkc_paz_paz'
+      ? { label:'PKC соединители', value:`T ${metric(geometry.pkcTConnectors || 0, 0)} / X ${metric(geometry.pkcXConnectors || 0, 0)} / С ${metric(geometry.pkcClamps || 0, 0)}`, note:'T / X / струбцины' }
+      : (systemKey === 'pkc_ship_paz'
+        ? { label:'Соединение', value:'ШИП-ПАЗ', note:'без T/X/струбцин' }
+        : { label:'Опоры / рамы', value:`${metric(geometry.columns || 0, 0)} / ${metric(geometry.frames || 0, 0)}`, note:'опоры / перекладины' });
     return [
+      { label:'Система', value:cfg.stageSystemLabel || 'Imlight Copy', note:cfg.deckLabel || '' },
       { label:'Габарит', value:`${metric(result.widthMeters || section && section.widthM || 0, 1)} × ${metric(result.depthMeters || section && section.depthM || 0, 1)} м`, note:`высота ${metric(section && (section.stageHeightM || section.heightM) || result.stageHeightM || 0, 2)} м` },
       { label:'Настил', value:`${metric(geometry.sheets || result.sheets || 0, 0)} шт`, note:`${metric(result.areaMeters || section && section.areaM2 || 0, 2)} м²` },
-      { label:'Опоры / рамы', value:`${metric(geometry.columns || 0, 0)} / ${metric(geometry.frames || 0, 0)}`, note:'опоры / перекладины' },
-      { label:'Лестницы / торцы', value:`${metric(geometry.stairs || 0, 0)} / ${metric(geometry.edgeClosureMeters || 0, 2)} м`, note: section && section.stageConfig && section.stageConfig.edgeClosureLabel || 'закрытие по выбранной схеме' },
-      { label:'Вес', value: weight(section && section.weightKg || 0), note:'без цен и КП' }
+      connectorCard,
+      { label:'Лестницы / торцы', value:`${metric(geometry.stairs || 0, 0)} / ${metric(geometry.edgeClosureMeters || 0, 2)} м`, note: cfg.edgeClosureLabel || 'закрытие по выбранной схеме' },
+      { label:'Вес', value: weight(section && section.weightKg || 0), note: systemKey.indexOf('pkc_') === 0 ? 'PKC нагрузка 750 кг/м² справочно' : 'без цен и КП' }
     ].concat(buildPricingSummaryCard(section) ? [buildPricingSummaryCard(section)] : []);
   }
 
@@ -298,20 +306,40 @@
 
   function buildStageSchemeSvg(section) {
     const input = section && section.input || {};
-    const modules = safeCellList(input.modules || []);
+    const rawModules = Array.isArray(input.modules) ? input.modules : [];
     const stairs = safeCellList(input.stairs || []);
-    const all = modules.concat(stairs);
+    const stageSystemKey = String(input.stageSystemKey || section && section.stageConfig && section.stageConfig.stageSystemKey || '');
+    const isPkc = stageSystemKey.indexOf('pkc_') === 0 || rawModules.some(item => item && (item.widthCells != null || item.depthCells != null || item.stageGridCellM != null));
+    const modules = rawModules.map((item, index) => {
+      const x = Math.round(num(item && item.x, 0));
+      const y = Math.round(num(item && item.y, 0));
+      const widthCells = Math.max(1, Math.round(num(item && (item.widthCells || item.w), 1)));
+      const depthCells = Math.max(1, Math.round(num(item && (item.depthCells || item.d), 1)));
+      const moduleWidthM = num(item && item.moduleWidthM, widthCells * (isPkc ? 0.5 : num(input.moduleWidthM, 1.2)));
+      const moduleDepthM = num(item && item.moduleDepthM, depthCells * (isPkc ? 0.5 : num(input.moduleDepthM, 1.2)));
+      const label = isPkc
+        ? `${String(moduleWidthM).replace(/\.0$/, '').replace('.', ',')}×${String(moduleDepthM).replace(/\.0$/, '').replace('.', ',')}`
+        : '';
+      return { x, y, widthCells, depthCells, moduleWidthM, moduleDepthM, label, index };
+    }).filter(item => Number.isFinite(item.x) && Number.isFinite(item.y));
+    const footprintCells = [];
+    modules.forEach(module => {
+      for (let yy = 0; yy < module.depthCells; yy += 1) {
+        for (let xx = 0; xx < module.widthCells; xx += 1) footprintCells.push({ x:module.x + xx, y:module.y + yy });
+      }
+    });
+    const all = footprintCells.concat(stairs);
     const bounds = boundsFromCells(all);
     if (!bounds) return '';
     const pad = 1;
     const cols = Math.max(1, bounds.maxX - bounds.minX + 1 + pad * 2);
     const rows = Math.max(1, bounds.maxY - bounds.minY + 1 + pad * 2);
-    const cell = Math.max(9, Math.min(26, Math.floor(Math.min(390 / cols, 260 / rows))));
-    const gap = Math.max(2, Math.round(cell * 0.12));
+    const cell = Math.max(8, Math.min(26, Math.floor(Math.min(390 / cols, 260 / rows))));
+    const gap = Math.max(1, Math.round(cell * 0.12));
     const labelH = 30;
     const w = cols * (cell + gap) + gap;
     const h = rows * (cell + gap) + gap + labelH;
-    const deckSet = new Set(modules.map(cell => `${cell.x}:${cell.y}`));
+    const deckSet = new Set(footprintCells.map(cell => `${cell.x}:${cell.y}`));
     const stairSet = new Set(stairs.map(cell => `${cell.x}:${cell.y}`));
     const rects = [];
     for (let y = 0; y < rows; y += 1) {
@@ -323,9 +351,22 @@
         const py = gap + y * (cell + gap) + labelH;
         const isDeck = deckSet.has(key);
         const isStair = stairSet.has(key);
-        rects.push(svgRect(px, py, cell, cell, isStair ? '#f59e0b' : (isDeck ? '#d7b56d' : '#f8fafc'), isStair ? '#92400e' : (isDeck ? '#8a5a1f' : '#d9e1ec')));
+        rects.push(svgRect(px, py, cell, cell, isStair ? '#f59e0b' : (isDeck ? '#d7b56d' : '#f8fafc'), isStair ? '#92400e' : (isDeck ? '#b08943' : '#d9e1ec')));
         if (isStair) rects.push(`<path d="M${px + cell * 0.18} ${py + cell * 0.68} L${px + cell * 0.82} ${py + cell * 0.68} M${px + cell * 0.28} ${py + cell * 0.50} L${px + cell * 0.82} ${py + cell * 0.50} M${px + cell * 0.38} ${py + cell * 0.32} L${px + cell * 0.82} ${py + cell * 0.32}" stroke="#111827" stroke-width="1.4" stroke-linecap="round"/>`);
       }
+    }
+    if (isPkc) {
+      modules.forEach(module => {
+        const localX = module.x - bounds.minX + pad;
+        const localY = module.y - bounds.minY + pad;
+        const px = gap + localX * (cell + gap) - Math.max(1, gap * 0.35);
+        const py = gap + localY * (cell + gap) + labelH - Math.max(1, gap * 0.35);
+        const mw = module.widthCells * cell + (module.widthCells - 1) * gap + Math.max(2, gap * 0.7);
+        const mh = module.depthCells * cell + (module.depthCells - 1) * gap + Math.max(2, gap * 0.7);
+        rects.push(`<rect x="${px}" y="${py}" width="${mw}" height="${mh}" rx="5" fill="none" stroke="#8a5a1f" stroke-width="2.1"/>`);
+        rects.push(`<rect x="${px + 4}" y="${py + 4}" width="${Math.max(22, module.label.length * 8)}" height="14" rx="5" fill="#ffffff" stroke="#8a5a1f" stroke-width="1"/>`);
+        rects.push(`<text x="${px + 8}" y="${py + 14}" font-family="Inter, Arial, sans-serif" font-size="9" font-weight="900" fill="#111827">${esc(module.label)}</text>`);
+      });
     }
     const widthM = section && section.result && section.result.widthMeters || 0;
     const depthM = section && section.result && section.result.depthMeters || 0;

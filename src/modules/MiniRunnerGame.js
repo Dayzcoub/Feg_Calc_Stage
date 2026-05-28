@@ -2,7 +2,7 @@
   'use strict';
 
   const ROOT = (window.FEGModules = window.FEGModules || {});
-  const APP_VERSION = '3.1.88';
+  const APP_VERSION = '3.1.94';
   const STORAGE_KEY = 'fegStagePro.runnerScores.v1';
   const SCORE_QUEUE_KEY = 'fegStagePro.runnerScoreQueue.v1';
   const PLAYER_KEY = 'fegStagePro.runnerPlayerName.v1';
@@ -208,9 +208,18 @@
     return Math.max(min, Math.min(max, value));
   }
 
-  function normalizeName(value) {
+  function normalizePlayerName(value) {
     const text = String(value == null ? '' : value).trim().replace(/\s+/g, ' ');
-    return text ? text.slice(0, 32) : 'Техник';
+    return text ? text.slice(0, 32) : '';
+  }
+
+  function normalizeName(value) {
+    return normalizePlayerName(value) || 'Игрок';
+  }
+
+  function isLegacyDefaultPlayerName(value) {
+    const name = normalizePlayerName(value).toLowerCase();
+    return name === 'техник';
   }
 
   function normalizeSyncStatus(value) {
@@ -307,18 +316,24 @@
 
   function getSavedPlayerName() {
     const storage = getStorage();
-    if (!storage) return 'Техник';
+    if (!storage) return '';
     try {
-      return normalizeName(storage.getItem(PLAYER_KEY));
+      const saved = storage.getItem(PLAYER_KEY);
+      if (isLegacyDefaultPlayerName(saved)) return '';
+      return normalizePlayerName(saved);
     } catch (err) {
-      return 'Техник';
+      return '';
     }
   }
 
   function setSavedPlayerName(value) {
     const storage = getStorage();
     if (!storage) return;
-    try { storage.setItem(PLAYER_KEY, normalizeName(value)); } catch (err) {}
+    try {
+      const name = normalizePlayerName(value);
+      if (name) storage.setItem(PLAYER_KEY, name);
+      else storage.removeItem(PLAYER_KEY);
+    } catch (err) {}
   }
 
   function formatScore(value) {
@@ -421,7 +436,7 @@
             <div class="feg-runner-controls">
               <label class="feg-runner-name-field">
                 <span>Имя для базы рекордов</span>
-                <input type="text" data-feg-runner-name maxlength="32" autocomplete="nickname" value="${escapeHtml(getSavedPlayerName())}">
+                <input type="text" data-feg-runner-name maxlength="32" autocomplete="nickname" placeholder="Введите имя" required value="${escapeHtml(getSavedPlayerName())}">
               </label>
               <button type="button" class="feg-runner-primary" data-feg-runner-start>Старт</button>
               <button type="button" class="feg-runner-secondary" data-feg-runner-jump>Прыжок</button>
@@ -433,7 +448,7 @@
               <div><span>Очки</span><strong data-feg-runner-score>0</strong></div>
               <div><span>Дистанция</span><strong data-feg-runner-distance>0 м</strong></div>
             </div>
-            <div class="feg-runner-message" data-feg-runner-message>Нажмите старт, чтобы запустить техника.</div>
+            <div class="feg-runner-message" data-feg-runner-message>Введите имя и нажмите старт.</div>
             <div class="feg-runner-leaderboard">
               <div class="feg-runner-leaderboard-head">
                 <span>Общая база FEG</span>
@@ -690,6 +705,22 @@
     return this.refreshLeaderboard();
   };
 
+  RunnerGame.prototype.requirePlayerName = function () {
+    const name = normalizePlayerName(this.nameInput ? this.nameInput.value : '');
+    if (name) {
+      if (this.nameInput) this.nameInput.value = name;
+      return name;
+    }
+    if (this.startPanel) this.startPanel.hidden = false;
+    if (this.messageNode) this.messageNode.textContent = 'Введите имя игрока перед стартом.';
+    if (this.nameInput) {
+      this.nameInput.value = '';
+      this.nameInput.focus();
+      if (typeof this.nameInput.reportValidity === 'function') this.nameInput.reportValidity();
+    }
+    return '';
+  };
+
   RunnerGame.prototype.commitScore = function (entry) {
     const localId = makeLocalId();
     const localEntry = normalizeScoreEntry(Object.assign({}, entry || {}, {
@@ -719,7 +750,8 @@
   };
 
   RunnerGame.prototype.start = function () {
-    const name = this.nameInput ? this.nameInput.value : '';
+    const name = this.requirePlayerName();
+    if (!name) return false;
     setSavedPlayerName(name);
     this.state = this.makeState();
     this.state.running = true;
@@ -729,6 +761,7 @@
     if (this.startButton) this.startButton.textContent = 'Рестарт';
     cancelAnimationFrame(this.raf);
     this.raf = requestAnimationFrame(this.boundFrame);
+    return true;
   };
 
   RunnerGame.prototype.stop = function () {
@@ -739,7 +772,7 @@
   RunnerGame.prototype.jump = function () {
     const player = this.state.player;
     if (!this.state.running) {
-      this.start();
+      if (!this.start()) return;
       return;
     }
     if (player.grounded) {
@@ -892,7 +925,7 @@
     this.state.running = false;
     this.state.over = true;
     cancelAnimationFrame(this.raf);
-    const name = this.nameInput ? this.nameInput.value : 'Техник';
+    const name = normalizePlayerName(this.nameInput ? this.nameInput.value : '') || 'Игрок';
     this.commitScore({ name, score: this.state.score, distance: this.state.distance }).then(result => {
       if (!this.messageNode) return;
       if (result && result.mode === 'cloud') this.messageNode.textContent = `Финиш: ${formatScore(this.state.score)} очков. Результат занесён в общую онлайн-базу.`;

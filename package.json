@@ -1,0 +1,15 @@
+{
+  "name": "feg-calc-stage",
+  "version": "3.1.101",
+  "private": true,
+  "description": "FEG Stage PRO standalone quick constructors.",
+  "scripts": {
+    "serve": "node scripts/serve-static.mjs",
+    "check:js": "node scripts/check-js.mjs",
+    "test:smoke": "node scripts/run-smoke.mjs",
+    "verify": "npm run check:js && npm run test:smoke"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.0"
+  }
+}

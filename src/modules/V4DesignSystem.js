@@ -685,6 +685,43 @@ body.v4-only-body .v4-stage-polish .v4-stage-cell.has-stair {
   box-shadow:inset 0 0 0 1px rgba(180,196,196,.18) !important;
 }
 
+
+body.v4-only-body .v4-visual-stage-grid {
+  position:relative !important;
+}
+body.v4-only-body .v4-stage-pkc-module-outline {
+  position:absolute !important;
+  z-index:6 !important;
+  pointer-events:none !important;
+  box-sizing:border-box !important;
+  border:2px solid rgba(255,233,163,.92) !important;
+  border-radius:7px !important;
+  box-shadow:0 0 0 1px rgba(0,0,0,.50), 0 0 12px rgba(243,198,78,.14) !important;
+}
+body.v4-only-body .v4-stage-pkc-module-label {
+  position:absolute !important;
+  z-index:7 !important;
+  left:7px !important;
+  top:5px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  min-height:16px !important;
+  padding:2px 6px !important;
+  border-radius:6px !important;
+  border:1px solid rgba(255,233,163,.62) !important;
+  background:rgba(7,9,10,.82) !important;
+  color:#fff8dc !important;
+  font-size:11px !important;
+  font-weight:900 !important;
+  line-height:1 !important;
+  letter-spacing:.01em !important;
+  white-space:nowrap !important;
+  box-shadow:0 2px 6px rgba(0,0,0,.35) !important;
+}
+body.v4-only-body .v4-stage-pkc-origin-label {
+  display:none !important;
+}
+
 body.v4-only-body .v4-truss-layout {
   grid-template-columns:minmax(190px, 260px) minmax(0, 1fr) !important;
   gap:12px !important;

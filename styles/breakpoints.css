@@ -2,7 +2,7 @@
    Global rule: mobile <= 767, desktop/tablet >= 768. No hybrid tablet breakpoint.
    This file is loaded last and neutralizes older overlapping hotfix breakpoints.
    
-   v3.1.88 audit note: This file contains 1899 × !important declarations.
+   v3.1.89 audit note: This file contains 1946 × !important declarations.
    This is a known CSS debt pattern. When refactoring:
    1. Remove conflicting rules from mobile.css, app-shell.css, controls.css
    2. Use proper CSS cascade instead of !important
@@ -4021,5 +4021,242 @@ body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-section li {
   }
   body.v4-only-body.quick-standalone-body .feg-user-guide-table {
     min-width: 520px !important;
+  }
+}
+
+/* v3.1.90 — responsive stability pass.
+   Keep the page width tied to the viewport. Wide technical canvases scroll only
+   inside their own frames, so resizing the browser does not move the whole app. */
+html,
+body.v4-only-body.quick-standalone-body,
+body.v4-only-body.quick-standalone-body.quick-standalone-ready {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow-x: hidden !important;
+}
+
+body.v4-only-body.quick-standalone-body #quickStandalonePage,
+body.v4-only-body.quick-standalone-body .standalone-window,
+body.v4-only-body.quick-standalone-body .standalone-body,
+body.v4-only-body.quick-standalone-body .standalone-main,
+body.v4-only-body.quick-standalone-body #quickStandaloneMount,
+body.v4-only-body.quick-standalone-body .standalone-mount,
+body.v4-only-body.quick-standalone-body .feg-dashboard,
+body.v4-only-body.quick-standalone-body .feg-workspace-shell,
+body.v4-only-body.quick-standalone-body .feg-workspace-stage,
+body.v4-only-body.quick-standalone-body .feg-workspace-body,
+body.v4-only-body.quick-standalone-body .v4-structure-editor,
+body.v4-only-body.quick-standalone-body .v4-led-constructor {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body.v4-only-body.quick-standalone-body #quickStandalonePage {
+  padding: clamp(8px, 1.5vw, 18px) !important;
+}
+
+body.v4-only-body.quick-standalone-body .standalone-window {
+  width: min(1920px, 100%) !important;
+  margin: 0 auto !important;
+}
+
+body.v4-only-body.quick-standalone-body .standalone-main {
+  padding: clamp(10px, 1.35vw, 18px) !important;
+  overflow-x: hidden !important;
+}
+
+body.v4-only-body.quick-standalone-body :where(.v4-stage-template-panel, .v4-truss-template-panel, .v4-led-constructor, .v4-led-panel-block, .v4-led-canvas-panel, .v4-led-construction-report, .feg-workspace-shell, .feg-workspace-body) {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-wrap: anywhere !important;
+}
+
+body.v4-only-body.quick-standalone-body .v4-stage-template-panel,
+body.v4-only-body.quick-standalone-body .v4-truss-template-panel {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-auto-flow: row !important;
+  grid-auto-columns: minmax(0, 1fr) !important;
+  gap: 12px !important;
+}
+
+body.v4-only-body.quick-standalone-body .v4-stage-template-panel > *,
+body.v4-only-body.quick-standalone-body .v4-truss-template-panel > * {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+body.v4-only-body.quick-standalone-body .v4-stage-controls-layout,
+body.v4-only-body.quick-standalone-body .v4-stage-main-controls-card,
+body.v4-only-body.quick-standalone-body .v4-stage-control-stack,
+body.v4-only-body.quick-standalone-body .v4-stage-control-stack--build,
+body.v4-only-body.quick-standalone-body .v4-stage-control-stack--dimensions,
+body.v4-only-body.quick-standalone-body .v4-stage-control-stack--closure,
+body.v4-only-body.quick-standalone-body .v4-stage-control-stack--pricing {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+body.v4-only-body.quick-standalone-body .v4-stage-controls-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 10px !important;
+}
+
+body.v4-only-body.quick-standalone-body .v4-stage-main-controls-card {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 10px !important;
+}
+
+body.v4-only-body.quick-standalone-body .v4-stage-control-stack--build,
+body.v4-only-body.quick-standalone-body .v4-stage-control-stack--closure {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+body.v4-only-body.quick-standalone-body .v4-stage-control-stack--dimensions,
+body.v4-only-body.quick-standalone-body .v4-stage-control-stack--pricing {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+body.v4-only-body.quick-standalone-body .v4-stage-frame-auto-card,
+body.v4-only-body.quick-standalone-body .v4-stage-check--edge {
+  grid-column: 1 / -1 !important;
+}
+
+body.v4-only-body.quick-standalone-body .v4-stage-template-panel :where(.v4-field, .v4-stage-check, .v4-stage-frame-auto-card, input, select, button),
+body.v4-only-body.quick-standalone-body .v4-truss-template-panel :where(.v4-field, input, select, button),
+body.v4-only-body.quick-standalone-body .v4-led-constructor :where(.v4-field, input, select, button) {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+body.v4-only-body.quick-standalone-body .v4-stage-canvas-wrap,
+body.v4-only-body.quick-standalone-body .v4-truss-field-wrap,
+body.v4-only-body.quick-standalone-body .v4-led-grid-wrap {
+  max-width: 100% !important;
+  overflow: auto !important;
+  overscroll-behavior: contain !important;
+}
+
+@media (min-width: 1180px) {
+  body.v4-only-body.quick-standalone-body .v4-structure-editor.v4-structure-stage.v4-stage-polish {
+    display: grid !important;
+    grid-template-columns: minmax(300px, 380px) minmax(420px, 1fr) minmax(240px, 320px) !important;
+    grid-template-areas:
+      "stageControls stageCanvas stageMetrics"
+      "stageDetails stageDetails stageDetails" !important;
+    gap: 14px !important;
+    align-items: start !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-stage .v4-stage-template-panel { grid-area: stageControls !important; }
+  body.v4-only-body.quick-standalone-body .v4-structure-stage .v4-stage-canvas-wrap { grid-area: stageCanvas !important; }
+  body.v4-only-body.quick-standalone-body .v4-structure-stage [data-stage-summary] { grid-area: stageMetrics !important; }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-editor.v4-structure-truss {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-template-panel {
+    width: 100% !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-led-constructor {
+    display: grid !important;
+    grid-template-columns: minmax(240px, .8fr) minmax(360px, 1.25fr) minmax(220px, .75fr) !important;
+    grid-template-areas:
+      "ledControls ledCanvas ledMetrics"
+      "ledPricing ledCanvas ledMetrics"
+      "ledSide ledCanvas ledMetrics"
+      "ledDetails ledDetails ledDetails" !important;
+    gap: 14px !important;
+    align-items: start !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1179px) {
+  body.v4-only-body.quick-standalone-body #quickStandalonePage,
+  body.v4-only-body.quick-standalone-body .standalone-window,
+  body.v4-only-body.quick-standalone-body .standalone-body,
+  body.v4-only-body.quick-standalone-body .standalone-main,
+  body.v4-only-body.quick-standalone-body #quickStandaloneMount,
+  body.v4-only-body.quick-standalone-body .standalone-mount,
+  body.v4-only-body.quick-standalone-body .feg-dashboard,
+  body.v4-only-body.quick-standalone-body .feg-workspace-shell,
+  body.v4-only-body.quick-standalone-body .feg-workspace-stage,
+  body.v4-only-body.quick-standalone-body .feg-workspace-body {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .feg-dashboard-hero-grid {
+    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .feg-launch-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-editor.v4-structure-stage.v4-stage-polish {
+    display: grid !important;
+    grid-template-columns: minmax(280px, .42fr) minmax(0, .58fr) !important;
+    grid-template-areas:
+      "stageControls stageCanvas"
+      "stageMetrics stageMetrics"
+      "stageDetails stageDetails" !important;
+    gap: 14px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-stage .v4-stage-template-panel { grid-area: stageControls !important; }
+  body.v4-only-body.quick-standalone-body .v4-structure-stage .v4-stage-canvas-wrap { grid-area: stageCanvas !important; }
+  body.v4-only-body.quick-standalone-body .v4-structure-stage [data-stage-summary] { grid-area: stageMetrics !important; }
+
+  body.v4-only-body.quick-standalone-body .v4-structure-editor.v4-structure-truss,
+  body.v4-only-body.quick-standalone-body .v4-led-constructor {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas: none !important;
+    gap: 14px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  body.v4-only-body.quick-standalone-body #quickStandalonePage {
+    padding: 0 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .standalone-window {
+    border-radius: 0 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .feg-dashboard-hero-grid,
+  body.v4-only-body.quick-standalone-body .feg-launch-grid,
+  body.v4-only-body.quick-standalone-body .v4-structure-editor.v4-structure-stage.v4-stage-polish,
+  body.v4-only-body.quick-standalone-body .v4-structure-editor.v4-structure-truss,
+  body.v4-only-body.quick-standalone-body .v4-led-constructor {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas: none !important;
+    gap: 10px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--build,
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--closure,
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--dimensions,
+  body.v4-only-body.quick-standalone-body .v4-stage-control-stack--pricing {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
   }
 }

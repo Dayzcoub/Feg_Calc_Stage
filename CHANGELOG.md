@@ -1,3 +1,49 @@
+# v3.1.94 - PKC mixed module layout
+
+- Added PKC mixed module layout on a 0.5 m planning grid for quick stage: SS-PS/SS-PP 2000×1000, 1500×1000 and 1000×1000 can be placed together.
+- PKC deck placement now stores real module footprints, orientation and deck type per module, instead of forcing one uniform module size for the whole stage.
+- PKC BOM now groups mixed deck rows by exact module model and preserves separate counts for 2000/1500/1000 mm modules.
+- Added shifted-joint warnings for mixed PKC layouts where catalog-style prosечка / нестандартная стыковка may be required.
+- Preserved Imlight Copy stage calculation and protected legacy/v3, warehouse, reservations and backend writes.
+
+# v3.1.93 - PKC stage systems
+
+- Added stage system selection in the quick stage constructor: `Imlight Copy`, `PKC / ШИП-ПАЗ`, and `PKC / ПАЗ-ПАЗ`.
+- Renamed the existing stage calculation and BOM labels to `Imlight Copy` without changing its geometry logic.
+- Added PKC deck variants from the PKC podium catalog: SS-PS/SS-PP 2000×1000, 1500×1000, and 1000×1000.
+- Added PKC BOM strategies: ШИП-ПАЗ uses common corner-grid legs without Imlight crossbars; ПАЗ-ПАЗ uses 4 legs per module plus SD-LM-T, SD-LM-X, and SD-LM-SS connectors.
+- Added PKC reference load notes to the stage result/PDF summary: 750 kg/m² and A/B/C point-load reference values from the catalog.
+- Preserved legacy/v3, truss, LED, warehouse, reservations, backend writes, and quick pricing flows.
+
+# v3.1.92 - Runner explicit player name
+
+- Mini runner no longer starts with the default `Техник` player name.
+- Opening the logo game now shows an empty name field unless the user previously entered a real custom name.
+- Start, jump, keyboard and canvas/touch launch paths now require a non-empty player name before the run begins.
+- Added smoke coverage for the runner name gate.
+
+# v3.1.91 - Responsive workspace balance fix
+
+- Fixed the Truss and LED desktop constructor regressions where wide side panels squeezed the drawing workspace down to a tiny strip.
+- Switched the 1180-1279 px range to a two-column workstation layout so the canvas stays usable while metrics move below.
+- Kept the wider three-column desktop layout for 1280+ px, but narrowed the side columns so the central construction field gets priority.
+- Added smoke coverage that fails when Stage, Truss or LED workspaces become visually too narrow on desktop.
+
+# v3.1.90 - Responsive stability pass
+
+- Added `src/modules/ResponsiveStability.js` as the final responsive cascade layer after runtime style injection.
+- Removed page-level forced tablet desktop surfaces that widened the app to 1180/1280 px between breakpoints.
+- Kept Stage, Truss and LED technical canvases scrollable inside their own frames while the page stays viewport-bound.
+- Expanded Playwright smoke checks to cover Home, Stage, Truss and LED at 360 / 390 / 768 / 900 / 1024 / 1179 / 1180 / 1366 px.
+
+# v3.1.89 - Version source and local PDF vendor assets
+
+- Added `src/modules/AppVersion.js` as the shared runtime source for the visible standalone app version.
+- Updated title, runtime status, PDF shell labels and manifest metadata to `3.1.89`.
+- Vendored `jsPDF 4.2.1` and `html2canvas 1.4.1` into `assets/vendor`, keeping CDN only as script fallback.
+- Updated the service worker cache namespace and precache list for local PDF assets.
+- Added npm-based verification with a static server, JS syntax check and Playwright smoke coverage for 360 / 768 / 1024 / 1366 px.
+
 # v3.1.88 — Runner jump physics tuning
 
 - Tuned FEG TECH RUN jump height down from the previous high/floaty arc.

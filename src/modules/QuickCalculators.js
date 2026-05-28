@@ -20,7 +20,7 @@
       <section class="feg-dashboard" data-feg-dashboard>
         <div class="feg-dashboard-hero-grid" data-feg-dashboard-hero>
           <article class="feg-hero-card v4-card" data-feg-runner-open role="button" tabindex="0" title="Запустить FEG TECH RUN">
-            <img class="feg-hero-art" src="assets/feg-stage-pro-3.0-title.png" alt="FEG Stage PRO 3.1.88 · Stage · Truss · LED · FEG TECH RUN" loading="eager" decoding="async">
+            <img class="feg-hero-art" src="assets/feg-stage-pro-3.0-title.png" alt="${escapeHtml(ROOT.AppVersion && ROOT.AppVersion.displayName || 'FEG Stage PRO')} · Stage · Truss · LED · FEG TECH RUN" loading="eager" decoding="async">
           </article>
           <div class="feg-launch-grid" aria-label="Быстрые конструкторы">
             ${QUICK_CALCULATORS.map(calc => `

@@ -1,19 +1,20 @@
-const CACHE_NAME = 'feg-stage-pro-v22-final';
-const RUNTIME_CACHE = 'feg-stage-runtime-v22-final';
+const CACHE_NAME = 'feg-stage-pro-v29-pdf-vendor-self-heal';
+const RUNTIME_CACHE = 'feg-stage-runtime-v29-pdf-vendor-self-heal';
 
 const CORE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './src/modules/AppVersion.js',
+  './src/modules/ResponsiveStability.js',
+  './assets/vendor/jspdf.umd.min.js',
+  './assets/vendor/html2canvas.min.js',
   './icon-180.png',
   './icon-192.png',
   './icon-512.png'
 ];
 
-const OPTIONAL_ASSETS = [
-  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
-];
+const OPTIONAL_ASSETS = [];
 
 self.addEventListener('install', event => {
   self.skipWaiting();

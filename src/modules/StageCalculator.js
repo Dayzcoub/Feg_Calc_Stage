@@ -39,21 +39,34 @@
         return first < second ? `${first}-${second}` : `${second}-${first}`;
     }
 
+    function moduleSpan(module, axis) {
+        const m = module || {};
+        const raw = axis === 'x'
+            ? (m.widthCells != null ? m.widthCells : (m.w != null ? m.w : (m.width != null ? m.width : 1)))
+            : (m.depthCells != null ? m.depthCells : (m.d != null ? m.d : (m.depth != null ? m.depth : 1)));
+        const value = Math.round(Number(raw) || 1);
+        return Math.max(1, value);
+    }
+
     function calculateGeometry(modules) {
         const list = Array.isArray(modules) ? modules : [];
         const vertices = new Set();
         const edges = new Set();
 
-        list.forEach(({ x, y }) => {
+        list.forEach((module) => {
+            const x = Number(module && module.x) || 0;
+            const y = Number(module && module.y) || 0;
+            const w = moduleSpan(module, 'x');
+            const d = moduleSpan(module, 'y');
             vertices.add(`${x},${y}`);
-            vertices.add(`${x + 1},${y}`);
-            vertices.add(`${x},${y + 1}`);
-            vertices.add(`${x + 1},${y + 1}`);
+            vertices.add(`${x + w},${y}`);
+            vertices.add(`${x},${y + d}`);
+            vertices.add(`${x + w},${y + d}`);
 
-            edges.add(canonicalEdge({ x, y }, { x: x + 1, y }));
-            edges.add(canonicalEdge({ x, y: y + 1 }, { x: x + 1, y: y + 1 }));
-            edges.add(canonicalEdge({ x, y }, { x, y: y + 1 }));
-            edges.add(canonicalEdge({ x: x + 1, y }, { x: x + 1, y: y + 1 }));
+            edges.add(canonicalEdge({ x, y }, { x: x + w, y }));
+            edges.add(canonicalEdge({ x, y: y + d }, { x: x + w, y: y + d }));
+            edges.add(canonicalEdge({ x, y }, { x, y: y + d }));
+            edges.add(canonicalEdge({ x: x + w, y }, { x: x + w, y: y + d }));
         });
 
         return {
@@ -63,9 +76,24 @@
         };
     }
 
+    function occupiedCellKeysForModules(modules) {
+        const keys = new Set();
+        const list = Array.isArray(modules) ? modules : [];
+        list.forEach(module => {
+            const x0 = Number(module && module.x) || 0;
+            const y0 = Number(module && module.y) || 0;
+            const w = moduleSpan(module, 'x');
+            const d = moduleSpan(module, 'y');
+            for (let y = y0; y < y0 + d; y++) {
+                for (let x = x0; x < x0 + w; x++) keys.add(moduleKey(x, y));
+            }
+        });
+        return keys;
+    }
+
     function calculateConnectedComponents(modules) {
         const list = Array.isArray(modules) ? modules : [];
-        const keys = new Set(list.map(m => moduleKey(m.x, m.y)));
+        const keys = occupiedCellKeysForModules(list);
         const visited = new Set();
         let components = 0;
         const directions = [
@@ -74,8 +102,7 @@
             [0, 1]
         ];
 
-        list.forEach(({ x, y }) => {
-            const start = moduleKey(x, y);
+        keys.forEach((start) => {
             if (visited.has(start)) return;
             components += 1;
             const stack = [start];
@@ -104,20 +131,33 @@
     function getStageBounds(modules) {
         const list = Array.isArray(modules) ? modules : [];
         if (!list.length) return { width: 0, depth: 0 };
-        const xs = list.map(m => m.x);
-        const ys = list.map(m => m.y);
+        const minX = Math.min(...list.map(m => Number(m && m.x) || 0));
+        const minY = Math.min(...list.map(m => Number(m && m.y) || 0));
+        const maxX = Math.max(...list.map(m => (Number(m && m.x) || 0) + moduleSpan(m, 'x')));
+        const maxY = Math.max(...list.map(m => (Number(m && m.y) || 0) + moduleSpan(m, 'y')));
         return {
-            width: Math.max(...xs) - Math.min(...xs) + 1,
-            depth: Math.max(...ys) - Math.min(...ys) + 1
+            width: Math.max(0, maxX - minX),
+            depth: Math.max(0, maxY - minY),
+            minX,
+            minY,
+            maxX,
+            maxY
         };
+    }
+
+    function copyModuleWithOffset(module, dx, dy) {
+        const m = Object.assign({}, module || {});
+        m.x = (Number(m.x) || 0) + dx;
+        m.y = (Number(m.y) || 0) + dy;
+        return m;
     }
 
     function normalizeSelectedModules(modules) {
         const list = Array.isArray(modules) ? modules : [];
         if (!list.length) return [];
-        const minX = Math.min(...list.map(m => m.x));
-        const minY = Math.min(...list.map(m => m.y));
-        return list.map(m => ({ x: m.x - minX, y: m.y - minY }));
+        const minX = Math.min(...list.map(m => Number(m && m.x) || 0));
+        const minY = Math.min(...list.map(m => Number(m && m.y) || 0));
+        return list.map(m => copyModuleWithOffset(m, -minX, -minY));
     }
 
     function centerModulesInGrid(modules, gridColsCount, gridRowsCount) {
@@ -125,27 +165,47 @@
         const cols = Number(gridColsCount) || DEFAULT_GRID_COLS;
         const rows = Number(gridRowsCount) || DEFAULT_GRID_ROWS;
         if (!list.length) return [];
-        const width = Math.max(...list.map(m => m.x)) + 1;
-        const depth = Math.max(...list.map(m => m.y)) + 1;
-        const offsetX = Math.floor((cols - width) / 2);
-        const offsetY = Math.floor((rows - depth) / 2);
-        return list.map(m => ({ x: m.x + offsetX, y: m.y + offsetY }))
-            .filter(m => m.x >= 0 && m.x < cols && m.y >= 0 && m.y < rows);
+        const bounds = getStageBounds(list);
+        const offsetX = Math.floor((cols - bounds.width) / 2) - bounds.minX;
+        const offsetY = Math.floor((rows - bounds.depth) / 2) - bounds.minY;
+        return list.map(m => copyModuleWithOffset(m, offsetX, offsetY))
+            .filter(m => m.x >= 0 && m.x + moduleSpan(m, 'x') <= cols && m.y >= 0 && m.y + moduleSpan(m, 'y') <= rows);
     }
 
     function mirrorModules(modules) {
         const list = Array.isArray(modules) ? modules : [];
         if (!list.length) return [];
-        const minX = Math.min(...list.map(m => m.x));
-        const maxX = Math.max(...list.map(m => m.x));
-        return list.map(m => ({ x: maxX - (m.x - minX), y: m.y }));
+        const bounds = getStageBounds(list);
+        return list.map(module => {
+            const m = Object.assign({}, module || {});
+            const w = moduleSpan(m, 'x');
+            m.x = bounds.minX + (bounds.maxX - ((Number(m.x) || 0) + w));
+            m.y = Number(m.y) || 0;
+            return m;
+        });
     }
 
     function rotateModules(modules, gridColsCount, gridRowsCount) {
         const normalized = normalizeSelectedModules(modules);
         if (!normalized.length) return [];
-        const maxY = Math.max(...normalized.map(m => m.y));
-        const rotated = normalized.map(m => ({ x: maxY - m.y, y: m.x }));
+        const bounds = getStageBounds(normalized);
+        const rotated = normalized.map(module => {
+            const m = Object.assign({}, module || {});
+            const x = Number(m.x) || 0;
+            const y = Number(m.y) || 0;
+            const w = moduleSpan(m, 'x');
+            const d = moduleSpan(m, 'y');
+            m.x = bounds.depth - (y + d);
+            m.y = x;
+            m.widthCells = d;
+            m.depthCells = w;
+            if (m.moduleWidthM != null || m.moduleDepthM != null) {
+                const oldWidth = m.moduleWidthM;
+                m.moduleWidthM = m.moduleDepthM;
+                m.moduleDepthM = oldWidth;
+            }
+            return m;
+        });
         return centerModulesInGrid(rotated, gridColsCount, gridRowsCount);
     }
 
@@ -197,6 +257,17 @@
         const geometry = calculateGeometry(modules);
         const components = calculateConnectedComponents(modules);
         const bounds = getStageBounds(modules);
+        const gridCellM = Number(source.stageGridCellM || source.gridCellM || 0);
+        const hasVariableFootprints = modules.some(m => m && (m.widthCells != null || m.depthCells != null || m.moduleWidthM != null || m.moduleDepthM != null));
+        const widthMeters = hasVariableFootprints && gridCellM > 0 ? bounds.width * gridCellM : bounds.width * moduleWidthM;
+        const depthMeters = hasVariableFootprints && gridCellM > 0 ? bounds.depth * gridCellM : bounds.depth * moduleDepthM;
+        const areaMeters = hasVariableFootprints
+            ? modules.reduce((sum, m) => {
+                if (Number(m && m.moduleWidthM) > 0 && Number(m && m.moduleDepthM) > 0) return sum + Number(m.moduleWidthM) * Number(m.moduleDepthM);
+                if (gridCellM > 0) return sum + moduleSpan(m, 'x') * moduleSpan(m, 'y') * gridCellM * gridCellM;
+                return sum + moduleWidthM * moduleDepthM;
+            }, 0)
+            : geometry.sheets * moduleWidthM * moduleDepthM;
         const modulesCost = geometry.sheets * (isNaN(price) ? 0 : price);
         return {
             geometry,
@@ -206,9 +277,9 @@
             installCost,
             transportCost,
             total: modulesCost + installCost + transportCost,
-            widthMeters: bounds.width * moduleWidthM,
-            depthMeters: bounds.depth * moduleDepthM,
-            areaMeters: geometry.sheets * moduleWidthM * moduleDepthM,
+            widthMeters,
+            depthMeters,
+            areaMeters,
             stageHeightM,
             heightM: stageHeightM,
             shapeText: buildShapeText(modules)
@@ -229,7 +300,9 @@
         modulesFromSet,
         clampGridSize,
         canonicalEdge,
+        moduleSpan,
         calculateGeometry,
+        occupiedCellKeysForModules,
         calculateConnectedComponents,
         getDetachedNotice,
         getStageBounds,

@@ -1,3 +1,39 @@
+## v3.1.93 - PKC stage systems
+
+- Added stage system selection in the quick stage constructor: `Imlight Copy`, `PKC / ШИП-ПАЗ`, and `PKC / ПАЗ-ПАЗ`.
+- Existing stage calculation is preserved and renamed to `Imlight Copy`.
+- PKC ШИП-ПАЗ counts SS-PS modules and shared-grid legs without Imlight crossbars.
+- PKC ПАЗ-ПАЗ counts SS-PP modules, 4 legs per module, SD-LM-T, SD-LM-X, and SD-LM-SS connectors.
+
+## v3.1.92 - Runner explicit player name
+
+- Mini runner no longer starts with the default `Техник` player name.
+- Opening the logo game now prompts for a real player name before start.
+- Jump/keyboard/touch launch paths also stop at the name field until it is filled.
+- Smoke coverage now checks this runner start gate.
+
+## v3.1.91 - Responsive workspace balance fix
+
+- Fixed Truss and LED desktop layouts where side panels could squeeze the drawing workspace to a tiny strip.
+- At 1180-1279 px, Truss and LED now use a two-column workstation with metrics/details below the canvas.
+- At 1280+ px, side panels are narrower and the central construction field gets the remaining width.
+- Smoke tests now assert that construction workspaces stay visibly wide, not just free of page-level overflow.
+
+## v3.1.90 - Responsive stability pass
+
+- Added a final runtime responsive stability layer after dynamic UI style injection.
+- Removed page-level 1180/1280px forced tablet surfaces; technical canvases now scroll inside their own frames instead of widening the whole app.
+- Stabilized Stage, Truss and LED layouts across 360 / 390 / 768 / 900 / 1024 / 1179 / 1180 / 1366 px.
+- Expanded Playwright smoke coverage to check Home, Stage, Truss and LED for page-level horizontal overflow.
+
+## v3.1.89 - Version source and local PDF vendor assets
+
+- Added a shared `AppVersion` runtime source for standalone title/status/PDF labels.
+- Updated manifest/app labels to `3.1.89` so QA sees the same version across browser title, PWA metadata and runtime UI.
+- Moved `jsPDF` and `html2canvas` to local `assets/vendor` files with CDN fallback, so PDF export is no longer blocked by offline standalone startup.
+- Updated the service worker cache to precache local PDF vendor assets instead of old remote CDN URLs.
+- Added reproducible checks: `npm run check:js`, `npm run test:smoke`, and `npm run verify`.
+
 ## v3.1.61 — Light theme component coverage pass
 
 - Light-theme preview coverage expanded across standalone shell, cards, chips, PDF/client previews, BOM/settings/subrent panels and SVG labels.
@@ -93,7 +129,7 @@
 - Зазор приведён к тому же ритму, что и в верхнем блоке между выбором настила/столбов и индикатором перекладин.
 - Правка сделана через глобальный responsive-слой `styles/breakpoints.css`; расчёты и логику конструктора не трогали.
 
-# FEG Stage PRO 3.1.2
+# FEG Stage PRO 3.1.93
 
 Standalone-версия быстрых конструкторов для оперативной работы со сцены, фермами и LED-экранами.
 
@@ -159,6 +195,13 @@ Standalone-версия быстрых конструкторов для опе�
 python3 -m http.server 8080
 ```
 
+Для воспроизводимой проверки через Node:
+
+```bash
+npm install
+npm run verify
+```
+
 и открыть:
 
 ```text
@@ -167,7 +210,7 @@ http://localhost:8080
 
 ## PDF
 
-PDF использует тот же механизм, что и исходный проект: `jsPDF + html2canvas` через CDN. Если открыть сборку без интернета, конструкторы будут работать, но PDF может быть недоступен до подключения библиотек.
+PDF использует тот же механизм, что и исходный проект: `jsPDF + html2canvas`, но библиотеки теперь поставляются локально в `assets/vendor`. CDN остаётся только запасным fallback, если локальные файлы удалены или недоступны.
 
 
 ## Mobile dark UI parity
