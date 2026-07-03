@@ -18,7 +18,7 @@ html[data-app-theme="dark"] {
   --feg-border-soft: rgba(232,235,238,0.08);
   --feg-text: #E8EBEE;
   --feg-text-2: #9AA3AC;
-  --feg-text-muted: #6B7580;
+  --feg-text-muted: #8A939C; /* v5: raised from #6B7580 for WCAG AA (4.5:1) on card surfaces */
   --feg-text-disabled: #4C535A;
   --feg-gold: #F4C216;
   --feg-gold-2: #FFDE5C;

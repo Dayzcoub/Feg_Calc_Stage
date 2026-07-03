@@ -66,3 +66,17 @@ body.v4-only-body {
     gap: 10px;
   }
 }
+
+/* v5 — respect the user's reduced-motion preference (WCAG 2.3.3 / accessibility pass).
+   Near-zeroes transitions and animations without removing focus/visibility so behaviour
+   stays intact; smooth-scroll falls back to instant. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
