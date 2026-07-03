@@ -69,33 +69,6 @@
           overscroll-behavior-y:auto !important;
         }
       }
-      @media (min-width:768px) and (max-width:1179px) {
-        html, body,
-        body.v4-only-body.quick-standalone-body,
-        body.v4-only-body.quick-standalone-body.quick-standalone-ready {
-          overflow-x:auto !important;
-          overflow-y:auto !important;
-        }
-        body.v4-only-body.quick-standalone-body #quickStandalonePage,
-        body.v4-only-body.quick-standalone-body .standalone-window,
-        body.v4-only-body.quick-standalone-body .standalone-body,
-        body.v4-only-body.quick-standalone-body .standalone-main,
-        body.v4-only-body.quick-standalone-body #quickStandaloneMount,
-        body.v4-only-body.quick-standalone-body .standalone-mount,
-        body.v4-only-body.quick-standalone-body .feg-dashboard,
-        body.v4-only-body.quick-standalone-body .feg-workspace-shell,
-        body.v4-only-body.quick-standalone-body .feg-workspace-stage,
-        body.v4-only-body.quick-standalone-body .feg-workspace-body {
-          min-width:1280px !important;
-          max-width:none !important;
-        }
-        body.v4-only-body.quick-standalone-body .standalone-window,
-        body.v4-only-body.quick-standalone-body .standalone-main {
-          width:1280px !important;
-          max-width:none !important;
-          box-sizing:border-box !important;
-        }
-      }
       @media (max-width:767px) {
         body.v4-only-body.quick-standalone-body #quickStandalonePage {
           overflow-y:auto !important;

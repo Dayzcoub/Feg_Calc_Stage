@@ -1,70 +1,97 @@
+/* Rigging Spec Sheet — v5 identity. Graphite/steel/aluminum surfaces with a single
+   rig-yellow accent (hazard-tape yellow, not gaming gold) reserved for actions and
+   focus states. Variable names kept stable so every existing var(--feg-*) reference
+   picks up the new palette without a rename pass. */
 :root,
 html[data-app-theme="dark"] {
   --feg-color-scheme: dark;
-  --feg-bg: #07090B;
-  --feg-bg-2: #090B0E;
-  --feg-surface: #0D0F12;
-  --feg-surface-2: #101318;
-  --feg-panel: #121417;
-  --feg-panel-2: #171A1F;
-  --feg-panel-3: #1C2026;
-  --feg-field: #0A0C0F;
-  --feg-border: #272B31;
-  --feg-border-strong: #3A4048;
-  --feg-border-soft: rgba(255,255,255,0.08);
-  --feg-text: #F2F4F7;
-  --feg-text-2: #A6ADB8;
-  --feg-text-muted: #707783;
-  --feg-text-disabled: #4E545D;
-  --feg-gold: #F3C64E;
-  --feg-gold-2: #FFD86B;
-  --feg-gold-dark: #B98220;
-  --feg-green: #20C878;
-  --feg-cyan: #56C7D8;
-  --feg-red: #F05A5A;
-  --feg-warning: #FFB84A;
-  --feg-radius-xs: 8px;
-  --feg-radius-sm: 10px;
-  --feg-radius-md: 14px;
-  --feg-radius-lg: 18px;
-  --feg-radius-xl: 24px;
+  --feg-bg: #14171A;
+  --feg-bg-2: #101316;
+  --feg-surface: #1D2227;
+  --feg-surface-2: #232930;
+  --feg-panel: #1D2227;
+  --feg-panel-2: #262C33;
+  --feg-panel-3: #2E353D;
+  --feg-field: #12161A;
+  --feg-border: #333B42;
+  --feg-border-strong: #4A545D;
+  --feg-border-soft: rgba(232,235,238,0.08);
+  --feg-text: #E8EBEE;
+  --feg-text-2: #9AA3AC;
+  --feg-text-muted: #6B7580;
+  --feg-text-disabled: #4C535A;
+  --feg-gold: #F4C216;
+  --feg-gold-2: #FFDE5C;
+  --feg-gold-dark: #B58900;
+  --feg-green: #37D67A;
+  --feg-cyan: #4FB8E0;
+  --feg-red: #E24B3D;
+  --feg-warning: #F4C216;
+  --feg-radius-xs: 6px;
+  --feg-radius-sm: 8px;
+  --feg-radius-md: 12px;
+  --feg-radius-lg: 16px;
+  --feg-radius-xl: 20px;
   --feg-gap-xs: 4px;
   --feg-gap-sm: 8px;
   --feg-gap-md: 12px;
   --feg-gap-lg: 16px;
   --feg-gap-xl: 24px;
-  --feg-shadow: 0 18px 60px rgba(0,0,0,0.45);
-  --feg-shadow-soft: 0 10px 32px rgba(0,0,0,0.32);
+  --feg-shadow: 0 18px 60px rgba(0,0,0,0.5);
+  --feg-shadow-soft: 0 10px 32px rgba(0,0,0,0.36);
   --feg-font: Inter, SF Pro Display, SF Pro Text, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --feg-font-display: "Barlow Condensed", Inter, Oswald, "Arial Narrow", sans-serif;
+  --feg-font-mono: "JetBrains Mono", "SF Mono", "Roboto Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 
-/* v3.1.58 theme-readiness: light tokens are gated by AppSettings.
-   They do not activate unless the explicit light-theme feature flag is enabled
-   and data-app-theme="light" is applied. */
+/* Light theme: warm paper/aluminum plate variant of the same identity. */
 html[data-app-theme="light"] {
   --feg-color-scheme: light;
-  --feg-bg: #F4F6F4;
-  --feg-bg-2: #EAEFEA;
-  --feg-surface: #FFFFFF;
-  --feg-surface-2: #F7FAF7;
-  --feg-panel: #FFFFFF;
-  --feg-panel-2: #F5F8F5;
-  --feg-panel-3: #EEF4EE;
+  --feg-bg: #F1EFEA;
+  --feg-bg-2: #E7E4DC;
+  --feg-surface: #FCFBF8;
+  --feg-surface-2: #F5F3EE;
+  --feg-panel: #FCFBF8;
+  --feg-panel-2: #F2F0EA;
+  --feg-panel-3: #EAE7DF;
   --feg-field: #FFFFFF;
-  --feg-border: #D8E1D8;
-  --feg-border-strong: #AEBDAE;
-  --feg-border-soft: rgba(15,23,42,0.10);
-  --feg-text: #101815;
-  --feg-text-2: #46524C;
-  --feg-text-muted: #6E7A73;
-  --feg-text-disabled: #A8B1AA;
-  --feg-gold: #9A6B10;
-  --feg-gold-2: #B98220;
-  --feg-gold-dark: #6E4D0F;
-  --feg-green: #168052;
-  --feg-cyan: #1A7280;
-  --feg-red: #B83232;
-  --feg-warning: #A86610;
-  --feg-shadow: 0 18px 60px rgba(15,23,42,0.13);
-  --feg-shadow-soft: 0 10px 32px rgba(15,23,42,0.10);
+  --feg-border: #D9D4C8;
+  --feg-border-strong: #B7B0A0;
+  --feg-border-soft: rgba(20,23,26,0.08);
+  --feg-text: #1B1E20;
+  --feg-text-2: #52585D;
+  --feg-text-muted: #767D82;
+  --feg-text-disabled: #A7ADB2;
+  --feg-gold: #9C6E00;
+  --feg-gold-2: #B58900;
+  --feg-gold-dark: #6E4D00;
+  --feg-green: #1A8F52;
+  --feg-cyan: #1D7396;
+  --feg-red: #B3372B;
+  --feg-warning: #9C6E00;
+  --feg-shadow: 0 18px 60px rgba(27,30,32,0.14);
+  --feg-shadow-soft: 0 10px 32px rgba(27,30,32,0.10);
+}
+
+/* v4 fluid spacing/type scale — clamp()-based tokens that replace
+   per-breakpoint hard-coded values with a continuous scale across
+   mobile (<=767px), tablet (768-1179px) and desktop (>=1180px).
+   Viewport bounds match --feg-bp-* in styles/breakpoints.css. */
+:root {
+  --feg-space-3xs: clamp(2px, 0.4vw, 4px);
+  --feg-space-2xs: clamp(4px, 0.6vw, 6px);
+  --feg-space-xs: clamp(6px, 0.9vw, 8px);
+  --feg-space-sm: clamp(8px, 1.2vw, 12px);
+  --feg-space-md: clamp(10px, 1.4vw, 16px);
+  --feg-space-lg: clamp(14px, 1.8vw, 20px);
+  --feg-space-xl: clamp(18px, 2.4vw, 28px);
+  --feg-space-2xl: clamp(24px, 3.2vw, 40px);
+
+  --feg-text-2xs: clamp(6.3px, 0.8vw + 4px, 8.5px);
+  --feg-text-xs: clamp(8px, 0.6vw + 6.5px, 11px);
+  --feg-text-sm: clamp(9px, 0.5vw + 8px, 12px);
+  --feg-text-md: clamp(11px, 0.6vw + 9.5px, 14px);
+  --feg-text-lg: clamp(13px, 0.8vw + 11px, 17px);
+  --feg-text-xl: clamp(16px, 1.1vw + 13px, 22px);
+  --feg-text-2xl: clamp(20px, 1.6vw + 16px, 28px);
 }

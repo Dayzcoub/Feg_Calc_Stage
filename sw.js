@@ -1,5 +1,5 @@
-const CACHE_NAME = 'feg-stage-pro-v29-pdf-vendor-self-heal';
-const RUNTIME_CACHE = 'feg-stage-runtime-v29-pdf-vendor-self-heal';
+const CACHE_NAME = 'feg-stage-pro-v30-rigging-spec-sheet';
+const RUNTIME_CACHE = 'feg-stage-runtime-v30-rigging-spec-sheet';
 
 const CORE_ASSETS = [
   './',

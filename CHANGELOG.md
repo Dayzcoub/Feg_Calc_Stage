@@ -1,3 +1,15 @@
+# v3.1.101 - Rigging Spec Sheet v5 UI pass
+
+- Reworked the visual identity into a "Rigging Spec Sheet" theme: graphite/steel/aluminum surfaces with a single rig-yellow accent for actions and focus states. `--feg-*` variable names were kept stable so all existing references pick up the new palette without a rename.
+- Added Barlow Condensed and JetBrains Mono web fonts (with system fallback) and tightened corner radii.
+- Added ± stepper buttons on number inputs across Stage, Truss and LED. Buttons call the input's native `stepUp`/`stepDown` then dispatch real `input`/`change` events, so every existing calculator wiring reacts exactly as if the value was typed.
+- Added native `<details>` progressive-disclosure groups for pricing and field/zoom panels; the LED pricing wrapper keeps its `grid-area` on the `<details>` element so desktop grid placement is preserved.
+- Replaced the launch-tile PNG icons and the hero PNG artwork with inline `currentColor` SVG so they follow the theme and stay crisp at any scale.
+- CSS architecture cleanup: removed `styles/desktop.css` and `styles/mobile.css`, merging their rules into `app-shell.css`, `controls.css`, `truss.css`, `stage.css`, `led.css` and `breakpoints.css`; added `?v=` cache-busting to changed stylesheets and scripts.
+- Removed the dead `768–1179px` forced-1280 surface-lock block left in `LogicUiRuntime.js` after the v3.1.90 responsive stability pass.
+- Unified the visible version to `3.1.101` across `index.html` title, `manifest.json` and `AppVersion.js`, refreshed the PWA `theme_color`/`background_color` to the v5 base `#14171A`, and bumped the service worker cache to `v30`.
+- Preserved all calculations, BOM, warehouse, reservations, PDF export, legacy/v3, backend writes and quick pricing flows. `npm run verify` (JS syntax + 33 Playwright smoke tests across 360–1366 px) passes.
+
 # v3.1.94 - PKC mixed module layout
 
 - Added PKC mixed module layout on a 0.5 m planning grid for quick stage: SS-PS/SS-PP 2000×1000, 1500×1000 and 1000×1000 can be placed together.

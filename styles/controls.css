@@ -4,7 +4,7 @@
 
 :root {
   --feg-control-height: 28px;
-  --feg-control-height-mobile: 26px;
+  --feg-control-height-mobile: 32px;
   --feg-control-label-w: 78px;
   --feg-control-gap: 7px;
 }
@@ -57,18 +57,253 @@ textarea,
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.035) !important;
 }
 
-select {
-  padding-right: 28px !important;
+/* v5 — custom select chevron. Native listbox behaviour kept (appearance:none only
+   removes the OS-drawn arrow/inset, everything else — keyboard nav, option list — is
+   untouched), so no JS/value-reading code anywhere in the app needs to change.
+   Selector is deliberately boosted (body chain + .v4-field ancestor, every <select>
+   in the app is wrapped in .v4-field) because several runtime-injected <style> tags
+   set `background: <color> !important` shorthand on bare `select`, which silently
+   resets background-image — a plain `select {}` rule here loses that fight since the
+   injected styles land in <head> after all stylesheet links. */
+body.v4-only-body.quick-standalone-body .v4-field select,
+body.v4-only-body.quick-standalone-body select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  padding-right: 30px !important;
   text-overflow: ellipsis !important;
+  background: #090B0E url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1.5 2L6 6.2L10.5 2' stroke='%238A939C' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center / 11px 7px !important;
+  cursor: pointer;
 }
 
+select:focus-visible {
+  outline: none !important;
+  border-color: var(--feg-gold) !important;
+  box-shadow: 0 0 0 2px rgba(244,194,22,0.22) !important;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .v4-field select,
+body.v4-only-body.quick-standalone-body.theme-light select {
+  background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1.5 2L6 6.2L10.5 2' stroke='%2352585D' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center / 11px 7px !important;
+}
+
+/* v5 — checkboxes become a compact switch. Still a real <input type="checkbox">;
+   :checked drives the whole visual state, so `.checked` reads exactly as before in
+   every constructor's event-handling code. Selector boosted for the same reason as
+   the select chevron above (runtime-injected styles fight bare-element selectors). */
+body.v4-only-body.quick-standalone-body input[type="checkbox"],
 input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  position: relative;
+  width: 34px !important;
+  height: 20px !important;
+  min-width: 34px !important;
+  min-height: 20px !important;
+  padding: 0 !important;
+  border-radius: 999px !important;
+  background: #090B0E !important;
+  border: 1px solid #293039 !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.4) !important;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+input[type="checkbox"]::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #d7dce1, #9aa3ac);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+input[type="checkbox"]:checked {
+  background: rgba(244,194,22,0.16) !important;
+  border-color: var(--feg-gold) !important;
+}
+
+input[type="checkbox"]:checked::before {
+  transform: translateX(14px);
+  background: linear-gradient(180deg, #ffde5c, #f4c216);
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(244,194,22,0.28) !important;
+}
+
+/* The zoom-row autofit checkboxes live in a very tight inline control strip that
+   already has its own compact sizing (see .v4-stage-autofit input etc. below) —
+   too narrow for the full switch. Keep those as a small dot-style check instead.
+   Selector is body-chain-boosted: a later, higher-specificity breakpoints.css rule
+   was winning the track width/height back to the full 34x20 switch size while this
+   rule's ::before still applied, producing a tiny square knob adrift in an
+   oversized pill track. */
+body.v4-only-body.quick-standalone-body .v4-stage-autofit input[type="checkbox"],
+body.v4-only-body.quick-standalone-body .v4-truss-autofit input[type="checkbox"],
+body.v4-only-body.quick-standalone-body .v4-led-autofit input[type="checkbox"],
+.v4-stage-autofit input[type="checkbox"],
+.v4-truss-autofit input[type="checkbox"],
+.v4-led-autofit input[type="checkbox"] {
   width: 14px !important;
   height: 14px !important;
   min-width: 14px !important;
   min-height: 14px !important;
+  border-radius: 4px !important;
+}
+
+.v4-stage-autofit input[type="checkbox"]::before,
+.v4-truss-autofit input[type="checkbox"]::before,
+.v4-led-autofit input[type="checkbox"]::before {
+  top: 2px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  transform: scale(0);
+  transition: transform 0.12s ease;
+}
+
+.v4-stage-autofit input[type="checkbox"]:checked::before,
+.v4-truss-autofit input[type="checkbox"]:checked::before,
+.v4-led-autofit input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+/* v5 — number stepper: real ± buttons next to a real <input type="number">.
+   Buttons call the input's own stepUp()/stepDown() (see bindSteppers in
+   V4StructureVisualConfigurator.js / LedCalculatorUI.js) then dispatch a native
+   'input' event, so the calculators' existing addEventListener('input', ...) wiring
+   fires exactly as if the number had been typed — zero changes to calculation code. */
+.v4-stepper {
+  position: relative;
+  display: block;
+}
+
+/* Selector boosted with the body chain: several later-loaded breakpoint rules (e.g.
+   .v4-structure-truss :where(input, select) in breakpoints.css) set padding-right on
+   plain input/select with higher specificity than a bare ".v4-stepper input" would
+   have, silently shrinking the reserved space for the ± buttons back down and making
+   them overlap the typed value. */
+body.v4-only-body.quick-standalone-body .v4-stepper input[type="number"],
+.v4-stepper input[type="number"] {
+  width: 100% !important;
+  padding-right: 44px !important;
+}
+
+.v4-stepper-btns {
+  position: absolute;
+  right: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 2px;
+}
+
+.v4-stepper-btn {
+  min-height: 20px !important;
+  height: 20px !important;
+  width: 18px !important;
+  min-width: 18px !important;
   padding: 0 !important;
-  accent-color: var(--feg-gold) !important;
+  border-radius: 5px !important;
+  border: 1px solid var(--feg-border) !important;
+  background: var(--feg-panel-2) !important;
+  color: var(--feg-text-2) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.v4-stepper-btn:hover {
+  border-color: var(--feg-gold) !important;
+  color: var(--feg-gold) !important;
+}
+
+.v4-stepper-btn:active {
+  background: rgba(244,194,22,0.16) !important;
+}
+
+/* v5 — progressive disclosure groups. Native <details>/<summary>: no JS, free keyboard
+   and screen-reader support, and independent of any other show/hide logic in the app. */
+.v4-field-group {
+  margin-top: 10px;
+  border: 1px solid var(--feg-border);
+  border-radius: 12px;
+  background: var(--feg-panel);
+  overflow: hidden;
+}
+
+.v4-field-group > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--feg-text-2);
+  user-select: none;
+}
+
+.v4-field-group > summary::-webkit-details-marker {
+  display: none;
+}
+
+.v4-field-group > summary::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-right: 1.6px solid var(--feg-text-muted);
+  border-bottom: 1.6px solid var(--feg-text-muted);
+  transform: rotate(45deg);
+  transition: transform 0.15s ease;
+  flex: 0 0 auto;
+}
+
+.v4-field-group[open] > summary::after {
+  transform: rotate(-135deg);
+}
+
+.v4-field-group > summary:hover {
+  color: var(--feg-gold);
+}
+
+.v4-field-group > summary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(244,194,22,0.28);
+}
+
+.v4-field-group > *:not(summary) {
+  padding: 0 12px 12px;
+}
+
+.v4-field-group[open] > summary {
+  border-bottom: 1px solid var(--feg-border-soft);
+  margin-bottom: 10px;
+}
+
+/* the wrapped block was already a self-contained card (feg-control-grid etc.) —
+   strip its own outer border/background so it doesn't double up inside the details. */
+.v4-field-group > .v4-stage-control-stack--pricing,
+.v4-field-group > .v4-truss-zoom-panel,
+.v4-field-group > .v4-truss-template-card--pricing,
+.v4-field-group > .v4-quick-pricing-grid {
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 button,
@@ -619,7 +854,7 @@ input[type="checkbox"] {
     --feg-control-label-size: 8px;
     --feg-control-value-size: 10px;
     --feg-control-button-size: 10px;
-    --feg-control-height-mobile: 24px;
+    --feg-control-height-mobile: 32px;
     --feg-control-gap: 6px;
   }
 
@@ -916,7 +1151,7 @@ input[type="checkbox"] {
     --feg-control-label-size: 7.5px;
     --feg-control-value-size: 9.5px;
     --feg-control-button-size: 9.5px;
-    --feg-control-height-mobile: 25px;
+    --feg-control-height-mobile: 32px;
   }
 
   .v4-stage-template-panel {
@@ -1054,11 +1289,11 @@ input[type="checkbox"] {
     overflow: hidden !important;
   }
 
-  .v4-stage-template-panel .v4-stage-check--edge input {
-    width: 12px !important;
-    height: 12px !important;
-    min-width: 12px !important;
-    min-height: 12px !important;
+  .v4-stage-template-panel .v4-stage-check--edge input[data-stage-edge-enabled] {
+    width: 30px !important;
+    height: 18px !important;
+    min-width: 30px !important;
+    min-height: 18px !important;
   }
 
   .v4-stage-template-panel .v4-field--edge-type {
@@ -1340,7 +1575,7 @@ input[type="checkbox"] {
   }
 
   body.v4-only-body.quick-standalone-body .v4-stage-control-stack--build .v4-field select {
-    font-size: 8.5px !important;
+    font-size: 10.5px !important;
   }
 
   body.v4-only-body.quick-standalone-body .v4-stage-frame-auto-card {
@@ -1397,11 +1632,11 @@ input[type="checkbox"] {
     line-height: 1.05 !important;
   }
 
-  body.v4-only-body.quick-standalone-body .v4-stage-check--edge input {
-    width: 11px !important;
-    height: 11px !important;
-    min-width: 11px !important;
-    min-height: 11px !important;
+  body.v4-only-body.quick-standalone-body .v4-stage-check--edge input[data-stage-edge-enabled] {
+    width: 28px !important;
+    height: 17px !important;
+    min-width: 28px !important;
+    min-height: 17px !important;
   }
 
   body.v4-only-body.quick-standalone-body .v4-field--edge-type {
@@ -1418,7 +1653,7 @@ input[type="checkbox"] {
   body.v4-only-body.quick-standalone-body .v4-field--edge-type select {
     height: 28px !important;
     min-height: 28px !important;
-    font-size: 8.7px !important;
+    font-size: 10.5px !important;
   }
 
   body.v4-only-body.quick-standalone-body .feg-control-section-title {
@@ -1533,8 +1768,8 @@ input[type="checkbox"] {
   }
 
   body.v4-only-body.quick-standalone-body .v4-stage-tool-buttons button {
-    height: 30px !important;
-    min-height: 30px !important;
+    height: 36px !important;
+    min-height: 36px !important;
     padding: 0 5px !important;
     font-size: 10px !important;
     line-height: 1 !important;
@@ -1578,7 +1813,7 @@ input[type="checkbox"] {
     min-width: 10px !important;
     display: inline-block !important;
     color: transparent !important;
-    border: 1px solid rgba(243,198,78,0.72) !important;
+    border: 1px solid rgba(244, 194, 22,0.72) !important;
     border-radius: 2px !important;
     opacity: 0.9 !important;
   }
@@ -1611,5 +1846,56 @@ input[type="checkbox"] {
   body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls [data-stage-zoom-action="center"],
   body.v4-only-body.quick-standalone-body .v4-stage-zoom-controls .v4-stage-autofit {
     font-size: 7.6px !important;
+  }
+}
+
+/* Merged from mobile.css: generic mobile field/table/action-row polish shared
+   across constructors (not component-specific, kept here for load-order parity). */
+@media (max-width: 767px) {
+  .v4-grid-2,
+  .v4-grid-3,
+  .v4-grid-4,
+  .v4-doc-actions,
+  .v4-actions {
+    max-width: 100% !important;
+  }
+
+  .v4-grid-3 {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .v4-doc-actions,
+  .v4-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .v4-doc-actions button,
+  .v4-actions button {
+    flex: 1 1 auto;
+    min-width: min(100%, 120px);
+  }
+
+  .v4-field,
+  label,
+  input,
+  select,
+  textarea {
+    min-width: 0 !important;
+  }
+
+  .v4-field span,
+  .v4-field small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .v4-table-wrap,
+  .table-wrap,
+  .bom-table-wrap,
+  .summary-table-wrap {
+    overflow-x: auto !important;
+    max-width: 100% !important;
   }
 }

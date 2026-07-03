@@ -1,3 +1,14 @@
+## v3.1.101 - Rigging Spec Sheet v5 UI pass
+
+- Новая визуальная тема «Rigging Spec Sheet»: графит/сталь/алюминий с единым rig-yellow акцентом; имена `--feg-*` сохранены, поэтому вся вёрстка подхватила палитру без переименований.
+- Подключены шрифты Barlow Condensed и JetBrains Mono (с системным fallback), радиусы стали компактнее.
+- Во все числовые поля Сцены/Ферм/LED добавлены кнопки ± (step): нажатие вызывает штатные `stepUp`/`stepDown` и реальные события `input`/`change`, вся существующая логика расчётов не тронута.
+- Панели стоимости и масштаба свёрнуты в нативные группы `<details>` (прогрессивное раскрытие); grid-размещение LED-стоимости сохранено.
+- PNG-иконки плиток и hero-арт заменены на инлайн-SVG (`currentColor`) — следуют теме и не мылятся при масштабировании.
+- Чистка CSS: удалены `styles/desktop.css` и `styles/mobile.css`, их правила слиты в общие стили; добавлен cache-bust `?v=`.
+- Версия унифицирована до `3.1.101` (title, `manifest.json`, `AppVersion.js`), PWA theme_color → `#14171A`, кэш service worker → `v30`.
+- Расчёты, BOM, склад, резервы, PDF, legacy/v3, backend writes и quick pricing не менялись; `npm run verify` (JS + 33 smoke-теста 360–1366px) проходит.
+
 ## v3.1.94 - PKC stage systems
 
 - Added stage system selection in the quick stage constructor: `Imlight Copy`, `PKC / ШИП-ПАЗ`, and `PKC / ПАЗ-ПАЗ`.
@@ -129,7 +140,7 @@
 - Зазор приведён к тому же ритму, что и в верхнем блоке между выбором настила/столбов и индикатором перекладин.
 - Правка сделана через глобальный responsive-слой `styles/breakpoints.css`; расчёты и логику конструктора не трогали.
 
-# FEG Stage PRO 3.1.94
+# FEG Stage PRO 3.1.101
 
 Standalone-версия быстрых конструкторов для оперативной работы со сцены, фермами и LED-экранами.
 

@@ -3,10 +3,34 @@
   const ROOT = (window.FEGModules = window.FEGModules || {});
 
   const QUICK_CALCULATORS = Object.freeze([
-    { id: 'stage', title: 'Сцена', output: ['Схема', 'Техлист', 'Склад', 'Вес'], icon: '▦', imageIcon: 'assets/launch-stage-icon.png' },
-    { id: 'truss', title: 'Фермы', output: ['Схема', 'Техлист', 'Склад', 'Вес'], icon: '△', imageIcon: 'assets/launch-truss-icon.png' },
-    { id: 'led', title: 'LED Экраны', output: ['Кабинеты', 'Кабели', 'Мощность', 'Вес'], icon: '▣', imageIcon: 'assets/launch-led-icon.png' }
+    { id: 'stage', title: 'Сцена', output: ['Схема', 'Техлист', 'Склад', 'Вес'], icon: '▦' },
+    { id: 'truss', title: 'Фермы', output: ['Схема', 'Техлист', 'Склад', 'Вес'], icon: '△' },
+    { id: 'led', title: 'LED Экраны', output: ['Кабинеты', 'Кабели', 'Мощность', 'Вес'], icon: '▣' }
   ]);
+
+  const FEG_LAUNCH_ICON_SVG = Object.freeze({
+    stage: '<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+      + '<rect x="9" y="21" width="46" height="9" rx="1" stroke="currentColor" stroke-width="2.4"/>'
+      + '<path d="M16 30v8M48 30v8M24 30v9M40 30v9" stroke="currentColor" stroke-width="2.2"/>'
+      + '<path d="M9 47h46" stroke="currentColor" stroke-width="1.3"/>'
+      + '<path d="M9 43.5v7M55 43.5v7" stroke="currentColor" stroke-width="1.3"/>'
+      + '<path d="M9 47l5-2.4v4.8zM55 47l-5-2.4v4.8z" fill="currentColor"/>'
+      + '</svg>',
+    truss: '<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+      + '<rect x="15" y="15" width="34" height="34" stroke="currentColor" stroke-width="2.4"/>'
+      + '<path d="M15 15L49 49M49 15L15 49" stroke="currentColor" stroke-width="1.5" opacity="0.65"/>'
+      + '<circle cx="15" cy="15" r="2.8" fill="currentColor"/><circle cx="49" cy="15" r="2.8" fill="currentColor"/>'
+      + '<circle cx="15" cy="49" r="2.8" fill="currentColor"/><circle cx="49" cy="49" r="2.8" fill="currentColor"/>'
+      + '</svg>',
+    led: '<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+      + '<rect x="12" y="12" width="32" height="32" rx="2" stroke="currentColor" stroke-width="2.4"/>'
+      + '<g fill="currentColor">'
+      + '<rect x="17" y="17" width="6" height="6"/><rect x="26" y="17" width="6" height="6"/><rect x="35" y="17" width="6" height="6"/>'
+      + '<rect x="17" y="26" width="6" height="6"/><rect x="26" y="26" width="6" height="6"/><rect x="35" y="26" width="6" height="6"/>'
+      + '<rect x="17" y="35" width="6" height="6"/><rect x="26" y="35" width="6" height="6"/><rect x="35" y="35" width="6" height="6"/>'
+      + '</g>'
+      + '</svg>'
+  });
 
   const QUICK_MODAL_VERSION = '3.16.13';
   const QUICK_DRAFT_STORAGE_KEY = 'fegStagePro.v4.quickCalculators.lastState.v1';
@@ -19,13 +43,27 @@
     root.innerHTML = `
       <section class="feg-dashboard" data-feg-dashboard>
         <div class="feg-dashboard-hero-grid" data-feg-dashboard-hero>
-          <article class="feg-hero-card v4-card" data-feg-runner-open role="button" tabindex="0" title="Запустить FEG TECH RUN">
-            <img class="feg-hero-art" src="assets/feg-stage-pro-3.0-title.png" alt="${escapeHtml(ROOT.AppVersion && ROOT.AppVersion.displayName || 'FEG Stage PRO')} · Stage · Truss · LED · FEG TECH RUN" loading="eager" decoding="async">
+          <article class="feg-hero-card v4-card" data-feg-runner-open role="button" tabindex="0" title="Запустить FEG TECH RUN" aria-label="${escapeHtml(ROOT.AppVersion && ROOT.AppVersion.displayName || 'FEG Stage PRO')} · Stage · Truss · LED · FEG TECH RUN">
+            <svg class="feg-hero-art" viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FEG Stage PRO">
+              <text x="28" y="112" class="feg-hero-word">FEG</text>
+              <text x="28" y="150" class="feg-hero-word-sub">STAGE PRO</text>
+              <text x="28" y="176" class="feg-hero-kicker">РИГГИНГ · СЦЕНА · ФЕРМЫ · LED</text>
+              <g class="feg-hero-dim" stroke="currentColor" fill="none">
+                <path d="M330 60V190M600 60V190" stroke-width="1.4"/>
+                <path d="M330 190H600" stroke-width="1.4"/>
+                <path d="M330 190l9-4.5v9zM600 190l-9-4.5v9z" fill="currentColor" stroke="none"/>
+                <rect x="360" y="76" width="60" height="14" stroke-width="2"/>
+                <rect x="432" y="76" width="60" height="14" stroke-width="2"/>
+                <rect x="504" y="76" width="60" height="14" stroke-width="2"/>
+                <path d="M372 90v18M408 90v18M444 90v18M480 90v18M516 90v18M552 90v18" stroke-width="1.6"/>
+                <path d="M360 108h204" stroke-width="1.6"/>
+              </g>
+            </svg>
           </article>
           <div class="feg-launch-grid" aria-label="Быстрые конструкторы">
             ${QUICK_CALCULATORS.map(calc => `
               <button type="button" class="feg-launch-tile" data-v4-quick="${calc.id}">
-                <span class="feg-launch-icon${calc.imageIcon ? ' feg-launch-icon--image' : ''}" data-launch-kind="${calc.id}" aria-hidden="true">${calc.imageIcon ? `<img class="feg-launch-icon-image" src="${escapeHtml(calc.imageIcon)}" alt="" loading="eager" decoding="async">` : ''}</span>
+                <span class="feg-launch-icon" data-launch-kind="${calc.id}" aria-hidden="true">${FEG_LAUNCH_ICON_SVG[calc.id] || ''}</span>
                 <b>${escapeHtml(calc.title)}</b>
                 <small>${calc.id === 'stage' ? 'Конструктор сценических площадок' : calc.id === 'truss' ? 'Конструктор фермовых конструкций' : 'Конструктор LED экранов и медиа систем'}</small>
               </button>`).join('')}

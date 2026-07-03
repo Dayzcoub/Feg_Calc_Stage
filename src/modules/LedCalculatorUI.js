@@ -6,6 +6,39 @@
   const GRID_ROWS = 10;
   const DEFAULT_COLORS = ['main', 'side', 'side2', 'top', 'bottom', 'custom'];
 
+  // v5 — same ± stepper pattern as Stage/Truss (V4StructureVisualConfigurator.js):
+  // wraps a real <input type="number">, buttons call stepUp/stepDown then dispatch a
+  // real 'input' event, so existing addEventListener('input', ...) wiring is untouched.
+  function stepperHtml(fieldHtml) {
+    return `<span class="v4-stepper">${fieldHtml}<span class="v4-stepper-btns"><button type="button" class="v4-stepper-btn" data-v4-step="-1" tabindex="-1" aria-label="Уменьшить">−</button><button type="button" class="v4-stepper-btn" data-v4-step="1" tabindex="-1" aria-label="Увеличить">+</button></span></span>`;
+  }
+  function bindSteppers(root) {
+    if (!root || root._v4StepperBound) return;
+    root._v4StepperBound = true;
+    root.addEventListener('click', event => {
+      const btn = event.target.closest('[data-v4-step]');
+      if (!btn || !root.contains(btn)) return;
+      const wrap = btn.closest('.v4-stepper');
+      const input = wrap && wrap.querySelector('input[type="number"]');
+      if (!input) return;
+      const dir = Number(btn.getAttribute('data-v4-step')) || 1;
+      if (dir > 0) input.stepUp(); else input.stepDown();
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  }
+
+  function esc5(value) { return String(value == null ? '' : value).replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c])); }
+  // v5 — same disclosure pattern as Stage/Truss. Note the extra 'ledPricing-area' class:
+  // the wrapped .v4-quick-pricing-grid carries `grid-area: ledPricing` in the desktop CSS
+  // (breakpoints.css / ResponsiveStability.js), which only works on a *direct* grid child —
+  // wrapping it in <details> would silently break that positioning (this exact class of bug
+  // was hit and fixed for Truss earlier), so the grid-area is moved onto the wrapper instead.
+  function wrapFieldGroup(title, innerHtml, extraClass) {
+    if (!innerHtml) return '';
+    return `<details class="v4-field-group${extraClass ? ' ' + extraClass : ''}"><summary>${esc5(title)}</summary>${innerHtml}</details>`;
+  }
+
   function quickPricingModule() { return ROOT.QuickPricing || null; }
   function quickPricingVisible(opts) {
     const mod = quickPricingModule();
@@ -41,7 +74,7 @@
   }
   function renderQuickPricingCard(pricing) {
     if (!pricing || !pricing.visible) return '';
-    return `<div class="v4-mini"><b>${escapeHtml((ROOT.QuickPricing && ROOT.QuickPricing.money ? ROOT.QuickPricing.money(pricing.total) : formatNumber(pricing.total || 0, 0) + ' ₽'))}</b><span>Итого стоимость</span><small>${escapeHtml((ROOT.QuickPricing && ROOT.QuickPricing.money ? ROOT.QuickPricing.money(pricing.unitPrice) : formatNumber(pricing.unitPrice || 0, 0) + ' ₽'))} × ${formatNumber(pricing.unitQty || 0, 0)} ${escapeHtml(pricing.unitShort || 'каб.')} + монтаж/доставка</small></div>`;
+    return `<div class="v4-mini v4-mini--total"><b>${escapeHtml((ROOT.QuickPricing && ROOT.QuickPricing.money ? ROOT.QuickPricing.money(pricing.total) : formatNumber(pricing.total || 0, 0) + ' ₽'))}</b><span>Итого стоимость</span><small>${escapeHtml((ROOT.QuickPricing && ROOT.QuickPricing.money ? ROOT.QuickPricing.money(pricing.unitPrice) : formatNumber(pricing.unitPrice || 0, 0) + ' ₽'))} × ${formatNumber(pricing.unitQty || 0, 0)} ${escapeHtml(pricing.unitShort || 'каб.')} + монтаж/доставка</small></div>`;
   }
   function renderQuickPricingTable(pricing) {
     if (!pricing || !pricing.visible || !Array.isArray(pricing.rows)) return '';
@@ -90,8 +123,8 @@
         <p class="v4-muted">Рисуй основной экран и отдельные LED-конструкции: боковые вертикальные полосы, верх/низ, дополнительные блоки. Общие формулы LED сохранены, итог складывается из активных кабинетов.</p>
 
         <div class="v4-grid-3 v4-led-input-grid" data-led-input-grid>
-          <label class="v4-field v4-led-field--size"><span>Ширина, м</span><input type="number" min="0.1" step="0.1" data-led="widthM" value="${escapeHtml(seed.base.widthM)}"></label>
-          <label class="v4-field v4-led-field--size"><span>Высота, м</span><input type="number" min="0.1" step="0.1" data-led="heightM" value="${escapeHtml(seed.base.heightM)}"></label>
+          <label class="v4-field v4-led-field--size"><span>Ширина, м</span>${stepperHtml(`<input type="number" min="0.1" step="0.1" data-led="widthM" value="${escapeHtml(seed.base.widthM)}">`)}</label>
+          <label class="v4-field v4-led-field--size"><span>Высота, м</span>${stepperHtml(`<input type="number" min="0.1" step="0.1" data-led="heightM" value="${escapeHtml(seed.base.heightM)}">`)}</label>
           <label class="v4-field v4-led-field--cabinet"><span>Кабинет</span><select data-led="format">${Object.values(calc.CABINET_FORMATS).map(f => `<option value="${f.id}" ${f.id === seed.base.format ? 'selected' : ''}>${escapeHtml(f.name)}</option>`).join('')}</select></label>
           <label class="v4-field v4-led-field--cabinet"><span>Шаг</span><select data-led="pitch">${Object.values(calc.PIXEL_PITCHES).map(p => `<option value="${p.id}" ${p.id === seed.base.pitch ? 'selected' : ''}>${escapeHtml(p.name)}</option>`).join('')}</select></label>
           <label class="v4-field v4-led-field--technical"><span>Вес, кг</span><input type="number" min="0" step="0.1" data-led="cabinetWeightKg" value="${escapeHtml(seed.base.cabinetWeightKg)}"></label>
@@ -101,7 +134,7 @@
           <label class="v4-field v4-led-field--mount"><span>Монтаж LED</span><select data-led="mountMode">${getMountModeOptionsHtml(resolveMountModeValue(seed.base))}</select></label>
           <label class="v4-field v4-led-field--mount"><span>Ноги, шт</span><input type="number" min="0" step="1" data-led="legCount" value="${escapeHtml(seed.base.legCount)}"></label>
         </div>
-        ${renderQuickLedPricingControls(seed, initialOptions)}
+        ${wrapFieldGroup('Стоимость быстрого расчёта', renderQuickLedPricingControls(seed, initialOptions), 'v4-field-group--led-pricing')}
 
         <div class="v4-led-workbench">
           <div class="v4-led-side-panel">
@@ -169,6 +202,7 @@
     root._v4LedOnChange = onChange;
     root._v4LedPointer = null;
     root._v4LedNotifyTimer = null;
+    bindSteppers(root);
     bindLedUi(root);
     renderLedState(root);
     return root;

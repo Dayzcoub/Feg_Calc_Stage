@@ -16,6 +16,37 @@
 
   function esc(value) { return String(value == null ? '' : value).replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c])); }
   function attr(value) { return esc(value).replace(/'/g, '&#39;'); }
+  // v5 — wraps a number <input> with ± stepper buttons. The buttons never touch the
+  // calculators' state directly: they call the input's own stepUp/stepDown then fire a
+  // real 'input' event, so every existing addEventListener('input', ...) wiring across
+  // Stage/Truss/LED reacts exactly as if the user had typed a new value.
+  function stepperHtml(fieldHtml) {
+    return `<span class="v4-stepper">${fieldHtml}<span class="v4-stepper-btns"><button type="button" class="v4-stepper-btn" data-v4-step="-1" tabindex="-1" aria-label="Уменьшить">−</button><button type="button" class="v4-stepper-btn" data-v4-step="1" tabindex="-1" aria-label="Увеличить">+</button></span></span>`;
+  }
+  function bindSteppers(root) {
+    if (!root || root._v4StepperBound) return;
+    root._v4StepperBound = true;
+    root.addEventListener('click', event => {
+      const btn = event.target.closest('[data-v4-step]');
+      if (!btn || !root.contains(btn)) return;
+      const wrap = btn.closest('.v4-stepper');
+      const input = wrap && wrap.querySelector('input[type="number"]');
+      if (!input) return;
+      const dir = Number(btn.getAttribute('data-v4-step')) || 1;
+      if (dir > 0) input.stepUp(); else input.stepDown();
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  }
+  // v5 — progressive disclosure: wraps an already-rendered field-group HTML block in a
+  // native <details>. No JS dependency (keyboard/AT accessible for free), and — crucially —
+  // it never wraps anything whose visibility other code already toggles via hidden/display,
+  // so there is no conflict with existing show/hide logic (e.g. the edge-closure-type field).
+  function wrapFieldGroup(title, innerHtml, options) {
+    if (!innerHtml) return '';
+    const open = options && options.open ? ' open' : '';
+    return `<details class="v4-field-group"${open}><summary>${esc(title)}</summary>${innerHtml}</details>`;
+  }
   function num(value, fallback) { const n = Number(value); return Number.isFinite(n) ? n : Number(fallback || 0); }
   function clamp(value, min, max, fallback) { const n = Math.round(num(value, fallback)); return Math.max(min, Math.min(max, n)); }
   function clone(value) { try { return JSON.parse(JSON.stringify(value)); } catch (_) { return value; } }
@@ -97,7 +128,7 @@
   function renderQuickPricingCards(pricing) {
     if (!pricing || !pricing.visible) return '';
     const note = pricing.summaryNote || `${money(pricing.unitPrice)} × ${pricing.unitQty || 0} ${pricing.unitShort || 'шт'} + монтаж/доставка`;
-    return `<div class="v4-mini"><b>${esc(money(pricing.total))}</b><span>Итого стоимость</span><small>${esc(note)}</small></div>`;
+    return `<div class="v4-mini v4-mini--total"><b>${esc(money(pricing.total))}</b><span>Итого стоимость</span><small>${esc(note)}</small></div>`;
   }
   function renderQuickPricingTable(pricing) {
     if (!pricing || !pricing.visible || !Array.isArray(pricing.rows)) return '';
@@ -641,18 +672,18 @@
                 </div>
               </div>
               <div class="v4-stage-control-stack v4-stage-control-stack--dimensions feg-control-grid feg-control-grid--3">
-                <label class="v4-field v4-field--width">Ширина, мод.<input data-stage-preset="w" type="number" min="1" step="1" value="${attr(input.widthModules || 4)}"></label>
-                <label class="v4-field v4-field--depth">Глубина, мод.<input data-stage-preset="d" type="number" min="1" step="1" value="${attr(input.depthModules || 3)}"></label>
-                <label class="v4-field v4-field--height">Высота сцены, м<input data-stage-height type="number" min="0" step="0.1" value="${attr(initialHeightM)}"><small data-stage-height-default-note>${esc(stageHeightDefaultText(initialSupportKey))}</small></label>
+                <label class="v4-field v4-field--width">Ширина, мод.${stepperHtml(`<input data-stage-preset="w" type="number" min="1" step="1" value="${attr(input.widthModules || 4)}">`)}</label>
+                <label class="v4-field v4-field--depth">Глубина, мод.${stepperHtml(`<input data-stage-preset="d" type="number" min="1" step="1" value="${attr(input.depthModules || 3)}">`)}</label>
+                <label class="v4-field v4-field--height">Высота сцены, м${stepperHtml(`<input data-stage-height type="number" min="0" step="0.1" value="${attr(initialHeightM)}">`)}<small data-stage-height-default-note>${esc(stageHeightDefaultText(initialSupportKey))}</small></label>
               </div>
               <div class="v4-stage-control-stack v4-stage-control-stack--closure feg-control-grid feg-control-grid--2">
                 <label class="v4-stage-check v4-stage-check--edge"><input data-stage-edge-enabled type="checkbox"${opts.input && opts.input.edgeClosureEnabled ? ' checked' : ''}> Включить закрытие торцов</label>
                 <label class="v4-field v4-field--edge-type"><span class="v4-field-label">Тип закрытия торцов</span><select data-stage-edge-type>${stageOptionHtml('edge', stageCatalog().edgeClosureVariants, opts.input && opts.input.edgeClosureType || 'fabric_skirt')}</select></label>
               </div>
             </div>
-            ${renderQuickStagePricingControls(input, opts)}
+            ${wrapFieldGroup('Стоимость быстрого расчёта', renderQuickStagePricingControls(input, opts))}
           </div>
-          ${compactQuote ? '' : `<div class="v4-truss-zoom-panel v4-stage-zoom-panel" data-stage-zoom-panel>
+          ${compactQuote ? '' : wrapFieldGroup('Масштаб и подгонка поля', `<div class="v4-truss-zoom-panel v4-stage-zoom-panel" data-stage-zoom-panel>
           <div><b>Масштаб поля</b><span data-stage-zoom-value>100%</span></div>
           <div class="v4-truss-zoom-controls v4-stage-zoom-controls">
             <button type="button" class="v4-icon-btn" data-stage-zoom-action="out" title="Уменьшить масштаб" aria-label="Уменьшить масштаб">−</button>
@@ -662,7 +693,7 @@
             <button type="button" class="btn-secondary" data-stage-zoom-action="center">Центр</button>
             <label class="v4-truss-autofit v4-stage-autofit"><input data-stage-autofit type="checkbox" checked> авто-fit</label>
           </div>
-        </div>`}
+        </div>`, { open:true })}
           <div class="v4-stage-secondary-layout">
             <div class="v4-stage-tool-box">
               <span>Блок построения</span>
@@ -687,6 +718,7 @@
         <div class="v4-stage-canvas-wrap" data-stage-canvas-wrap><div class="v4-visual-stage-grid" data-stage-grid></div></div>
         <div data-stage-summary></div>
       </div>`;
+    bindSteppers(root);
     syncStageResponsiveToolOrder(root);
     if (typeof window !== 'undefined' && !root._v4StageResponsiveToolOrderBound) {
       root._v4StageResponsiveToolOrderBound = true;
@@ -1409,8 +1441,8 @@
             <div class="v4-truss-template-card" data-truss-template-card="flat">
               <div class="v4-truss-template-card-head"><b>Портал / рама</b><span>плоскость: ширина + высота</span></div>
               <div class="v4-grid-2">
-                <label class="v4-field">Ширина, м<input data-truss-flat-width data-truss-template-width type="number" min="0.5" step="0.5" value="6"></label>
-                <label class="v4-field">Высота, м<input data-truss-flat-height data-truss-template-height type="number" min="0.5" step="0.5" value="3"></label>
+                <label class="v4-field">Ширина, м${stepperHtml('<input data-truss-flat-width data-truss-template-width type="number" min="0.5" step="0.5" value="6">')}</label>
+                <label class="v4-field">Высота, м${stepperHtml('<input data-truss-flat-height data-truss-template-height type="number" min="0.5" step="0.5" value="3">')}</label>
               </div>
               <div class="v4-template-actions">
                 <button type="button" class="btn-secondary" data-truss-template-action="portal">Добавить портал</button>
@@ -1420,9 +1452,9 @@
             <div class="v4-truss-template-card v4-truss-template-card--stool" data-truss-template-card="stool">
               <div class="v4-truss-template-card-head"><b>Табуретка</b><span>3D: ширина + глубина + высота + ноги</span></div>
               <div class="v4-grid-3 v4-truss-stool-grid v4-truss-stool-dimensions-grid">
-                <label class="v4-field">Ширина, м<input data-truss-stool-width type="number" min="0.5" step="0.5" value="6"></label>
-                <label class="v4-field">Глубина, м<input data-truss-stool-depth data-truss-template-depth type="number" min="0.5" step="0.5" value="3"></label>
-                <label class="v4-field">Высота, м<input data-truss-stool-height type="number" min="0.5" step="0.5" value="3"></label>
+                <label class="v4-field">Ширина, м${stepperHtml('<input data-truss-stool-width type="number" min="0.5" step="0.5" value="6">')}</label>
+                <label class="v4-field">Глубина, м${stepperHtml('<input data-truss-stool-depth data-truss-template-depth type="number" min="0.5" step="0.5" value="3">')}</label>
+                <label class="v4-field">Высота, м${stepperHtml('<input data-truss-stool-height type="number" min="0.5" step="0.5" value="3">')}</label>
               </div>
               <div class="v4-truss-stool-action-row">
                 <label class="v4-field">Кол-во ног<input data-truss-stool-legs type="number" min="0" step="1" value="" placeholder="авто"></label>
@@ -1430,7 +1462,7 @@
               </div>
               <small class="v4-muted v4-truss-stool-note">Пустое поле ног = текущая автоматическая логика. Если указать количество, расчёт добавит нужное число стоек и баз.</small>
             </div>
-            ${renderQuickTrussPricingControls(state.quickPricing || opts.input || {}, opts)}
+            ${wrapFieldGroup('Стоимость быстрого расчёта', renderQuickTrussPricingControls(state.quickPricing || opts.input || {}, opts))}
           </div>
           <small class="v4-muted">Портал длиннее 9 м получает T-узел, среднюю ногу и базу. Табуретка строится с U012 по углам, а стойки с блинами выводятся отдельно снизу.</small>
         </div>
@@ -1488,6 +1520,7 @@
           </form>
         </dialog>
       </div>`;
+    bindSteppers(root);
     renderTrussState(root);
     root.addEventListener('click', event => {
       const libBtn = event.target && event.target.closest ? event.target.closest('[data-truss-type]') : null;

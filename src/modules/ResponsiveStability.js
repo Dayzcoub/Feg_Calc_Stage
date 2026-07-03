@@ -199,7 +199,8 @@ body.v4-only-body.quick-standalone-body .v4-led-construction-report table {
   }
 
   body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-led-input-grid { grid-area: ledControls !important; }
-  body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-quick-pricing-grid { grid-area: ledPricing !important; }
+  body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-quick-pricing-grid,
+  body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-field-group--led-pricing { grid-area: ledPricing !important; }
   body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-led-side-panel {
     grid-area: ledSide !important;
     display: grid !important;
@@ -301,7 +302,8 @@ body.v4-only-body.quick-standalone-body .v4-led-construction-report table {
 
   body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-led-workbench { display: contents !important; }
   body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-led-input-grid { grid-area: ledControls !important; }
-  body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-quick-pricing-grid { grid-area: ledPricing !important; }
+  body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-quick-pricing-grid,
+  body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-field-group--led-pricing { grid-area: ledPricing !important; }
   body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-led-side-panel { grid-area: ledSide !important; display: grid !important; gap: 12px !important; }
   body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-led-canvas-panel { grid-area: ledCanvas !important; display: grid !important; min-width: 0 !important; width: 100% !important; }
   body.v4-only-body.quick-standalone-body [data-led-result] { display: contents !important; }

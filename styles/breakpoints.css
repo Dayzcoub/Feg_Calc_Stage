@@ -1546,7 +1546,7 @@ body.v4-only-body.quick-standalone-body .v4-visual-stage-grid {
     min-width: 0 !important;
   }
 
-  body.v4-only-body.quick-standalone-body .v4-stage-template-panel :is(input, select) {
+  body.v4-only-body.quick-standalone-body .v4-stage-template-panel :is(input, select):not([type="checkbox"]) {
     min-height: 34px !important;
     height: 34px !important;
     font-size: 12px !important;
@@ -1912,11 +1912,11 @@ body.v4-only-body.quick-standalone-body .v4-visual-stage-grid {
   }
 
   body.v4-only-body.quick-standalone-body .v4-stage-main-controls-card .v4-stage-frame-auto-card span {
-    font-size: 10px !important;
+    font-size: 11px !important;
     line-height: 1.1 !important;
-    letter-spacing: .045em !important;
+    letter-spacing: 0 !important;
     color: var(--feg-text-muted) !important;
-    text-transform: uppercase !important;
+    text-transform: none !important;
   }
 
   body.v4-only-body.quick-standalone-body .v4-stage-main-controls-card .v4-stage-frame-auto-card b {
@@ -1945,10 +1945,10 @@ body.v4-only-body.quick-standalone-body .v4-visual-stage-grid {
     text-transform: none !important;
   }
 
-  body.v4-only-body.quick-standalone-body .v4-stage-main-controls-card .v4-stage-check--edge input {
+  body.v4-only-body.quick-standalone-body .v4-stage-main-controls-card .v4-stage-check--edge input[data-stage-edge-enabled] {
     flex: 0 0 auto !important;
-    width: 14px !important;
-    height: 14px !important;
+    width: 30px !important;
+    height: 18px !important;
   }
 
   body.v4-only-body.quick-standalone-body .v4-stage-main-controls-card .v4-field--edge-type {
@@ -2065,11 +2065,11 @@ body.v4-only-body.quick-standalone-body .v4-visual-stage-grid {
   }
 
   body.v4-only-body.quick-standalone-body .v4-stage-main-controls-card .v4-stage-frame-auto-card span {
-    font-size: 10px !important;
+    font-size: 11px !important;
     line-height: 1.15 !important;
-    letter-spacing: .045em !important;
+    letter-spacing: 0 !important;
     color: var(--feg-text-muted) !important;
-    text-transform: uppercase !important;
+    text-transform: none !important;
     white-space: nowrap !important;
   }
 
@@ -2101,10 +2101,10 @@ body.v4-only-body.quick-standalone-body .v4-visual-stage-grid {
     text-transform: none !important;
   }
 
-  body.v4-only-body.quick-standalone-body .v4-stage-main-controls-card .v4-stage-check--edge input {
+  body.v4-only-body.quick-standalone-body .v4-stage-main-controls-card .v4-stage-check--edge input[data-stage-edge-enabled] {
     flex: 0 0 auto !important;
-    width: 14px !important;
-    height: 14px !important;
+    width: 30px !important;
+    height: 18px !important;
   }
 
   body.v4-only-body.quick-standalone-body .v4-stage-control-stack--pricing {
@@ -2530,6 +2530,8 @@ body.v4-only-body.quick-standalone-body .v4-visual-stage-grid {
   body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-library {
     max-height: 44vh !important;
     overflow: auto !important;
+    align-content: start !important;
+    grid-auto-rows: max-content !important;
   }
   body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-group {
     overflow: hidden !important;
@@ -2553,8 +2555,8 @@ body.v4-only-body.quick-standalone-body .v4-visual-stage-grid {
 
   body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-group.active summary {
     border-color: rgba(148,163,184,.10) !important;
-    background: linear-gradient(180deg, rgba(243,198,78,.05), rgba(14,165,233,.018)) !important;
-    box-shadow: inset 3px 0 0 rgba(243,198,78,.72), inset 0 1px 0 rgba(255,255,255,.03) !important;
+    background: linear-gradient(180deg, rgba(244, 194, 22,.05), rgba(14,165,233,.018)) !important;
+    box-shadow: inset 3px 0 0 rgba(244, 194, 22,.72), inset 0 1px 0 rgba(255,255,255,.03) !important;
   }
 
   body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-group .v4-truss-group-mark {
@@ -2590,13 +2592,13 @@ body.v4-only-body.quick-standalone-body .v4-visual-stage-grid {
   }
 
   body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-group.active .v4-truss-group-mark {
-    border-color: rgba(243,198,78,.18) !important;
-    background: rgba(243,198,78,.08) !important;
+    border-color: rgba(244, 194, 22,.18) !important;
+    background: rgba(244, 194, 22,.08) !important;
     color: #f3d49a !important;
   }
 
   body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-group.active summary em {
-    border-color: rgba(243,198,78,.18) !important;
+    border-color: rgba(244, 194, 22,.18) !important;
     background: rgba(255,255,255,.05) !important;
     color: rgba(255,239,199,.84) !important;
   }
@@ -2630,9 +2632,9 @@ body.v4-only-body.quick-standalone-body .v4-visual-stage-grid {
 
   body.v4-only-body.quick-standalone-body .v4-structure-truss :is(.v4-truss-group-body button.active, .v4-truss-group-body button.is-active, .v4-truss-library button.active, .v4-truss-library button.is-active) {
     background: linear-gradient(180deg, rgba(24,45,56,.94), rgba(18,30,40,.96)) !important;
-    border-color: rgba(243,198,78,.88) !important;
+    border-color: rgba(244, 194, 22,.88) !important;
     color: #fff7df !important;
-    box-shadow: inset 0 0 0 1px rgba(243,198,78,.18), inset 0 1px 0 rgba(255,255,255,.08), 0 0 0 2px rgba(243,198,78,.12), 0 10px 18px rgba(0,0,0,.26) !important;
+    box-shadow: inset 0 0 0 1px rgba(244, 194, 22,.18), inset 0 1px 0 rgba(255,255,255,.08), 0 0 0 2px rgba(244, 194, 22,.12), 0 10px 18px rgba(0,0,0,.26) !important;
     transform: translateY(-1px) !important;
   }
 
@@ -2647,7 +2649,7 @@ body.v4-only-body.quick-standalone-body .v4-visual-stage-grid {
 
   body.v4-only-body.quick-standalone-body .v4-structure-truss :is(.v4-truss-group-body button.active, .v4-truss-group-body button.is-active, .v4-truss-library button.active, .v4-truss-library button.is-active) :is(span, small, .v4-truss-btn-icon) {
     color: #fff7df !important;
-    text-shadow: 0 1px 10px rgba(243,198,78,.16) !important;
+    text-shadow: 0 1px 10px rgba(244, 194, 22,.16) !important;
   }
 
 
@@ -2917,7 +2919,8 @@ body.v4-only-body.quick-standalone-body .v4-visual-stage-grid {
   }
 
   body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-led-input-grid { grid-area: ledControls !important; }
-  body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-quick-pricing-grid { grid-area: ledPricing !important; }
+  body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-quick-pricing-grid,
+  body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-field-group--led-pricing { grid-area: ledPricing !important; }
   body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-led-side-panel { grid-area: ledSide !important; display: grid !important; gap: 12px !important; }
   body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-led-canvas-panel { grid-area: ledCanvas !important; display: grid !important; gap: 12px !important; }
   body.v4-only-body.quick-standalone-body [data-led-result] .v4-led-summary-metrics { grid-area: ledMetrics !important; }
@@ -3119,15 +3122,13 @@ body.v4-only-body.quick-standalone-body .v4-visual-stage-grid {
     padding: 16px !important;
   }
 
-  body.v4-only-body.quick-standalone-body .v4-structure-editor.v4-structure-stage.v4-stage-polish,
-  body.v4-only-body.quick-standalone-body .v4-structure-editor.v4-structure-truss,
-  body.v4-only-body.quick-standalone-body .v4-led-constructor {
-    width: 1248px !important;
-    min-width: 1248px !important;
-    max-width: 1248px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
+  /* v4 adaptive fix: this used to force stage/truss/led to a fixed 1248px width, a leftover
+     of an old "fake desktop width" hack for tablet viewports (the same class of hack already
+     removed from the JS layer in src/ui/LogicUiRuntime.js). At real tablet widths as narrow as
+     768px this literal 1248px was never overridden by anything later touching width/min-width/
+     max-width, so the editor silently overflowed its actual (100%-wide) container. Truss/LED
+     get collapsed to a real single column below (line ~4248) and stage to a real 2-column
+     layout (line ~4231); neither needs a fixed pixel width to do that. */
 
   body.v4-only-body.quick-standalone-body .v4-structure-editor.v4-structure-stage.v4-stage-polish {
     display: grid !important;
@@ -3250,7 +3251,7 @@ body.v4-only-body.quick-standalone-body .feg-launch-theme-toggle {
 
 body.v4-only-body.quick-standalone-body .feg-launch-theme-toggle:hover {
   transform: translateY(-1px) !important;
-  border-color: rgba(243,198,78,.42) !important;
+  border-color: rgba(244, 194, 22,.42) !important;
 }
 
 body.v4-only-body.quick-standalone-body .feg-theme-switch-track {
@@ -3535,7 +3536,7 @@ body.v4-only-body.quick-standalone-body .feg-launch-guide-button {
 body.v4-only-body.quick-standalone-body .feg-launch-support-stack .feg-launch-theme-toggle:hover,
 body.v4-only-body.quick-standalone-body .feg-launch-guide-button:hover {
   transform: translateY(-1px) !important;
-  border-color: rgba(243,198,78,.42) !important;
+  border-color: rgba(244, 194, 22,.42) !important;
 }
 
 body.v4-only-body.quick-standalone-body .feg-launch-support-stack .feg-theme-switch-track {
@@ -3615,7 +3616,7 @@ body.v4-only-body.quick-standalone-body .feg-user-guide-modal {
   border-radius: 28px !important;
   border: 1px solid rgba(255,255,255,.12) !important;
   background:
-    radial-gradient(circle at 16% 0%, rgba(243,198,78,.16), transparent 34%),
+    radial-gradient(circle at 16% 0%, rgba(244, 194, 22,.16), transparent 34%),
     linear-gradient(180deg, rgba(18,24,30,.98), rgba(8,11,14,.98)) !important;
   box-shadow: 0 30px 100px rgba(0,0,0,.48), inset 0 1px 0 rgba(255,255,255,.08) !important;
   color: var(--feg-text, #f8fafc) !important;
@@ -3693,7 +3694,7 @@ body.v4-only-body.quick-standalone-body .feg-user-guide-section {
 }
 
 body.v4-only-body.quick-standalone-body .feg-user-guide-section--intro {
-  background: linear-gradient(180deg, rgba(243,198,78,.10), rgba(255,255,255,.04)) !important;
+  background: linear-gradient(180deg, rgba(244, 194, 22,.10), rgba(255,255,255,.04)) !important;
 }
 
 body.v4-only-body.quick-standalone-body .feg-user-guide-grid {
@@ -3800,7 +3801,7 @@ body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-card {
 }
 
 body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-section--intro {
-  background: linear-gradient(180deg, rgba(243,198,78,.16), rgba(255,255,255,.76)) !important;
+  background: linear-gradient(180deg, rgba(244, 194, 22,.16), rgba(255,255,255,.76)) !important;
 }
 
 body.v4-only-body.quick-standalone-body.theme-light .feg-user-guide-flow span {
@@ -4163,10 +4164,21 @@ body.v4-only-body.quick-standalone-body .v4-led-grid-wrap {
   body.v4-only-body.quick-standalone-body .v4-structure-stage .v4-stage-canvas-wrap { grid-area: stageCanvas !important; }
   body.v4-only-body.quick-standalone-body .v4-structure-stage [data-stage-summary] { grid-area: stageMetrics !important; }
 
+  /* v4 adaptive fix: this rule previously only set a 1-column grid-template-columns
+     without resetting grid-template-areas, so the 3-column area map from the earlier
+     (min-width:768px) rule above stayed active while the column track count didn't
+     match it — the mismatch made display:contents children (.v4-truss-layout) collapse
+     to a 0x0 box and spill out of flow, overlapping the BOM table below. Give truss the
+     same explicit 3-column + area template as Stage/LED at this breakpoint instead. */
   body.v4-only-body.quick-standalone-body .v4-structure-editor.v4-structure-truss {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(330px, 390px) minmax(560px, 1fr) minmax(300px, 360px) !important;
+    grid-template-areas:
+      "trussTemplate trussTemplate trussTemplate"
+      "trussSidebar  trussCanvas   trussMetrics"
+      "trussDetails  trussDetails  trussDetails" !important;
     gap: 14px !important;
+    align-items: start !important;
   }
 
   body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-template-panel {
@@ -4183,6 +4195,16 @@ body.v4-only-body.quick-standalone-body .v4-led-grid-wrap {
       "ledDetails ledDetails ledDetails" !important;
     gap: 14px !important;
     align-items: start !important;
+  }
+
+  /* v4 adaptive fix: the >=1180px side metrics column (240-380px, see grid-template-columns
+     above) is too narrow for the 6-column summary grid inherited from the 768-1500px rule;
+     that produced 36px-wide cells with wrapped/vertical-looking text. Match the tablet
+     column count so cards stay readable at any desktop width. */
+  body.v4-only-body.quick-standalone-body .v4-stage-summary-metrics .v4-summary-grid,
+  body.v4-only-body.quick-standalone-body [data-truss-summary] .v4-truss-summary-metrics .v4-summary-grid,
+  body.v4-only-body.quick-standalone-body [data-led-result] .v4-led-summary-metrics .v4-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
 
@@ -4230,6 +4252,28 @@ body.v4-only-body.quick-standalone-body .v4-led-grid-wrap {
     grid-template-columns: minmax(0, 1fr) !important;
     grid-template-areas: none !important;
     gap: 14px !important;
+  }
+
+  /* v4 adaptive fix: collapsing truss/led to a single column above must also clear the
+     named grid-area assigned to each child by the wider-desktop rules above. Left in place,
+     a dangling grid-area reference (matching no area in the reset grid-template-areas: none)
+     made the browser fabricate extra implicit columns to satisfy it, so the whole editor
+     grew far wider than its container and silently overflowed/clipped past the viewport
+     edge instead of stacking in one column. */
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-template-panel,
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-sidebar,
+  body.v4-only-body.quick-standalone-body .v4-structure-truss .v4-truss-workspace,
+  body.v4-only-body.quick-standalone-body .v4-structure-truss [data-truss-summary],
+  body.v4-only-body.quick-standalone-body .v4-structure-truss [data-truss-summary] .v4-truss-summary-metrics,
+  body.v4-only-body.quick-standalone-body .v4-structure-truss [data-truss-summary] .v4-truss-summary-details,
+  body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-led-input-grid,
+  body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-quick-pricing-grid,
+  body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-led-side-panel,
+  body.v4-only-body.quick-standalone-body .v4-led-constructor .v4-led-canvas-panel,
+  body.v4-only-body.quick-standalone-body [data-led-result],
+  body.v4-only-body.quick-standalone-body [data-led-result] .v4-led-summary-metrics,
+  body.v4-only-body.quick-standalone-body [data-led-result] .v4-led-summary-details {
+    grid-area: auto !important;
   }
 }
 

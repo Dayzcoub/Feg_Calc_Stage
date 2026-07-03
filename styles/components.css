@@ -67,15 +67,15 @@ button.danger {
 .v4-truss-library button.active,
 .v4-truss-library button.is-active,
 .v4-led-part-chip.active {
-  background: rgba(243,198,78,0.14) !important;
+  background: rgba(244, 194, 22,0.14) !important;
   color: var(--feg-gold-2) !important;
-  border-color: rgba(243,198,78,0.75) !important;
+  border-color: rgba(244, 194, 22,0.75) !important;
 }
 
 button:hover,
 .btn-secondary:hover,
 .btn-primary:hover {
-  border-color: rgba(243,198,78,0.55) !important;
+  border-color: rgba(244, 194, 22,0.55) !important;
   transform: translateY(-1px);
 }
 
@@ -96,8 +96,8 @@ input:focus,
 select:focus,
 textarea:focus {
   outline: none !important;
-  border-color: rgba(243,198,78,0.8) !important;
-  box-shadow: 0 0 0 3px rgba(243,198,78,0.12) !important;
+  border-color: rgba(244, 194, 22,0.8) !important;
+  box-shadow: 0 0 0 3px rgba(244, 194, 22,0.12) !important;
 }
 
 label,
@@ -190,8 +190,33 @@ small {
 .feg-metric-value,
 .v4-mini b {
   color: var(--feg-text) !important;
+  font-family: var(--feg-font-mono);
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* v5 — the total-cost card is the one number every user actually came for; give it the
+   visual weight of a headline instead of blending into the metrics wall. Selector is
+   boosted with the body chain because several breakpoint-specific rules (e.g.
+   .v4-stage-summary-metrics .v4-mini in breakpoints.css) outrank a plain two-class
+   selector at narrow widths. */
+body.v4-only-body.quick-standalone-body .v4-mini.v4-mini--total,
+.v4-mini.v4-mini--total {
+  grid-column: span 2 !important;
+  background: linear-gradient(180deg, rgba(244,194,22,0.10), rgba(244,194,22,0.02)) !important;
+  border: 1px solid rgba(244,194,22,0.38) !important;
+}
+
+body.v4-only-body.quick-standalone-body .v4-mini.v4-mini--total span,
+.v4-mini.v4-mini--total span {
+  color: var(--feg-gold-2, var(--feg-gold)) !important;
+}
+
+body.v4-only-body.quick-standalone-body .v4-mini.v4-mini--total b,
+.v4-mini.v4-mini--total b {
+  font-size: 24px !important;
+  color: var(--feg-gold, var(--feg-text)) !important;
 }
 
 .v4-table-wrap,

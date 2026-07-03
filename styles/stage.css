@@ -31,9 +31,10 @@
 
 .v4-stage-frame-auto-card span {
   color: var(--feg-text-muted) !important;
-  font-size: 10px !important;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-size: 11px !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-weight: 600 !important;
 }
 
 .v4-stage-frame-auto-card b { color: var(--feg-text) !important; }
@@ -207,7 +208,7 @@
   }
 
   [data-stage-summary] .v4-summary-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 6px !important;
   }
 
@@ -224,5 +225,20 @@
 @media (max-width: 390px) {
   [data-stage-summary] .v4-summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Merged from desktop.css */
+@media (min-width: 1181px) {
+  .v4-structure-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .v4-stage-template-panel {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
+  }
+
+  .v4-stage-canvas-wrap {
+    min-height: 500px;
   }
 }

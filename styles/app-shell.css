@@ -28,7 +28,7 @@
   padding: 0 16px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   background:
-    radial-gradient(circle at 0% 0%, rgba(243,198,78,0.12), transparent 22%),
+    radial-gradient(circle at 0% 0%, rgba(244, 194, 22,0.12), transparent 22%),
     linear-gradient(180deg, rgba(27,31,37,0.98), rgba(14,17,21,0.98));
 }
 
@@ -159,8 +159,8 @@
 }
 
 .standalone-side-link.is-active {
-  background: linear-gradient(180deg, rgba(243,198,78,0.14), rgba(243,198,78,0.06));
-  border-color: rgba(243,198,78,0.28);
+  background: linear-gradient(180deg, rgba(244, 194, 22,0.14), rgba(244, 194, 22,0.06));
+  border-color: rgba(244, 194, 22,0.28);
   color: var(--feg-gold-2) !important;
 }
 
@@ -184,9 +184,9 @@
 }
 
 .standalone-unit-btn.is-active {
-  background: rgba(243,198,78,0.14) !important;
+  background: rgba(244, 194, 22,0.14) !important;
   color: var(--feg-gold-2) !important;
-  border-color: rgba(243,198,78,0.28) !important;
+  border-color: rgba(244, 194, 22,0.28) !important;
 }
 
 .standalone-main {
@@ -216,14 +216,47 @@
   overflow: hidden;
   padding: 0 !important;
   min-height: 210px;
+  background:
+    linear-gradient(155deg, var(--feg-panel-2), var(--feg-bg-2)),
+    repeating-linear-gradient(135deg, rgba(244,194,22,0.03) 0 2px, transparent 2px 14px);
+  cursor: pointer;
 }
 
 .feg-hero-art {
   width: 100%;
   height: 100%;
   min-height: 210px;
-  object-fit: cover;
   display: block;
+  color: var(--feg-text);
+}
+
+.feg-hero-word {
+  font-family: var(--feg-font-display);
+  font-weight: 800;
+  font-size: 92px;
+  letter-spacing: 0.01em;
+  fill: var(--feg-text);
+}
+
+.feg-hero-word-sub {
+  font-family: var(--feg-font-display);
+  font-weight: 700;
+  font-size: 34px;
+  letter-spacing: 0.14em;
+  fill: var(--feg-gold-2);
+}
+
+.feg-hero-kicker {
+  font-family: var(--feg-font);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  fill: var(--feg-text-muted);
+}
+
+.feg-hero-dim {
+  color: var(--feg-text-muted);
+  opacity: 0.85;
 }
 
 .feg-launch-grid {
@@ -249,8 +282,8 @@
 }
 
 .feg-launch-tile.is-active {
-  border-color: rgba(243,198,78,0.38) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 18px 44px rgba(0,0,0,0.28), 0 0 0 1px rgba(243,198,78,0.10);
+  border-color: rgba(244, 194, 22,0.38) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 18px 44px rgba(0,0,0,0.28), 0 0 0 1px rgba(244, 194, 22,0.10);
 }
 
 .feg-launch-icon,
@@ -258,98 +291,14 @@
   width: 56px;
   height: 56px;
   position: relative;
-  display: inline-block;
+  display: inline-flex;
   color: var(--feg-gold-2);
 }
 
-.feg-launch-icon::before,
-.feg-workspace-tab-icon::before,
-.feg-launch-icon::after,
-.feg-workspace-tab-icon::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 8px;
-}
-
-.feg-launch-icon[data-launch-kind="stage"]::before,
-.feg-workspace-tab-icon[data-launch-kind="stage"]::before {
-  inset: 8px 6px 14px;
-  border: 2px solid currentColor;
-  border-bottom-width: 5px;
-}
-
-.feg-launch-icon[data-launch-kind="stage"]::after,
-.feg-workspace-tab-icon[data-launch-kind="stage"]::after {
-  inset: auto 10px 6px;
-  height: 8px;
-  border: 2px solid currentColor;
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-}
-
-.feg-launch-icon[data-launch-kind="truss"]::before,
-.feg-workspace-tab-icon[data-launch-kind="truss"]::before {
-  inset: 10px 7px;
-  border-left: 2px solid currentColor;
-  border-right: 2px solid currentColor;
-  border-top: 2px solid currentColor;
-}
-
-.feg-launch-icon[data-launch-kind="truss"]::after,
-.feg-workspace-tab-icon[data-launch-kind="truss"]::after {
-  inset: 12px 9px 12px;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 10px, currentColor 10px 12px, transparent 12px 22px),
-    linear-gradient(currentColor, currentColor);
-  background-repeat: no-repeat;
-  background-size: auto auto, calc(100% - 4px) 2px;
-  background-position: 0 0, 2px 0;
-  opacity: 0.7;
-}
-
-.feg-launch-icon[data-launch-kind="led"]::before,
-.feg-workspace-tab-icon[data-launch-kind="led"]::before {
-  inset: 6px;
-  background:
-    radial-gradient(circle, currentColor 0 1.4px, transparent 1.9px);
-  background-size: 9px 9px;
-  border-radius: 4px;
-  opacity: 0.95;
-}
-
-.feg-launch-icon[data-launch-kind="led"]::after,
-.feg-workspace-tab-icon[data-launch-kind="led"]::after {
-  display: none;
-}
-
-.feg-launch-icon--image {
-  width: 118px;
-  height: 92px;
-  display: inline-grid;
-  place-items: center;
-  overflow: visible;
-  border-radius: 0;
-  color: inherit;
-  box-shadow: none;
-}
-
-.feg-launch-icon--image::before,
-.feg-launch-icon--image::after {
-  display: none !important;
-}
-
-.feg-launch-icon-image {
+.feg-launch-icon svg,
+.feg-workspace-tab-icon svg {
   width: 100%;
   height: 100%;
-  display: block;
-  object-fit: contain;
-  border-radius: 0;
-  filter: drop-shadow(0 12px 16px rgba(0,0,0,0.34));
-}
-
-body.v4-only-body.quick-standalone-body.theme-light .feg-launch-icon-image {
-  filter: drop-shadow(0 12px 16px rgba(15,23,42,0.18));
 }
 
 .feg-launch-tile b {
@@ -401,8 +350,8 @@ body.v4-only-body.quick-standalone-body.theme-light .feg-launch-icon-image {
 .feg-workspace-tab .feg-workspace-tab-icon[data-launch-kind="led"]::before { background-size: 5px 5px; inset: 0; }
 
 .feg-workspace-tab.is-active {
-  background: rgba(243,198,78,0.12) !important;
-  border-color: rgba(243,198,78,0.20) !important;
+  background: rgba(244, 194, 22,0.12) !important;
+  border-color: rgba(244, 194, 22,0.20) !important;
   color: var(--feg-gold-2) !important;
 }
 
@@ -963,7 +912,7 @@ body.v4-only-body.quick-standalone-body .feg-hero-card[data-feg-runner-open]::af
   bottom: 12px;
   padding: 7px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(243,198,78,0.32);
+  border: 1px solid rgba(244, 194, 22,0.32);
   background: rgba(8,10,13,0.74);
   color: var(--feg-gold-2);
   font-size: 10px;
@@ -983,7 +932,7 @@ body.v4-only-body.quick-standalone-body .feg-hero-card[data-feg-runner-open]:foc
 }
 
 body.v4-only-body.quick-standalone-body .feg-hero-card[data-feg-runner-open]:focus-visible {
-  box-shadow: 0 0 0 3px rgba(243,198,78,0.28), var(--feg-card-shadow, 0 18px 48px rgba(0,0,0,0.28));
+  box-shadow: 0 0 0 3px rgba(244, 194, 22,0.28), var(--feg-card-shadow, 0 18px 48px rgba(0,0,0,0.28));
 }
 
 .feg-runner-backdrop {
@@ -1004,7 +953,7 @@ body.v4-only-body.quick-standalone-body .feg-hero-card[data-feg-runner-open]:foc
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 28px;
   background:
-    radial-gradient(circle at 18% 0%, rgba(243,198,78,0.10), transparent 30%),
+    radial-gradient(circle at 18% 0%, rgba(244, 194, 22,0.10), transparent 30%),
     linear-gradient(180deg, rgba(20,23,28,0.98), rgba(8,10,13,0.98));
   box-shadow: 0 34px 90px rgba(0,0,0,0.56);
   color: var(--feg-text);
@@ -1106,7 +1055,7 @@ body.v4-only-body.quick-standalone-body .feg-hero-card[data-feg-runner-open]:foc
 
 .feg-runner-start-card {
   width: min(360px, 100%);
-  border: 1px solid rgba(243,198,78,0.28);
+  border: 1px solid rgba(244, 194, 22,0.28);
   border-radius: 20px;
   padding: 18px;
   background: rgba(7,9,12,0.82);
@@ -1179,7 +1128,7 @@ body.v4-only-body.quick-standalone-body .feg-hero-card[data-feg-runner-open]:foc
 
 .feg-runner-primary {
   background: linear-gradient(180deg, #f5d06a, #c28a27) !important;
-  border-color: rgba(243,198,78,0.42) !important;
+  border-color: rgba(244, 194, 22,0.42) !important;
   color: #1a1305 !important;
 }
 
@@ -1622,5 +1571,73 @@ body.feg-runner-mobile-active {
   .feg-runner-backdrop[data-feg-runner-mobile-fullscreen="true"] .feg-runner-stat-grid div {
     padding: 9px;
     border-radius: 14px;
+  }
+}
+
+/* Merged from mobile.css / desktop.css: hero card art sizing + shell scroll
+   restore. Kept at end of file to preserve original load-order relative to
+   controls.css / breakpoints.css. */
+@media (max-width: 767px) {
+  body.v4-only-body.quick-standalone-body .feg-hero-card {
+    min-height: 96px !important;
+    display: block !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+  body.v4-only-body.quick-standalone-body .feg-hero-art {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 96px !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    display: block !important;
+  }
+}
+
+@media (min-width: 768px) {
+  html,
+  body.v4-only-body.quick-standalone-body {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+  body.v4-only-body.quick-standalone-body #quickStandalonePage {
+    min-height: 100dvh !important;
+    overflow: visible !important;
+  }
+  body.v4-only-body.quick-standalone-body .standalone-window,
+  body.v4-only-body.quick-standalone-body .standalone-body,
+  body.v4-only-body.quick-standalone-body .standalone-main,
+  body.v4-only-body.quick-standalone-body #quickStandaloneMount,
+  body.v4-only-body.quick-standalone-body .standalone-mount,
+  body.v4-only-body.quick-standalone-body .feg-dashboard,
+  body.v4-only-body.quick-standalone-body .feg-workspace-shell,
+  body.v4-only-body.quick-standalone-body .feg-workspace-stage,
+  body.v4-only-body.quick-standalone-body .feg-workspace-body {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  body.v4-only-body.quick-standalone-body .feg-hero-card {
+    min-height: 150px !important;
+    display: block !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+  body.v4-only-body.quick-standalone-body .feg-hero-art {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 150px !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    display: block !important;
+  }
+}
+
+@media (min-width: 1181px) {
+  .v4-quick-modal-body {
+    padding: 16px !important;
   }
 }

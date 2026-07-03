@@ -48,6 +48,18 @@
 
 .v4-truss-library {
   display: grid;
+  /* grid-auto-rows:max-content is load-bearing, not cosmetic: each .v4-truss-group has
+     overflow:hidden (see breakpoints.css), which per the CSS Grid spec makes its
+     automatic minimum height 0. With the implicit "auto" row sizing this library had
+     before, once total group content exceeded max-height the browser silently
+     compressed all rows to equal fractions of the available space instead of letting
+     the grid overflow past max-height and scroll — clipping any group whose buttons
+     needed more than an even share (align-content:start alone does not prevent this;
+     verified empirically). max-content forces every row to its natural content height
+     unconditionally, so the container's own overflow:auto is what scrolls, not the rows
+     that shrink. */
+  grid-auto-rows: max-content;
+  align-content: start;
   gap: 10px;
   max-height: 62dvh;
   overflow: auto;
@@ -194,8 +206,8 @@
 .v4-structure-truss .v4-truss-library button.active,
 .v4-structure-truss .v4-truss-library button.is-active {
   background: linear-gradient(135deg, rgba(201,164,107,.34), rgba(14,165,233,.16)) !important;
-  border-color: rgba(243,198,78,.9) !important;
-  box-shadow: 0 0 0 2px rgba(243,198,78,.14) inset, 0 8px 18px rgba(14,165,233,.12) !important;
+  border-color: rgba(244, 194, 22,.9) !important;
+  box-shadow: 0 0 0 2px rgba(244, 194, 22,.14) inset, 0 8px 18px rgba(14,165,233,.12) !important;
 }
 
 .v4-structure-truss .v4-truss-group-body button.active .v4-truss-btn-icon,
@@ -203,7 +215,7 @@
 .v4-structure-truss .v4-truss-library button.active .v4-truss-btn-icon,
 .v4-structure-truss .v4-truss-library button.is-active .v4-truss-btn-icon {
   color: #fff4d6 !important;
-  text-shadow: 0 1px 10px rgba(243,198,78,.18);
+  text-shadow: 0 1px 10px rgba(244, 194, 22,.18);
   transform: scale(1.04);
 }
 
@@ -215,4 +227,239 @@
 
 .v4-truss-template-card--stool .v4-truss-stool-dimensions-grid {
   margin-top: 0 !important;
+}
+
+/* Merged from desktop.css */
+@media (min-width: 1181px) {
+  .v4-truss-template-panel {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
+  }
+
+  .v4-truss-field-wrap {
+    min-height: 500px;
+  }
+}
+
+@media (min-width: 768px) {
+  body.v4-only-body.quick-standalone-body .v4-truss-zoom-panel {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-truss-load-slot {
+    order: -1 !important;
+    flex: 0 0 min(260px, 28vw) !important;
+    min-width: 0 !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-truss-zoom-panel > div:first-child {
+    order: 0 !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-truss-zoom-controls {
+    order: 1 !important;
+    flex: 1 1 auto !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-truss-load-slot .v4-load-indicator {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
+/* Merged from mobile.css: mobile-only load-slot order + truss load modal/library polish. */
+@media (max-width: 767px) {
+  body.v4-only-body.quick-standalone-body .v4-truss-load-slot {
+    order: 3 !important;
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  body.v4-only-body.quick-standalone-body .v4-truss-load-slot .v4-load-indicator {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-truss-load-dialog {
+    width: min(calc(100vw - 12px), 680px) !important;
+    max-width: calc(100vw - 12px) !important;
+    max-height: calc(100vh - 12px) !important;
+    margin: 6px auto !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-truss-load-dialog-card.v4-truss-load-panel {
+    display: grid !important;
+    gap: 12px !important;
+    padding: 12px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-truss-load-dialog-card.v4-truss-load-panel .v4-grid-3 {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-truss-load-dialog-card.v4-truss-load-panel .v4-field {
+    display: grid !important;
+    grid-template-rows: auto 46px minmax(16px, auto) !important;
+    gap: 6px !important;
+    align-content: start !important;
+    min-width: 0 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-truss-load-dialog-card.v4-truss-load-panel .v4-field :is(input, select) {
+    min-height: 46px !important;
+    height: 46px !important;
+    padding: 0 14px !important;
+    border-radius: 12px !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-truss-load-dialog-card.v4-truss-load-panel .v4-field select {
+    padding-right: 42px !important;
+    text-overflow: ellipsis !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-truss-load-dialog-card.v4-truss-load-panel .v4-field small {
+    display: block !important;
+    min-height: 16px !important;
+    margin: 0 !important;
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-truss-group {
+    overflow: hidden !important;
+    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-truss-group summary {
+    display: grid !important;
+    grid-template-columns: 18px minmax(0, 1fr) auto !important;
+    gap: 10px !important;
+    align-items: center !important;
+    min-height: 42px !important;
+    margin-bottom: 8px !important;
+    padding: 10px 12px !important;
+    border: 1px solid rgba(148,163,184,.08) !important;
+    border-radius: 12px !important;
+    background: linear-gradient(180deg, rgba(255,255,255,.022), rgba(255,255,255,.01)) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.02) !important;
+    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-truss-group.active summary {
+    border-color: rgba(148,163,184,.10) !important;
+    background: linear-gradient(180deg, rgba(244, 194, 22,.05), rgba(14,165,233,.018)) !important;
+    box-shadow: inset 3px 0 0 rgba(244, 194, 22,.72), inset 0 1px 0 rgba(255,255,255,.03) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-truss-group .v4-truss-group-mark {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 18px !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    border-radius: 6px !important;
+    border: 1px solid rgba(148,163,184,.14) !important;
+    background: rgba(255,255,255,.025) !important;
+    color: rgba(226,232,240,.82) !important;
+    line-height: 1 !important;
+    font-size: 11px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-truss-group.active .v4-truss-group-mark {
+    border-color: rgba(244, 194, 22,.18) !important;
+    background: rgba(244, 194, 22,.08) !important;
+    color: #f3d49a !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-truss-group summary b {
+    min-width: 0 !important;
+    font-size: 13px !important;
+    line-height: 1.1 !important;
+    color: rgba(241,245,249,.96) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-truss-group summary em {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 24px !important;
+    height: 24px !important;
+    padding: 0 8px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(148,163,184,.16) !important;
+    background: rgba(255,255,255,.035) !important;
+    color: rgba(226,232,240,.78) !important;
+    line-height: 1 !important;
+    font-size: 11px !important;
+    font-style: normal !important;
+    font-weight: 800 !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-truss-group.active summary em {
+    border-color: rgba(244, 194, 22,.18) !important;
+    background: rgba(255,255,255,.05) !important;
+    color: rgba(255,239,199,.84) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-truss-group-body {
+    gap: 8px !important;
+    padding-top: 2px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body :is(.v4-truss-group-body button, .v4-truss-library .block-object-group-body button) {
+    min-height: 44px !important;
+    border-radius: 12px !important;
+    padding: 8px !important;
+    position: relative !important;
+    font-style: normal !important;
+    transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease, background .16s ease, color .16s ease !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body :is(.v4-truss-group-body button.active, .v4-truss-group-body button.is-active, .v4-truss-library button.active, .v4-truss-library button.is-active) {
+    background: linear-gradient(180deg, rgba(24,45,56,.94), rgba(18,30,40,.96)) !important;
+    border-color: rgba(244, 194, 22,.88) !important;
+    color: #fff7df !important;
+    box-shadow: inset 0 0 0 1px rgba(244, 194, 22,.18), inset 0 1px 0 rgba(255,255,255,.08), 0 0 0 2px rgba(244, 194, 22,.12), 0 10px 18px rgba(0,0,0,.26) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body :is(.v4-truss-group-body button.active, .v4-truss-group-body button.is-active, .v4-truss-library button.active, .v4-truss-library button.is-active)::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: 2px !important;
+    border-radius: 10px !important;
+    border: 1px solid rgba(255,255,255,.08) !important;
+    pointer-events: none !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body :is(.v4-truss-group-body button.active, .v4-truss-group-body button.is-active, .v4-truss-library button.active, .v4-truss-library button.is-active) :is(span, small, .v4-truss-btn-icon) {
+    color: #fff7df !important;
+    text-shadow: 0 1px 10px rgba(244, 194, 22,.16) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-truss-btn-icon--straight {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-truss-btn-icon--straight .v4-truss-btn-glyph {
+    opacity: .92 !important;
+    transform: translateY(-.5px) !important;
+  }
+
+  body.v4-only-body.quick-standalone-body .v4-quick-modal-body .v4-truss-btn-icon--straight .v4-truss-btn-meter {
+    min-width: 0 !important;
+    letter-spacing: 0 !important;
+  }
 }

@@ -31,12 +31,12 @@ body.v4-only-body {
   padding: 0 !important;
   overflow-x: hidden !important;
   background:
-    radial-gradient(circle at 12% 0%, rgba(243,198,78,0.10), transparent 28%),
+    radial-gradient(circle at 12% 0%, rgba(244, 194, 22,0.10), transparent 28%),
     radial-gradient(circle at 85% 10%, rgba(86,199,216,0.08), transparent 30%),
     linear-gradient(180deg, var(--feg-bg), var(--feg-bg-2)) !important;
 }
 
-::selection { background: rgba(243,198,78,0.30); color: var(--feg-text); }
+::selection { background: rgba(244, 194, 22,0.30); color: var(--feg-text); }
 
 @media (max-width: 767px) {
   html,
