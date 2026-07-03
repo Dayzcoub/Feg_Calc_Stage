@@ -23,12 +23,12 @@ body.v4-only-body.quick-standalone-body.theme-light {
   --ink:#17201c;
   --text-strong:#0c1511;
   --muted:#5f6c66;
-  --muted-2:#87928c;
+  --muted-2:#6e7973; /* v5 a11y: raised from #87928c so placeholder text meets WCAG AA (4.5:1) on #fff fields */
   --accent:#2f5a52;
   --accent-dark:#223f3a;
   --accent-soft:rgba(47,90,82,.12);
   --accent-line:rgba(47,90,82,.38);
-  --warning:#9b6518;
+  --warning:#835512; /* v5 a11y: darkened from #9b6518 for AA (4.5:1) on all light surfaces */
   --danger:#9b2f2f;
   --success:#2f6b4f;
   --shadow-soft:0 18px 42px rgba(24,34,31,.12);
@@ -130,6 +130,37 @@ body.v4-only-body.quick-standalone-body.theme-light :where(.btn-primary,button.b
   -webkit-text-fill-color:#f7fbf9 !important;
   border-color:rgba(47,90,82,.56) !important;
   box-shadow:0 8px 20px rgba(47,90,82,.16) !important;
+}
+
+/* v5 a11y/identity: gold leftovers that the dark palette leaves behind must follow the
+   light theme's own green/teal accent instead of the dark rig-yellow. */
+body.v4-only-body.quick-standalone-body.theme-light .feg-launch-guide-mark {
+  background:linear-gradient(180deg, #35665d, #254940) !important;
+  color:#f7fbf9 !important;
+  -webkit-text-fill-color:#f7fbf9 !important;
+  box-shadow:0 6px 12px rgba(24,34,31,.18), inset 0 1px 0 rgba(255,255,255,.28) !important;
+}
+
+/* No :where() here on purpose: the base gold rules use a body-chain + double-class
+   selector (0,5,1), so the override must carry equal-or-higher specificity to win even
+   with !important — .theme-light added to the body chain gives (0,6,1). */
+body.v4-only-body.quick-standalone-body.theme-light .v4-mini.v4-mini--total {
+  background:linear-gradient(180deg, var(--accent-soft), rgba(47,90,82,.03)) !important;
+  border-color:var(--accent-line) !important;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .v4-mini.v4-mini--total span {
+  color:var(--accent) !important;
+  -webkit-text-fill-color:var(--accent) !important;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .v4-mini.v4-mini--total b {
+  color:var(--accent-dark) !important;
+  -webkit-text-fill-color:var(--accent-dark) !important;
+}
+
+body.v4-only-body.quick-standalone-body.theme-light .v4-stage-preset-icon {
+  border-color:var(--accent-line) !important;
 }
 
 body.v4-only-body.quick-standalone-body.theme-light :where(.btn-danger,button.btn-danger,.close-modal,[data-v4-quick-modal-close]) {
