@@ -4,7 +4,7 @@
 
 :root {
   --feg-control-height: 28px;
-  --feg-control-height-mobile: 32px;
+  --feg-control-height-mobile: 44px; /* v5 mobile UX: 44px touch-target floor (was 32px) */
   --feg-control-label-w: 78px;
   --feg-control-gap: 7px;
 }
@@ -757,7 +757,7 @@ input[type="checkbox"] {
 
 @media (max-width: 767px) {
   :root {
-    --feg-control-label-size: 8.5px;
+    --feg-control-label-size: 12px;
     --feg-control-value-size: 10.5px;
     --feg-control-button-size: 10.5px;
     --feg-control-label-w: 70px;
@@ -851,10 +851,10 @@ input[type="checkbox"] {
    not as inline screen hacks. */
 @media (max-width: 767px) {
   :root {
-    --feg-control-label-size: 8px;
+    --feg-control-label-size: 12px;
     --feg-control-value-size: 10px;
     --feg-control-button-size: 10px;
-    --feg-control-height-mobile: 32px;
+    --feg-control-height-mobile: 44px; /* v5 mobile UX: 44px touch-target floor (was 32px) */
     --feg-control-gap: 6px;
   }
 
@@ -1148,10 +1148,10 @@ input[type="checkbox"] {
   :root {
     --feg-stage-m-gap: 7px;
     --feg-stage-m-line: rgba(255,255,255,0.10);
-    --feg-control-label-size: 7.5px;
+    --feg-control-label-size: 12px;
     --feg-control-value-size: 9.5px;
     --feg-control-button-size: 9.5px;
-    --feg-control-height-mobile: 32px;
+    --feg-control-height-mobile: 44px; /* v5 mobile UX: 44px touch-target floor (was 32px) */
   }
 
   .v4-stage-template-panel {

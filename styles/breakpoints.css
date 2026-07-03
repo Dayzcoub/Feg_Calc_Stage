@@ -4304,3 +4304,78 @@ body.v4-only-body.quick-standalone-body .v4-led-grid-wrap {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
   }
 }
+
+/* ============================================================================
+   v5 MOBILE UX FLOOR (<=767px only — desktop scale untouched)
+   UI/UX Pro Max audit: mobile controls were below the usability floor
+   (labels ~6.7px, inputs 9px, selects 10.5px, targets <44px).
+   This is the LAST stylesheet loaded, and the .quick-standalone-body class is
+   doubled so these rules win specificity (0,4,2) over the per-constructor
+   9px / 24px overrides (0,3,2) elsewhere in this file. Checkbox/radio excluded
+   (they are custom switches with their own sizing).
+   ============================================================================ */
+@media (max-width: 767px) {
+  body.v4-only-body.quick-standalone-body.quick-standalone-body input:not([type="checkbox"]):not([type="radio"]),
+  body.v4-only-body.quick-standalone-body.quick-standalone-body select,
+  body.v4-only-body.quick-standalone-body.quick-standalone-body textarea,
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-field input:not([type="checkbox"]):not([type="radio"]),
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-field select {
+    font-size: 16px !important;
+    min-height: 44px !important;
+    height: auto !important;
+    touch-action: manipulation;
+  }
+
+  /* field caption text sits as a direct text node inside label.v4-field */
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-field {
+    font-size: 12px !important;
+  }
+
+  /* these field stacks are 2-row grids (caption | control); their control row
+     had a fixed 24px height, so the taller 44px control overflowed and covered
+     the caption. Grow the control row and let the caption row size to content. */
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-stage-control-stack--dimensions .v4-field,
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-stage-control-stack--build .v4-field,
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-stage-control-stack--pricing .v4-field,
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-quick-pricing-grid .v4-field {
+    grid-template-rows: auto 44px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    align-items: stretch !important;
+  }
+
+  /* tool / mode buttons: readable label + 44px target */
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-stage-tool-buttons button,
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-mode-btn,
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-stage-clear-action {
+    min-height: 44px !important;
+    height: auto !important;
+    font-size: 12px !important;
+    touch-action: manipulation;
+  }
+
+  /* stepper +/- : bigger hit target, keep the value visible */
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-stepper-btn {
+    min-height: 34px !important;
+    height: 34px !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    font-size: 18px !important;
+  }
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-stepper input[type="number"] {
+    padding-right: 70px !important;
+  }
+
+  /* section titles / small labels were 6.9px — bump to a legible floor */
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .feg-control-section-title,
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-stage-frame-auto-card b {
+    font-size: 11px !important;
+  }
+
+  /* icon buttons get a real 44px target */
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-icon-btn {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    touch-action: manipulation;
+  }
+}
