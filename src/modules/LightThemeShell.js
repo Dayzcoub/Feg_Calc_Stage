@@ -433,12 +433,33 @@ body.v4-only-body.quick-standalone-body.theme-light :where(.v4-stage-check input
   -webkit-text-fill-color:initial !important;
 }
 
-body.v4-only-body.quick-standalone-body.theme-light :where(.v4-led-template-grid button.active,.v4-led-template-grid button.is-active,.v4-stage-preset-btn.active,.v4-stage-preset-btn.is-active,.v4-stage-tool-buttons button.active,.v4-stage-tool-buttons button.is-active,.v4-mode-btn.active,.v4-mode-btn.is-active) {
+/* The custom appearance:none switch keeps its dark-theme gold :checked state because
+   accent-color doesn't touch a fully restyled control. Repaint the checked track/thumb
+   with the light green accent. Non-:where so it beats the base input rules (0,1,1). */
+body.v4-only-body.quick-standalone-body.theme-light input[type="checkbox"]:checked {
+  background:rgba(47,90,82,.18) !important;
+  border-color:var(--accent) !important;
+}
+body.v4-only-body.quick-standalone-body.theme-light input[type="checkbox"]:checked::before {
+  background:linear-gradient(180deg, #3d7367, #2f5a52) !important;
+}
+
+/* No :where(): a runtime-injected rule (body.v4-only-body .v4-stage-tool-buttons
+   button.active) paints the active tool button dark; the override needs real
+   specificity to win, so every selector carries the full .theme-light body chain. */
+body.v4-only-body.quick-standalone-body.theme-light .v4-led-template-grid button.active,
+body.v4-only-body.quick-standalone-body.theme-light .v4-led-template-grid button.is-active,
+body.v4-only-body.quick-standalone-body.theme-light .v4-stage-preset-btn.active,
+body.v4-only-body.quick-standalone-body.theme-light .v4-stage-preset-btn.is-active,
+body.v4-only-body.quick-standalone-body.theme-light .v4-stage-tool-buttons button.active,
+body.v4-only-body.quick-standalone-body.theme-light .v4-stage-tool-buttons button.is-active,
+body.v4-only-body.quick-standalone-body.theme-light .v4-mode-btn.active,
+body.v4-only-body.quick-standalone-body.theme-light .v4-mode-btn.is-active {
   background:#e3eee9 !important;
-  border-color:var(--accent-line) !important;
+  border-color:var(--accent) !important;
   color:#17302b !important;
   -webkit-text-fill-color:#17302b !important;
-  box-shadow:inset 0 0 0 1px rgba(47,90,82,.16), 0 6px 16px rgba(24,34,31,.08) !important;
+  box-shadow:inset 0 0 0 1px rgba(47,90,82,.30), 0 6px 16px rgba(24,34,31,.08) !important;
 }
 
 body.v4-only-body.quick-standalone-body.theme-light :where(.quick-pdf-doc,.quick-pdf-hero,.quick-pdf-main,.quick-pdf-summary,.quick-pdf-kit,.quick-pdf-visual,.quick-pdf-scheme-image-wrap,.quick-pdf-scheme-svg-wrap,.pdf-preview-frame,.client-card,.client-hero,.client-main-grid,.client-params,.client-note,.client-scheme-wrap,.client-price-table,.client-pdf) {
