@@ -4337,11 +4337,22 @@ body.v4-only-body.quick-standalone-body .v4-led-grid-wrap {
   body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-stage-control-stack--dimensions .v4-field,
   body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-stage-control-stack--build .v4-field,
   body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-stage-control-stack--pricing .v4-field,
-  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-quick-pricing-grid .v4-field {
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-quick-pricing-grid .v4-field,
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-truss-template-card .v4-field,
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-truss-stool-grid .v4-field,
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-led-input-grid .v4-field {
     grid-template-rows: auto 44px !important;
     height: auto !important;
     min-height: 0 !important;
     align-items: stretch !important;
+  }
+
+  /* 3-up grids can't fit a stepper input + 44px +/- controls in ~81-88px columns
+     (value clips to a few px); drop to 2 columns like the stage dimensions, which
+     leaves room for the value plus the +/- controls. */
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-truss-stool-dimensions-grid,
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-led-input-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
   }
 
   /* tool / mode buttons: readable label + 44px target */
@@ -4352,6 +4363,16 @@ body.v4-only-body.quick-standalone-body .v4-led-grid-wrap {
     height: auto !important;
     font-size: 12px !important;
     touch-action: manipulation;
+  }
+
+  /* .v4-stepper is a <span>, so the generic ".v4-field span { overflow:hidden }"
+     rule clips the 44px input inside it (value cut off, buttons detached).
+     Let the wrapper grow and stop clipping. */
+  body.v4-only-body.quick-standalone-body.quick-standalone-body .v4-stepper {
+    overflow: visible !important;
+    min-height: 44px !important;
+    height: auto !important;
+    display: block !important;
   }
 
   /* stepper +/- : bigger hit target, keep the value visible */
