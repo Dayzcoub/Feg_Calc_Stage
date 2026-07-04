@@ -5,7 +5,7 @@
   'use strict';
 
   const ROOT = (global.FEGModules = global.FEGModules || {});
-  const QUICK_PDF_EXPORT_VERSION = '3.1.18-quick-pdf-pkc-module-footprint-scheme';
+  const QUICK_PDF_EXPORT_VERSION = '3.1.102-quick-pdf-rigging-spec-sheet';
   const KIND_LABELS = {
     stage: 'Сцена',
     truss: 'Фермы',
@@ -54,6 +54,17 @@
     return pricing && pricing.visible !== false && pricing.enabled !== false ? pricing : null;
   }
 
+  // v5 spec-sheet table cells: condensed uppercase headers with a solid graphite rule,
+  // steel hairline row separators, JetBrains Mono for every numeric/value column.
+  // Every cell carries an inline -webkit-text-fill-color: the dark theme paints text
+  // via that property with body-chain specificity, and only an inline !important is
+  // guaranteed to win inside the offscreen render html2canvas rasterizes.
+  const PDF_INK_FILL = '-webkit-text-fill-color:#14171A!important;';
+  const PDF_TH_STYLE = `style="background:#F2F3F4!important;color:#14171A!important;${PDF_INK_FILL}border-bottom:2px solid #14171A!important;padding:7px 6px!important;text-align:left!important;font-family:'Barlow Condensed','Arial Narrow',Arial,sans-serif!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:.07em!important;"`;
+  const PDF_TD_STYLE = `style="background:#ffffff!important;color:#14171A!important;${PDF_INK_FILL}border-bottom:1px solid #E3E6E8!important;padding:7px 6px!important;vertical-align:top!important;font-size:11px!important;line-height:1.3!important;"`;
+  const PDF_TD_MONO_STYLE = `style="background:#ffffff!important;color:#14171A!important;${PDF_INK_FILL}border-bottom:1px solid #E3E6E8!important;padding:7px 6px!important;vertical-align:top!important;font-family:'JetBrains Mono','Courier New',monospace!important;font-size:10px!important;line-height:1.35!important;"`;
+  const PDF_TD_TOTAL_STYLE = `style="background:#FCF1C8!important;color:#14171A!important;${PDF_INK_FILL}border-bottom:none!important;border-top:2px solid #14171A!important;padding:8px 6px!important;vertical-align:top!important;font-family:'JetBrains Mono','Courier New',monospace!important;font-size:11px!important;line-height:1.3!important;"`;
+
   function buildPricingSummaryCard(section) {
     const pricing = getQuickPricing(section);
     if (!pricing) return null;
@@ -67,15 +78,13 @@
   function buildQuickPricingRowsTable(section) {
     const pricing = getQuickPricing(section);
     if (!pricing || !Array.isArray(pricing.rows) || !pricing.rows.length) return '';
-    const thStyle = 'style="background:#eef2f7!important;color:#111827!important;border-bottom:1px solid #cbd5e1!important;padding:7px 6px!important;text-align:left!important;font-size:10px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.04em!important;"';
-    const tdStyle = 'style="background:#ffffff!important;color:#111827!important;border-bottom:1px solid #d9e1ec!important;padding:7px 6px!important;vertical-align:top!important;font-size:11px!important;line-height:1.25!important;"';
     const rowsHtml = pricing.rows.map(row => `<tr>
-      <td ${tdStyle}><b style="color:#111827!important;font-weight:900!important;">${esc(row.name || row.code || '')}</b></td>
-      <td ${tdStyle}>${metric(row.qty || 0, 0)} ${esc(row.unit || '')}</td>
-      <td ${tdStyle}>${money(row.unitPrice || 0)}</td>
-      <td ${tdStyle}>${money(row.total || 0)}</td>
+      <td ${PDF_TD_STYLE}><b style="color:#14171A!important;-webkit-text-fill-color:#14171A!important;font-weight:700!important;">${esc(row.name || row.code || '')}</b></td>
+      <td ${PDF_TD_MONO_STYLE}>${metric(row.qty || 0, 0)} ${esc(row.unit || '')}</td>
+      <td ${PDF_TD_MONO_STYLE}>${money(row.unitPrice || 0)}</td>
+      <td ${PDF_TD_MONO_STYLE}>${money(row.total || 0)}</td>
     </tr>`).join('');
-    return `<h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px;color:#111827!important;">Коммерческий блок быстрого расчёта</h3><table class="quick-pdf-table" style="width:100%!important;border-collapse:collapse!important;color:#111827!important;background:#ffffff!important;"><thead><tr><th ${thStyle}>Позиция</th><th ${thStyle}>Кол-во</th><th ${thStyle}>Цена</th><th ${thStyle}>Сумма</th></tr></thead><tbody>${rowsHtml}<tr><td ${tdStyle} colspan="3"><b style="color:#111827!important;font-weight:900!important;">Итого</b></td><td ${tdStyle}><b style="color:#111827!important;font-weight:900!important;">${money(pricing.total || 0)}</b></td></tr></tbody></table>`;
+    return `<h3 style="font-family:'Barlow Condensed','Arial Narrow',Arial,sans-serif!important;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin:14px 0 8px;color:#14171A!important;-webkit-text-fill-color:#14171A!important;border-left:4px solid #F4C216;padding-left:8px;line-height:1.2;">Коммерческий блок быстрого расчёта</h3><table class="quick-pdf-table" style="width:100%!important;border-collapse:collapse!important;color:#14171A!important;background:#ffffff!important;"><thead><tr><th ${PDF_TH_STYLE}>Позиция</th><th ${PDF_TH_STYLE}>Кол-во</th><th ${PDF_TH_STYLE}>Цена</th><th ${PDF_TH_STYLE}>Сумма</th></tr></thead><tbody>${rowsHtml}<tr><td ${PDF_TD_TOTAL_STYLE} colspan="3"><b style="color:#14171A!important;-webkit-text-fill-color:#14171A!important;font-weight:700!important;">Итого</b></td><td ${PDF_TD_TOTAL_STYLE}><b style="color:#14171A!important;-webkit-text-fill-color:#14171A!important;font-weight:700!important;">${money(pricing.total || 0)}</b></td></tr></tbody></table>`;
   }
 
   function weight(value) {
@@ -371,7 +380,7 @@
     const widthM = section && section.result && section.result.widthMeters || 0;
     const depthM = section && section.result && section.result.depthMeters || 0;
     const title = `Сцена ${metric(widthM, 1)} × ${metric(depthM, 1)} м · настил ${modules.length} · лестницы ${stairs.length}`;
-    return `<div class="quick-pdf-visual-label">Схема из конструктора</div><div class="quick-pdf-scheme-svg-wrap"><svg class="quick-pdf-scheme-svg" xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(title)}"><rect x="0.5" y="0.5" width="${w - 1}" height="${h - 1}" rx="14" fill="#ffffff" stroke="#d9e1ec"/><text x="12" y="20" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="800" fill="#111827">${esc(title)}</text>${rects.join('')}</svg></div>`;
+    return `<div class="quick-pdf-visual-label">Схема из конструктора</div><div class="quick-pdf-scheme-svg-wrap"><svg class="quick-pdf-scheme-svg" xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(title)}"><rect x="0.5" y="0.5" width="${w - 1}" height="${h - 1}" rx="6" fill="#ffffff" stroke="#C9CED3"/><text x="12" y="20" font-family="Barlow Condensed, Arial Narrow, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="0.5" fill="#14171A">${esc(title)}</text>${rects.join('')}</svg></div>`;
   }
 
   function ledFillForKey(key) {
@@ -421,7 +430,7 @@
     }
     const cabinetCount = result.cabinetCount || blocks.reduce((sum, block) => sum + safeCellList(block.cells).length, 0);
     const title = `LED ${metric(result.actualWidthM || 0, 2)} × ${metric(result.actualHeightM || 0, 2)} м · кабинеты ${metric(cabinetCount, 0)} · конструкций ${blocks.length}`;
-    return `<div class="quick-pdf-visual-label">Схема из конструктора</div><div class="quick-pdf-scheme-svg-wrap"><svg class="quick-pdf-scheme-svg" xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(title)}"><rect x="0.5" y="0.5" width="${w - 1}" height="${h - 1}" rx="14" fill="#ffffff" stroke="#d9e1ec"/><text x="12" y="20" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="800" fill="#111827">${esc(title)}</text>${rects.join('')}</svg></div>`;
+    return `<div class="quick-pdf-visual-label">Схема из конструктора</div><div class="quick-pdf-scheme-svg-wrap"><svg class="quick-pdf-scheme-svg" xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(title)}"><rect x="0.5" y="0.5" width="${w - 1}" height="${h - 1}" rx="6" fill="#ffffff" stroke="#C9CED3"/><text x="12" y="20" font-family="Barlow Condensed, Arial Narrow, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="0.5" fill="#14171A">${esc(title)}</text>${rects.join('')}</svg></div>`;
   }
 
   function getTrussSpecs() {
@@ -523,7 +532,7 @@
     const result = section && section.result || {};
     const boundsM = result.physicalBounds || {};
     const title = `Фермы ${metric(boundsM.width || 0, 2)} × ${metric(boundsM.height || 0, 2)} м · элементов ${items.length}`;
-    return `<div class="quick-pdf-visual-label">Схема из конструктора</div><div class="quick-pdf-scheme-svg-wrap"><svg class="quick-pdf-scheme-svg" xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(title)}"><rect x="0.5" y="0.5" width="${w - 1}" height="${h - 1}" rx="14" fill="#ffffff" stroke="#d9e1ec"/><text x="12" y="21" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="800" fill="#111827">${esc(title)}</text>${grid.join('')}${parts}</svg></div>`;
+    return `<div class="quick-pdf-visual-label">Схема из конструктора</div><div class="quick-pdf-scheme-svg-wrap"><svg class="quick-pdf-scheme-svg" xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(title)}"><rect x="0.5" y="0.5" width="${w - 1}" height="${h - 1}" rx="6" fill="#ffffff" stroke="#C9CED3"/><text x="12" y="21" font-family="Barlow Condensed, Arial Narrow, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="0.5" fill="#14171A">${esc(title)}</text>${grid.join('')}${parts}</svg></div>`;
   }
 
   function buildSchemeSvgFallback(kind, section) {
@@ -552,22 +561,23 @@
     const rows = getRows(section).filter(row => rowQty(row) || rowWeight(row) || rowPower(row) || num(row && row.meters, 0));
     const pricingTable = buildQuickPricingRowsTable(section);
     if (!rows.length) return '<div class="quick-pdf-empty">Комплектация пока пустая.</div>' + pricingTable;
-    const thStyle = 'style="background:#eef2f7!important;color:#111827!important;border-bottom:1px solid #cbd5e1!important;padding:7px 6px!important;text-align:left!important;font-size:10px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.04em!important;"';
-    const tdStyle = 'style="background:#ffffff!important;color:#111827!important;border-bottom:1px solid #d9e1ec!important;padding:7px 6px!important;vertical-align:top!important;font-size:11px!important;line-height:1.25!important;"';
+    const thStyle = PDF_TH_STYLE;
+    const tdStyle = PDF_TD_STYLE;
+    const tdMono = PDF_TD_MONO_STYLE;
     const powerHeader = kind === 'led' ? `<th ${thStyle}>Мощность</th>` : '';
     const rowsHtml = rows.map(row => {
       const meters = num(row.meters, 0);
       const rental = num(row.totalRental || row.total_rental || 0, 0);
       return `<tr>
-        <td ${tdStyle}><b style="color:#111827!important;font-weight:900!important;">${esc(row.name || row.itemName || row.code || '')}</b></td>
-        <td ${tdStyle}>${metric(rowQty(row), 0)} ${esc(row.unit || 'шт')}</td>
-        <td ${tdStyle}>${meters ? metric(meters, 1) + ' м' : '—'}</td>
-        <td ${tdStyle}>${weight(rowWeight(row))}</td>
-        ${kind === 'led' ? `<td ${tdStyle}>${rowPower(row) ? metric(rowPower(row) / 1000, 2) + ' кВт' : '—'}</td>` : ''}
-        <td ${tdStyle}>${rental ? money(rental) : esc(row.note || '—')}</td>
+        <td ${tdStyle}><b style="color:#14171A!important;-webkit-text-fill-color:#14171A!important;font-weight:700!important;">${esc(row.name || row.itemName || row.code || '')}</b></td>
+        <td ${tdMono}>${metric(rowQty(row), 0)} ${esc(row.unit || 'шт')}</td>
+        <td ${tdMono}>${meters ? metric(meters, 1) + ' м' : '—'}</td>
+        <td ${tdMono}>${weight(rowWeight(row))}</td>
+        ${kind === 'led' ? `<td ${tdMono}>${rowPower(row) ? metric(rowPower(row) / 1000, 2) + ' кВт' : '—'}</td>` : ''}
+        <td ${tdMono}>${rental ? money(rental) : esc(row.note || '—')}</td>
       </tr>`;
     }).join('');
-    return `<table class="quick-pdf-table" style="width:100%!important;border-collapse:collapse!important;color:#111827!important;background:#ffffff!important;"><thead><tr><th ${thStyle}>Позиция</th><th ${thStyle}>Кол-во</th><th ${thStyle}>Метраж</th><th ${thStyle}>Вес</th>${powerHeader}<th ${thStyle}>Примечание</th></tr></thead><tbody>${rowsHtml}</tbody></table>${pricingTable}`;
+    return `<table class="quick-pdf-table" style="width:100%!important;border-collapse:collapse!important;color:#14171A!important;background:#ffffff!important;"><thead><tr><th ${thStyle}>Позиция</th><th ${thStyle}>Кол-во</th><th ${thStyle}>Метраж</th><th ${thStyle}>Вес</th>${powerHeader}<th ${thStyle}>Примечание</th></tr></thead><tbody>${rowsHtml}</tbody></table>${pricingTable}`;
   }
 
   function buildSectionPdfHtml(kind, section, options) {
@@ -583,25 +593,68 @@
     const summary = text(section && section.summary, pricing ? 'Текущий быстрый конфиг рассчитан с ручным коммерческим блоком и без клиентского КП.' : 'Текущий быстрый конфиг рассчитан без цен, клиентов, склада и дефицита.');
     return `<div class="quick-pdf-doc ${orientationClass}" data-pdf-orientation="${orientation}">
       <style>${pdfStyle()}</style>
-      <section class="quick-pdf-hero" style="background:#ffffff!important;color:#111827!important;border:1px solid #d9e1ec!important;">
-        <div style="color:#111827!important;"><div class="quick-pdf-brand" style="color:#111827!important;"><span style="color:#8a5a1f!important;">FEG</span> Stage PRO</div><h1 style="color:#111827!important;">${esc(title)}</h1><p style="color:#334155!important;">${esc(summary)}</p></div>
-        <div class="quick-pdf-meta" style="background:#f8fafc!important;color:#111827!important;border:1px solid #d9e1ec!important;"><b style="color:#111827!important;">${esc(KIND_LABELS[normalizedKind])}</b><span style="color:#334155!important;">${esc(now.toLocaleString('ru-RU'))}</span><span style="color:#334155!important;">${pricing ? 'quick calculator · manual prices' : 'quick calculator · no prices'}</span><span style="color:#334155!important;">${esc(orientationLabel(orientation))} ориентация</span></div>
+      <div class="quick-pdf-tape"></div>
+      <section class="quick-pdf-hero" style="background:#ffffff!important;color:#14171A!important;">
+        <div style="color:#14171A!important;"><div class="quick-pdf-brand" style="color:#14171A!important;-webkit-text-fill-color:#14171A!important;"><span style="background:#F4C216!important;color:#14171A!important;-webkit-text-fill-color:#14171A!important;">FEG</span> Stage PRO</div><h1 style="color:#14171A!important;-webkit-text-fill-color:#14171A!important;">${esc(title)}</h1><p style="color:#4A545D!important;-webkit-text-fill-color:#4A545D!important;">${esc(summary)}</p></div>
+        <div class="quick-pdf-meta" style="background:#ffffff!important;color:#14171A!important;"><b style="color:#14171A!important;-webkit-text-fill-color:#14171A!important;">${esc(KIND_LABELS[normalizedKind])}</b><span style="color:#4A545D!important;-webkit-text-fill-color:#4A545D!important;">${esc(now.toLocaleString('ru-RU'))}</span><span style="color:#4A545D!important;-webkit-text-fill-color:#4A545D!important;">${pricing ? 'quick calculator · manual prices' : 'quick calculator · no prices'}</span><span style="color:#4A545D!important;-webkit-text-fill-color:#4A545D!important;">${esc(orientationLabel(orientation))} ориентация</span></div>
       </section>
-      <section class="quick-pdf-summary">${cards.map(card => `<div style="color:#111827!important;background:#ffffff!important;border:1px solid #d9e1ec!important;"><span style="display:block;color:#334155!important;font-size:11px!important;text-transform:uppercase!important;letter-spacing:.04em!important;font-weight:700!important;opacity:1!important;">${esc(card.label)}</span><b style="display:block;color:#111827!important;font-size:18px!important;font-weight:800!important;margin:4px 0!important;opacity:1!important;">${esc(card.value)}</b><small style="display:block;color:#475569!important;font-size:11px!important;line-height:1.25!important;opacity:1!important;">${esc(card.note)}</small></div>`).join('')}</section>
+      <section class="quick-pdf-summary">${cards.map(card => `<div style="color:#14171A!important;background:#ffffff!important;"><span style="display:block;color:#6B7580!important;-webkit-text-fill-color:#6B7580!important;opacity:1!important;">${esc(card.label)}</span><b style="display:block;color:#14171A!important;-webkit-text-fill-color:#14171A!important;opacity:1!important;">${esc(card.value)}</b><small style="display:block;color:#6B7580!important;-webkit-text-fill-color:#6B7580!important;opacity:1!important;">${esc(card.note)}</small></div>`).join('')}</section>
       <section class="quick-pdf-main">
-        <div class="quick-pdf-visual"><h2>Схема из конструктора</h2>${buildVisualHtml(normalizedKind, Object.assign({}, opts, { section }))}</div>
-        <div class="quick-pdf-kit"><h2>Сводная таблица комплектации</h2>${buildRowsTable(normalizedKind, section)}</div>
+        <div class="quick-pdf-visual"><h2 style="color:#14171A!important;-webkit-text-fill-color:#14171A!important;">Схема из конструктора</h2>${buildVisualHtml(normalizedKind, Object.assign({}, opts, { section }))}</div>
+        <div class="quick-pdf-kit"><h2 style="color:#14171A!important;-webkit-text-fill-color:#14171A!important;">Сводная таблица комплектации</h2>${buildRowsTable(normalizedKind, section)}</div>
       </section>
-      <footer>FEG Stage PRO · быстрый технический PDF · ${esc(QUICK_PDF_EXPORT_VERSION)}</footer>
+      <footer style="color:#6B7580!important;-webkit-text-fill-color:#6B7580!important;">FEG Stage PRO · Rigging Spec Sheet · ${esc(QUICK_PDF_EXPORT_VERSION)}</footer>
     </div>`;
   }
 
   function pdfStyle() {
+    // v5 "Rigging Spec Sheet" on paper: the dark theme inverted — graphite #14171A
+    // becomes the ink, steel #C9CED3 the hairlines, rig-yellow #F4C216 stays a pure
+    // graphic accent (hazard tape bar, section markers, total tint) because yellow
+    // text on white fails contrast. Headings: Barlow Condensed; data: JetBrains Mono.
     return `
-      .quick-pdf-doc{font-family:Inter,Arial,sans-serif;color:#111827;background:#fff;padding:24px;width:1120px;box-sizing:border-box;}
-      .quick-pdf-doc,.quick-pdf-doc *{color:#111827!important;text-shadow:none!important}.quick-pdf-doc h1,.quick-pdf-doc h2,.quick-pdf-doc h3,.quick-pdf-doc p,.quick-pdf-doc span,.quick-pdf-doc small,.quick-pdf-doc b,.quick-pdf-doc td,.quick-pdf-doc th,.quick-pdf-doc footer{color:#111827!important;}
-      .quick-pdf-hero{display:grid;grid-template-columns:1fr 260px;gap:18px;align-items:stretch;background:#ffffff!important;color:#111827!important;border:1px solid #d9e1ec;border-radius:22px;padding:24px;margin-bottom:16px;}
-      .quick-pdf-brand{font-size:24px;font-weight:900;letter-spacing:.02em;margin-bottom:8px;color:#111827!important}.quick-pdf-brand span{color:#8a5a1f!important}.quick-pdf-hero h1{font-size:30px;line-height:1.12;margin:0 0 8px;color:#111827!important}.quick-pdf-hero p{margin:0;color:#334155!important;font-size:13px;line-height:1.4}.quick-pdf-meta{display:flex;flex-direction:column;gap:8px;background:#f8fafc!important;border:1px solid #d9e1ec;border-radius:16px;padding:14px;font-size:12px;color:#111827!important}.quick-pdf-meta b{font-size:18px;color:#111827!important}.quick-pdf-meta span{color:#334155!important}.quick-pdf-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}.quick-pdf-summary div{border:1px solid #d9e1ec;background:#fff;border-radius:14px;padding:12px;min-height:72px}.quick-pdf-summary span{display:block;color:#334155!important;font-size:11px;text-transform:uppercase;letter-spacing:.04em;font-weight:700!important;opacity:1!important}.quick-pdf-summary b{display:block;color:#111827!important;font-size:18px;margin:4px 0;font-weight:800!important;opacity:1!important}.quick-pdf-summary small{display:block;color:#475569!important;font-size:11px;line-height:1.25;opacity:1!important}.quick-pdf-summary div,.quick-pdf-summary div *{-webkit-text-fill-color:currentColor!important;filter:none!important}.quick-pdf-main{display:grid;grid-template-columns:42% 58%;gap:14px;align-items:start}.quick-pdf-visual,.quick-pdf-kit{border:1px solid #d9e1ec;border-radius:18px;padding:14px;background:#fff;overflow:hidden}.quick-pdf-doc h2{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:#1f2937!important;margin:0 0 10px}.quick-pdf-visual-label{font-size:11px;color:#334155!important;margin-bottom:8px}.quick-pdf-scheme-image-wrap{display:flex;align-items:flex-start;justify-content:flex-start;max-width:100%;overflow:hidden;border:1px solid #d9e1ec;border-radius:14px;background:#fff}.quick-pdf-scheme-image{display:block;object-fit:contain;background:#fff}.quick-pdf-scheme-svg-wrap{max-width:100%;overflow:hidden;border:1px solid #d9e1ec;border-radius:14px;background:#fff;padding:8px;box-sizing:border-box}.quick-pdf-scheme-svg{display:block;max-width:100%;height:auto;background:#fff}.quick-pdf-scheme-svg text{fill:#111827!important;stroke:none!important}.quick-pdf-visual-svg svg{max-width:100%;height:auto;display:block;border-radius:14px}.quick-pdf-visual-svg svg text{fill:#111827!important;stroke:none!important}.quick-pdf-table{width:100%;border-collapse:collapse;font-size:11px;color:#111827!important}.quick-pdf-table th{background:#f1f5f9!important;color:#111827!important;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.04em}.quick-pdf-table th,.quick-pdf-table td{background:#fff!important;border-bottom:1px solid #d9e1ec!important;padding:7px 6px!important;vertical-align:top!important;color:#111827!important}.quick-pdf-table td span{color:#334155!important;font-size:10px}.quick-pdf-empty{border:1px dashed #cbd5e1;border-radius:14px;padding:18px;color:#334155!important;background:#f8fafc;font-size:13px}.quick-pdf-doc-portrait{width:820px;padding:22px}.quick-pdf-doc-portrait .quick-pdf-hero{grid-template-columns:1fr}.quick-pdf-doc-portrait .quick-pdf-summary{grid-template-columns:repeat(2,1fr)}.quick-pdf-doc-portrait .quick-pdf-main{grid-template-columns:1fr}.quick-pdf-doc-portrait .quick-pdf-visual,.quick-pdf-doc-portrait .quick-pdf-kit{padding:12px}.quick-pdf-doc-landscape{width:1120px}footer{margin-top:14px;color:#475569!important;font-size:10px;text-align:right}`;
+      .quick-pdf-doc{font-family:Arial,Helvetica,sans-serif;color:#14171A;background:#fff;padding:24px;width:1120px;box-sizing:border-box;}
+      .quick-pdf-doc,.quick-pdf-doc *{color:#14171A!important;text-shadow:none!important;-webkit-text-fill-color:currentColor!important;opacity:1!important}.quick-pdf-doc h1,.quick-pdf-doc h2,.quick-pdf-doc h3,.quick-pdf-doc p,.quick-pdf-doc span,.quick-pdf-doc small,.quick-pdf-doc b,.quick-pdf-doc td,.quick-pdf-doc th,.quick-pdf-doc footer{color:#14171A!important;-webkit-text-fill-color:currentColor!important;}
+      .quick-pdf-tape{height:10px;background:#F4C216;border-bottom:2.5px solid #14171A;margin:-24px -24px 18px;}
+      .quick-pdf-hero{display:grid;grid-template-columns:1fr 280px;gap:18px;align-items:stretch;background:#ffffff!important;color:#14171A!important;border:none!important;border-bottom:1px solid #C9CED3!important;border-radius:0;padding:0 0 18px;margin-bottom:16px;}
+      .quick-pdf-brand{font-family:'Barlow Condensed','Arial Narrow',Arial,sans-serif;font-size:22px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;color:#14171A!important;display:flex;align-items:center;gap:8px}
+      .quick-pdf-brand span{background:#F4C216;color:#14171A!important;padding:1px 9px 2px;display:inline-block}
+      .quick-pdf-hero h1{font-family:'Barlow Condensed','Arial Narrow',Arial,sans-serif!important;font-size:38px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:.02em!important;line-height:1.05!important;margin:0 0 8px!important;color:#14171A!important}
+      .quick-pdf-hero p{margin:0;color:#4A545D!important;font-size:12px;line-height:1.45;max-width:60ch}
+      .quick-pdf-meta{display:flex;flex-direction:column;gap:0;background:#fff!important;border:1.5px solid #14171A;border-radius:6px;padding:0;font-size:11px;color:#14171A!important;overflow:hidden}
+      .quick-pdf-meta b{font-family:'Barlow Condensed','Arial Narrow',Arial,sans-serif;font-size:17px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#14171A!important;padding:9px 12px;border-bottom:1px solid #C9CED3;background:#F2F3F4!important}
+      .quick-pdf-meta span{font-family:'JetBrains Mono','Courier New',monospace;font-size:10px;color:#4A545D!important;padding:7px 12px;border-bottom:1px solid #E3E6E8}
+      .quick-pdf-meta span:last-child{border-bottom:none}
+      .quick-pdf-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+      .quick-pdf-summary div{border:1px solid #C9CED3;border-left:3px solid #F4C216;background:#fff;border-radius:6px;padding:10px 12px;min-height:72px}
+      .quick-pdf-summary span{display:block;font-family:'Barlow Condensed','Arial Narrow',Arial,sans-serif;color:#6B7580!important;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700!important;opacity:1!important}
+      .quick-pdf-summary b{display:block;font-family:'JetBrains Mono','Courier New',monospace;color:#14171A!important;font-size:17px;margin:5px 0 4px;font-weight:700!important;opacity:1!important}
+      .quick-pdf-summary small{display:block;color:#6B7580!important;font-size:10px;line-height:1.3;opacity:1!important}
+      .quick-pdf-summary div,.quick-pdf-summary div *{-webkit-text-fill-color:currentColor!important;filter:none!important}
+      .quick-pdf-main{display:grid;grid-template-columns:42% 58%;gap:14px;align-items:start}
+      .quick-pdf-visual,.quick-pdf-kit{border:1px solid #C9CED3;border-radius:6px;padding:14px;background:#fff;overflow:hidden}
+      .quick-pdf-doc h2{font-family:'Barlow Condensed','Arial Narrow',Arial,sans-serif!important;font-size:15px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:.08em!important;color:#14171A!important;margin:0 0 10px!important;border-left:4px solid #F4C216!important;padding-left:8px!important;line-height:1.2!important}
+      .quick-pdf-visual-label{font-family:'JetBrains Mono','Courier New',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:#6B7580!important;margin-bottom:8px}
+      .quick-pdf-scheme-image-wrap{display:flex;align-items:flex-start;justify-content:flex-start;max-width:100%;overflow:hidden;border:1px solid #C9CED3;border-radius:6px;background:#fff}
+      .quick-pdf-scheme-image{display:block;object-fit:contain;background:#fff}
+      .quick-pdf-scheme-svg-wrap{max-width:100%;overflow:hidden;border:1px solid #C9CED3;border-radius:6px;background:#fff;padding:8px;box-sizing:border-box}
+      .quick-pdf-scheme-svg{display:block;max-width:100%;height:auto;background:#fff}
+      .quick-pdf-scheme-svg text{fill:#14171A!important;stroke:none!important}
+      .quick-pdf-visual-svg svg{max-width:100%;height:auto;display:block;border-radius:6px}
+      .quick-pdf-visual-svg svg text{fill:#14171A!important;stroke:none!important}
+      .quick-pdf-table{width:100%;border-collapse:collapse;font-size:10.5px;color:#14171A!important}
+      .quick-pdf-table th{background:#F2F3F4!important;color:#14171A!important;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+      .quick-pdf-table th,.quick-pdf-table td{background:#fff!important;border-bottom:1px solid #E3E6E8!important;padding:7px 6px!important;vertical-align:top!important;color:#14171A!important}
+      .quick-pdf-table td span{color:#6B7580!important;font-size:9.5px}
+      .quick-pdf-empty{border:1px dashed #C9CED3;border-radius:6px;padding:18px;color:#4A545D!important;background:#F7F8F8;font-size:12px}
+      .quick-pdf-doc-portrait{width:820px;padding:22px}
+      .quick-pdf-doc-portrait .quick-pdf-tape{margin:-22px -22px 16px}
+      .quick-pdf-doc-portrait .quick-pdf-hero{grid-template-columns:1fr}
+      .quick-pdf-doc-portrait .quick-pdf-summary{grid-template-columns:repeat(2,1fr)}
+      .quick-pdf-doc-portrait .quick-pdf-main{grid-template-columns:1fr}
+      .quick-pdf-doc-portrait .quick-pdf-visual,.quick-pdf-doc-portrait .quick-pdf-kit{padding:12px}
+      .quick-pdf-doc-landscape{width:1120px}
+      footer{margin-top:14px;padding-top:8px;border-top:1px solid #C9CED3;font-family:'JetBrains Mono','Courier New',monospace;color:#6B7580!important;font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:right}`;
   }
 
   function ensureHiddenContainer() {
