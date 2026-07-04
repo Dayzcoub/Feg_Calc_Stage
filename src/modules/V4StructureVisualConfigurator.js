@@ -1507,7 +1507,7 @@
               <div><b>Масштаб поля</b><span data-truss-zoom-value>100%</span></div>
               <div class="v4-truss-zoom-controls">
                 <button type="button" class="v4-icon-btn" data-truss-zoom-action="out" title="Уменьшить масштаб" aria-label="Уменьшить масштаб">−</button>
-                <input data-truss-zoom type="range" min="35" max="220" step="5" value="100" aria-label="Масштаб поля конструктора">
+                <input data-truss-zoom type="range" min="10" max="220" step="5" value="100" aria-label="Масштаб поля конструктора">
                 <button type="button" class="v4-icon-btn" data-truss-zoom-action="in" title="Увеличить масштаб" aria-label="Увеличить масштаб">+</button>
                 <button type="button" class="btn-secondary" data-truss-zoom-action="fit">По размеру</button>
                 <button type="button" class="btn-secondary" data-truss-zoom-action="center">Центр</button>
@@ -1664,7 +1664,9 @@
 
   function clampTrussZoom(value) {
     const raw = Math.round(num(value, 100));
-    return Math.max(35, Math.min(220, raw || 100));
+    // min 10% so auto-fit can shrink a large structure (e.g. a 25×25 m stool ≈ 50×50
+    // cells) to fit the viewport on both desktop and mobile instead of overflowing.
+    return Math.max(10, Math.min(220, raw || 100));
   }
 
   function getTrussBaseCellPx(state) {
@@ -1681,7 +1683,9 @@
   }
 
   function getTrussRenderCellPx(state) {
-    return Math.max(14, Math.round(getTrussBaseCellPx(state) * getTrussZoom(state) / 100));
+    // floor of 5px (was 14) so a low auto-fit zoom can render a very large structure
+    // small enough to fit the viewport rather than being clamped back up and overflowing.
+    return Math.max(5, Math.round(getTrussBaseCellPx(state) * getTrussZoom(state) / 100));
   }
 
   function getTrussContentCellBounds(state, specs, truss) {
