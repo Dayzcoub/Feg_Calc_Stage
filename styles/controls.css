@@ -306,6 +306,20 @@ body.v4-only-body.quick-standalone-body .v4-stepper input[type="number"],
   margin: 0 !important;
 }
 
+/* v5 — `desktopStatic` groups (e.g. truss pricing in the 3-column build header)
+   render as a plain always-open card on desktop: drop the chevron and the
+   collapsible affordance so it reads as a sibling card, not an empty dropdown.
+   On mobile (<768px) they stay collapsible to save vertical space. */
+@media (min-width: 768px) {
+  .v4-field-group--desktop-static > summary {
+    cursor: default;
+    pointer-events: none;
+  }
+  .v4-field-group--desktop-static > summary::after {
+    display: none;
+  }
+}
+
 button,
 .feg-btn,
 .btn-secondary,

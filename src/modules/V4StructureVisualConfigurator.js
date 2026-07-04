@@ -42,10 +42,31 @@
   // native <details>. No JS dependency (keyboard/AT accessible for free), and — crucially —
   // it never wraps anything whose visibility other code already toggles via hidden/display,
   // so there is no conflict with existing show/hide logic (e.g. the edge-closure-type field).
+  function isDesktopWidth() {
+    return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(min-width:768px)').matches;
+  }
+  // v5 — `desktopStatic` groups collapse on mobile (save vertical space) but render
+  // as a plain always-open card on desktop, where there is horizontal room and a
+  // collapsed dropdown in a multi-column row leaves an awkward empty column.
   function wrapFieldGroup(title, innerHtml, options) {
     if (!innerHtml) return '';
-    const open = options && options.open ? ' open' : '';
-    return `<details class="v4-field-group"${open}><summary>${esc(title)}</summary>${innerHtml}</details>`;
+    const desktopStatic = options && options.desktopStatic;
+    const open = (options && options.open) || (desktopStatic && isDesktopWidth()) ? ' open' : '';
+    const cls = 'v4-field-group' + (desktopStatic ? ' v4-field-group--desktop-static' : '');
+    return `<details class="${cls}"${open}><summary>${esc(title)}</summary>${innerHtml}</details>`;
+  }
+  // Keep desktop-static groups open across breakpoint crossings (render sets the
+  // initial state; this only fires when the viewport actually crosses 768px, so it
+  // never clobbers a manual expand/collapse the user made within one breakpoint).
+  if (typeof window !== 'undefined' && window.matchMedia && !window.__fegDesktopStaticGroupsBound) {
+    window.__fegDesktopStaticGroupsBound = true;
+    const mq = window.matchMedia('(min-width:768px)');
+    const sync = () => {
+      document.querySelectorAll('.v4-field-group--desktop-static').forEach(d => {
+        if (mq.matches) d.setAttribute('open', ''); else d.removeAttribute('open');
+      });
+    };
+    if (mq.addEventListener) mq.addEventListener('change', sync); else if (mq.addListener) mq.addListener(sync);
   }
   function num(value, fallback) { const n = Number(value); return Number.isFinite(n) ? n : Number(fallback || 0); }
   function clamp(value, min, max, fallback) { const n = Math.round(num(value, fallback)); return Math.max(min, Math.min(max, n)); }
@@ -1462,7 +1483,7 @@
               </div>
               <small class="v4-muted v4-truss-stool-note">Пустое поле ног = текущая автоматическая логика. Если указать количество, расчёт добавит нужное число стоек и баз.</small>
             </div>
-            ${wrapFieldGroup('Стоимость быстрого расчёта', renderQuickTrussPricingControls(state.quickPricing || opts.input || {}, opts))}
+            ${wrapFieldGroup('Стоимость быстрого расчёта', renderQuickTrussPricingControls(state.quickPricing || opts.input || {}, opts), { desktopStatic: true })}
           </div>
           <small class="v4-muted">Портал длиннее 9 м получает T-узел, среднюю ногу и базу. Табуретка строится с U012 по углам, а стойки с блинами выводятся отдельно снизу.</small>
         </div>
