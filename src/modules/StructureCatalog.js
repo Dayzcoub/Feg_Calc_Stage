@@ -456,6 +456,57 @@
     } catch (err) { return { changed:false, added:[], updated:[], error: err && err.message || String(err) }; }
   }
 
+  function makeBomRow(part, qty, note, extra) {
+    const q = Math.max(0, toNumber(qty, 0));
+    const ext = extra || {};
+    const weight = q * toNumber(part && part.weightKg, 0);
+    const unitRentalPrice = toNumber(ext && ext.rentalPrice != null ? ext.rentalPrice : (part && part.rentalPrice), 0);
+    const resolvedSourceType = toText(ext.sourceType || ext.source_type || part && (part.sourceType || part.source_type) || 'own') || 'own';
+    const resolvedSourceSystem = toText(ext.sourceSystem || ext.source_system || part && (part.sourceSystem || part.source_system)) || (resolvedSourceType === 'quick_ideal' ? 'quick_ideal_catalog' : 'equipment_database_system_part');
+    return Object.assign({
+      id: part && part.id,
+      itemId: part && part.id,
+      item_id: part && part.id,
+      inventoryItemId: resolvedSourceType === 'quick_ideal' ? '' : (part && part.id),
+      inventory_item_id: resolvedSourceType === 'quick_ideal' ? '' : (part && part.id),
+      code: part && part.code,
+      name: part && part.name,
+      category: part && part.category,
+      type: part && part.type,
+      qty: q,
+      quantity: q,
+      requestedQty: q,
+      requested_qty: q,
+      unit: part && part.unit || 'шт',
+      unitWeightKg: toNumber(part && part.weightKg, 0),
+      unit_weight_kg: toNumber(part && part.weightKg, 0),
+      weightKg: weight,
+      rentalPrice: unitRentalPrice,
+      rental_price: unitRentalPrice,
+      totalRental: q * unitRentalPrice,
+      total_rental: q * unitRentalPrice,
+      powerW: q * toNumber(part && part.powerW, 0),
+      power_w: q * toNumber(part && part.powerW, 0),
+      note: note || '',
+      sourceType: resolvedSourceType,
+      source_type: resolvedSourceType,
+      sourceSystem: resolvedSourceSystem,
+      source_system: resolvedSourceSystem,
+      sourceTypeSuggestion: resolvedSourceType === 'quick_ideal' ? 'quick_ideal' : 'own',
+      source_type_suggestion: resolvedSourceType === 'quick_ideal' ? 'quick_ideal' : 'own',
+      meta: Object.assign({}, part && part.meta || {}, { systemPart:true, systemPartKey: part && part.meta && part.meta.systemPartKey || '', structureBomVersion: STRUCTURE_CONFIG_VERSION, catalogMode: resolvedSourceType === 'quick_ideal' ? 'quick' : 'quote', quickIdealCatalog: resolvedSourceType === 'quick_ideal' })
+    }, ext);
+  }
+  function summarizeStageRows(rows) {
+    return (Array.isArray(rows) ? rows : []).reduce((acc, row) => {
+      acc.rows += 1;
+      acc.qty += toNumber(row && (row.qty == null ? row.quantity : row.qty), 0);
+      acc.weightKg += toNumber(row && (row.weightKg == null ? row.weight_kg : row.weightKg), 0);
+      acc.powerW += toNumber(row && (row.powerW == null ? row.power_w : row.powerW), 0);
+      return acc;
+    }, { rows:0, qty:0, weightKg:0, powerW:0 });
+  }
+
   ROOT._StructureCatalog = {
     STRUCTURE_CONFIG_VERSION,
     STRUCTURE_PARTS_MIGRATION_KEY,
@@ -482,6 +533,8 @@
     getCatalogItems,
     getCatalogContext,
     addCatalogMeta,
+    makeBomRow,
+    summarizeStageRows,
     partToItem,
     normalizeWithDb,
     getStoredEquipmentItems,
