@@ -964,20 +964,12 @@
         const bg = ctx.background || '#fbf7ef';
         const stroke = ctx.stroke || '#d8cab7';
 
+        // Shared cell-geometry helpers (window.FEGModules.TrussGeometry, loaded before this module).
+        const Geometry = global.FEGModules.TrussGeometry;
         function cellCount(length) {
-            return Math.max(1, Math.round(Number(length || cellMeters) / cellMeters));
+            return Geometry.cellCount(length, cellMeters);
         }
-        function itemBounds(item) {
-            const spec = specs[item.type] || {};
-            const x = Number(item.x || 0);
-            const y = Number(item.y || 0);
-            if (spec.kind === 'straight') {
-                const len = cellCount(spec.length || cellMeters);
-                return { minX: x, minY: y, maxX: x + (item.o === 'v' ? 1 : len), maxY: y + (item.o === 'v' ? len : 1) };
-            }
-            return { minX: x, minY: y, maxX: x + 1, maxY: y + 1 };
-        }
-        const bounds = items.map(itemBounds);
+        const bounds = items.map(item => Geometry.itemBoundsCells(item, specs[item.type] || {}, cellMeters));
         const minX = Math.min.apply(null, bounds.map(function (b) { return b.minX; }));
         const minY = Math.min.apply(null, bounds.map(function (b) { return b.minY; }));
         const maxX = Math.max.apply(null, bounds.map(function (b) { return b.maxX; }));

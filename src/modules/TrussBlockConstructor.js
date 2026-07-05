@@ -434,14 +434,15 @@
     }
 
 
+    // Shared cell-geometry helpers live in window.FEGModules.TrussGeometry (loaded before this module).
+    const TrussGeometry = (global.FEGModules = global.FEGModules || {}).TrussGeometry;
+
     function normalizeCellMeters(cellMeters) {
-        const n = Number(cellMeters || 0.5);
-        return Number.isFinite(n) && n > 0 ? n : 0.5;
+        return TrussGeometry.normalizeCellMeters(cellMeters);
     }
 
     function cellCount(meters, cellMeters) {
-        const cellM = normalizeCellMeters(cellMeters);
-        return Math.max(1, Math.round(Number(meters || 0) / cellM));
+        return TrussGeometry.cellCount(meters, cellMeters);
     }
 
     function pointKey(x, y) {
@@ -449,26 +450,12 @@
     }
 
     function itemCellSpan(item, spec, cellMeters) {
-        if (!item || !spec) return { cells: 1, width: 1, height: 1 };
-        if (spec.kind !== 'straight') return { cells: 1, width: 1, height: 1 };
-        const cells = cellCount(spec.length, cellMeters);
-        return item.o === 'v'
-            ? { cells, width: 1, height: cells }
-            : { cells, width: cells, height: 1 };
+        return TrussGeometry.itemCellSpan(item, spec, cellMeters);
     }
 
     function itemBounds(item, spec, cellMeters) {
         if (!item || !spec) return null;
-        const span = itemCellSpan(item, spec, cellMeters);
-        return {
-            minX: Number(item.x || 0),
-            minY: Number(item.y || 0),
-            maxX: Number(item.x || 0) + span.width,
-            maxY: Number(item.y || 0) + span.height,
-            width: span.width,
-            height: span.height,
-            cells: span.cells
-        };
+        return TrussGeometry.itemBoundsCells(item, spec, cellMeters);
     }
 
     function containsCell(item, spec, x, y, cellMeters) {
