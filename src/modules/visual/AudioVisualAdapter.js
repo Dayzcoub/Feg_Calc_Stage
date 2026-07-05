@@ -174,30 +174,9 @@
     };
   }
 
-  function buildAudioVisualSmokeReport(equipmentSection, options) {
-    const audio = adaptAudioSection(equipmentSection, options || {});
-    const checks = [
-      { key: 'adapter_status', ok: Boolean(audio && Object.prototype.hasOwnProperty.call(audio, 'enabled')), label: 'Audio adapter returns stable block' },
-      { key: 'source_section', ok: audio.sourceSection === 'quote.sections.equipment', label: 'Audio visual model keeps equipment source section link' },
-      { key: 'pa_placeholder', ok: Boolean(audio.pa && audio.pa.left && audio.pa.right), label: 'Audio placeholders expose PA left/right' },
-      { key: 'sub_placeholder', ok: Boolean(audio.subs && audio.subs.left && audio.subs.right), label: 'Audio placeholders expose sub left/right' },
-      { key: 'front_fill_placeholder', ok: Boolean(audio.frontFill && Object.prototype.hasOwnProperty.call(audio.frontFill, 'enabled')), label: 'Audio placeholders expose front fill' },
-      { key: 'protected_flows', ok: audio.protectedFlows.noBomMutation === true && audio.protectedFlows.noPricingMutation === true, label: 'Audio adapter is read-only and does not mutate BOM/prices' }
-    ];
-    return {
-      type: 'feg-stage-pro-audio-visual-smoke-report',
-      version: VISUAL_AUDIO_ADAPTER_VERSION,
-      ok: checks.every(row => row.ok),
-      checks,
-      audio,
-      generatedAt: nowIso()
-    };
-  }
-
   const api = {
     VISUAL_AUDIO_ADAPTER_VERSION,
-    adaptAudioSection,
-    buildAudioVisualSmokeReport
+    adaptAudioSection
   };
 
   ROOT.AudioVisualAdapter = api;

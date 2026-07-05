@@ -277,27 +277,6 @@
     return svgToPngDataUri(exportStageIsoSvg(source, options || {}), options || {});
   }
 
-  function buildVisualExportSmokeReport(source, options) {
-    const pack = buildVisualExportPack(source || {}, Object.assign({ modes: DEFAULT_MODES }, options || {}));
-    const checks = [
-      { key: 'visual_export_version', ok: VISUAL_EXPORT_VERSION.includes('3.16.8'), label: 'VisualExport version is v3.16.8' },
-      { key: 'export_pack_type', ok: pack.type === 'feg-stage-pro-visual-export-pack' && pack.itemCount === 3, label: 'export pack has stable type and three stage views' },
-      { key: 'svg_items_ready', ok: pack.items.every(item => item.format === 'svg' && item.content.includes('<svg') && item.content.includes('</svg>')), label: 'all export items contain SVG strings' },
-      { key: 'data_uri_ready', ok: pack.items.every(item => item.dataUri.startsWith('data:image/svg+xml;charset=utf-8,')), label: 'all export items expose SVG data URI' },
-      { key: 'filenames_ready', ok: pack.items.some(item => item.filename.includes('stage-top')) && pack.items.some(item => item.filename.includes('stage-front')) && pack.items.some(item => item.filename.includes('stage-iso')), label: 'export filenames identify top/front/iso modes' },
-      { key: 'manual_export_policy', ok: pack.performancePolicy.manualExportOnly === true && pack.performancePolicy.noHeavyRenderOnInput === true, label: 'manual/lazy export policy is preserved' },
-      { key: 'protected_flows', ok: pack.performancePolicy.noBomMutation === true && pack.performancePolicy.noWarehouseMutation === true && pack.performancePolicy.noBackendWrite === true && pack.performancePolicy.noLegacyMutation === true, label: 'export does not mutate protected flows' }
-    ];
-    return {
-      type: 'feg-stage-pro-visual-export-smoke-report',
-      version: VISUAL_EXPORT_VERSION,
-      ok: checks.every(row => row.ok),
-      checks,
-      pack,
-      generatedAt: nowIso()
-    };
-  }
-
   const api = {
     VISUAL_EXPORT_VERSION,
     DEFAULT_MODES,
@@ -315,8 +294,7 @@
     svgToPngDataUri,
     exportStageTopPngDataUri,
     exportStageFrontPngDataUri,
-    exportStageIsoPngDataUri,
-    buildVisualExportSmokeReport
+    exportStageIsoPngDataUri
   };
 
   ROOT.VisualExport = api;

@@ -503,26 +503,6 @@
     };
   }
 
-  function buildTrussVisualSmokeReport(trussSection, options) {
-    const truss = adaptTrussSection(trussSection || null, options || {});
-    const checks = [
-      { key:'adapter_version', ok: truss.adapterVersion === VISUAL_TRUSS_ADAPTER_VERSION, label:'truss adapter version is stable' },
-      { key:'stable_block', ok: Object.prototype.hasOwnProperty.call(truss, 'enabled') && Array.isArray(truss.blocks), label:'truss adapter returns stable block list' },
-      { key:'bom_link', ok: !truss.enabled || Boolean(truss.bomLink && truss.bomLink.sectionKey === 'truss'), label:'truss visual block carries BOM link when configured' },
-      { key:'data_only', ok: !truss.renderHints || truss.renderHints.rendererRequired === false, label:'truss adapter does not render or mutate protected flows' },
-      { key:'roof_seed', ok: Boolean(truss.roof && truss.roof.engineeringStatus === 'visual_only_no_load_calculation' && truss.roof.protectedFlows && truss.roof.protectedFlows.noBomRowsCreated === true), label:'roof visual seed is present and does not affect load/BOM flows' },
-      { key:'portal_layout_profile', ok: !truss.enabled || Boolean(truss.layoutProfile && truss.layoutProfile.rendererContract), label:'truss visual adapter exposes layout profile for portal/front/iso rendering' }
-    ];
-    return {
-      type: 'feg-stage-pro-truss-visual-adapter-smoke-report',
-      version: VISUAL_TRUSS_ADAPTER_VERSION,
-      ok: checks.every(row => row.ok),
-      checks,
-      truss,
-      generatedAt: nowIso()
-    };
-  }
-
   const api = {
     VISUAL_TRUSS_ADAPTER_VERSION,
     DEFAULT_CELL_METERS,
@@ -533,8 +513,7 @@
     buildTrussLayoutProfile,
     normalizeItems,
     calcBounds,
-    adaptTrussSection,
-    buildTrussVisualSmokeReport
+    adaptTrussSection
   };
 
   ROOT.TrussVisualAdapter = api;

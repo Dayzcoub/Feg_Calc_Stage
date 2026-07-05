@@ -177,30 +177,9 @@
     };
   }
 
-  function buildLightVisualSmokeReport(equipmentSection, options) {
-    const light = adaptLightSection(equipmentSection, options || {});
-    const checks = [
-      { key: 'adapter_status', ok: Boolean(light && Object.prototype.hasOwnProperty.call(light, 'enabled')), label: 'Light adapter returns stable block' },
-      { key: 'source_section', ok: light.sourceSection === 'quote.sections.equipment', label: 'Light visual model keeps equipment source section link' },
-      { key: 'truss_placeholder', ok: Boolean(light.fixturesOnTruss && Object.prototype.hasOwnProperty.call(light.fixturesOnTruss, 'enabled')), label: 'Light placeholders expose fixtures on truss' },
-      { key: 'floor_placeholder', ok: Boolean(light.floorFixtures && Object.prototype.hasOwnProperty.call(light.floorFixtures, 'enabled')), label: 'Light placeholders expose floor fixtures' },
-      { key: 'tower_placeholder', ok: Boolean(light.towers && Object.prototype.hasOwnProperty.call(light.towers, 'enabled')), label: 'Light placeholders expose towers' },
-      { key: 'protected_flows', ok: light.protectedFlows.noBomMutation === true && light.protectedFlows.noPricingMutation === true, label: 'Light adapter is read-only and does not mutate BOM/prices' }
-    ];
-    return {
-      type: 'feg-stage-pro-light-visual-smoke-report',
-      version: VISUAL_LIGHT_ADAPTER_VERSION,
-      ok: checks.every(row => row.ok),
-      checks,
-      light,
-      generatedAt: nowIso()
-    };
-  }
-
   const api = {
     VISUAL_LIGHT_ADAPTER_VERSION,
-    adaptLightSection,
-    buildLightVisualSmokeReport
+    adaptLightSection
   };
 
   ROOT.LightVisualAdapter = api;

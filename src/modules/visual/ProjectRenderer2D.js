@@ -1284,45 +1284,6 @@
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
   }
 
-  function buildRendererSmokeReport(source, options) {
-    const model = resolveVisualModel(source, options || {});
-    const topSvg = renderProjectTopViewSvg(model, options || {});
-    const frontSvg = renderProjectFrontViewSvg(model, options || {});
-    const isoSvg = renderProjectIsoViewSvg(model, options || {});
-    const checks = [
-      { key: 'renderer_version', ok: PROJECT_RENDERER_2D_VERSION.includes('3.16.20'), label: 'renderer version is v3.16.20' },
-      { key: 'top_svg_output', ok: /^<svg[\s>]/.test(topSvg) && topSvg.includes('</svg>'), label: 'renderer returns top SVG string' },
-      { key: 'front_svg_output', ok: /^<svg[\s>]/.test(frontSvg) && frontSvg.includes('</svg>'), label: 'renderer returns front SVG string' },
-      { key: 'iso_svg_output', ok: /^<svg[\s>]/.test(isoSvg) && isoSvg.includes('</svg>'), label: 'renderer returns iso SVG string' },
-      { key: 'stage_top_view_marker', ok: topSvg.includes('data-feg-view="stage-top"') || topSvg.includes('Stage section is missing'), label: 'stage top view marker exists' },
-      { key: 'stage_front_view_marker', ok: frontSvg.includes('data-feg-view="stage-front"') || frontSvg.includes('Stage section is missing'), label: 'stage front view marker exists' },
-      { key: 'stage_iso_view_marker', ok: isoSvg.includes('data-feg-view="stage-iso"') || isoSvg.includes('Stage section is missing'), label: 'stage iso view marker exists' },
-      { key: 'front_view_height_dimension', ok: frontSvg.includes('фронтальный SVG-рендер') || frontSvg.includes('Stage section is missing'), label: 'front view documents manual renderer policy' },
-      { key: 'iso_view_manual_policy', ok: isoSvg.includes('изометрический SVG-рендер') || isoSvg.includes('Stage section is missing'), label: 'iso view documents manual renderer policy' },
-      { key: 'deck_texture', ok: topSvg.includes('feg-stage-deck-top-texture') || !model.stage || !model.stage.enabled, label: 'stage deck texture pattern is embedded' },
-      { key: 'manual_no_mutation_policy', ok: (topSvg.includes('без BOM/склад/legacy') && frontSvg.includes('без BOM/склад/legacy')) || !model.stage || !model.stage.enabled, label: 'renderer documents no mutation policy' },
-      { key: 'truss_visual_seed', ok: !hasTrussVisual(model) || (topSvg.includes('data-feg-layer="truss"') && frontSvg.includes('data-feg-truss-view="front"') && isoSvg.includes('data-feg-truss-view="iso"')), label: 'project renderer includes live truss overlays from visualModel blocks when truss visualModel is ready' },
-      { key: 'portal_two_posts_beam', ok: !hasTrussVisual(model) || !isPortalTwoPostsBeam(model.truss) || (frontSvg.includes('data-feg-truss-layout="portal_two_posts_beam"') && isoSvg.includes('data-feg-truss-layout="portal_two_posts_beam"')), label: 'portal truss renders as two posts plus top beam in front/iso views' },
-      { key: 'portal_meter_proportional', ok: !hasTrussVisual(model) || !isPortalTwoPostsBeam(model.truss) || (topSvg.includes('data-feg-truss-layout="portal_top_projection"') && topSvg.includes('data-feg-scale-mode="meter-proportional"') && frontSvg.includes('data-feg-scale-mode="meter-proportional"') && isoSvg.includes('data-feg-scale-mode="meter-proportional"')), label: 'portal width is scaled from real meters and top view uses canonical beam projection instead of live depth blocks' },
-      { key: 'led_visual_seed', ok: !hasLedVisual(model) || (topSvg.includes('data-feg-layer="led"') && frontSvg.includes('data-feg-led-view="front"') && isoSvg.includes('data-feg-led-view="iso"')), label: 'project renderer includes read-only LED overlays from visualModel constructions when LED visualModel is ready' },
-      { key: 'led_visualizer_boundary', ok: !hasLedVisual(model) || (frontSvg.includes('data-feg-led-placement-source="visualizer-controls"') && isoSvg.includes('placement только в визуализаторе')), label: 'LED placement stays in visualizer layer and is not returned to LED calculator' },
-      { key: 'led_visual_placement_controls', ok: !hasLedVisual(model) || (frontSvg.includes('data-feg-led-placement=') && topSvg.includes('data-feg-led-placement-label=')), label: 'LED placement is driven by visualizer controls and SVG data markers only' },
-      { key: 'led_multi_construction_lanes', ok: !hasLedVisual(model) || (frontSvg.includes('data-feg-led-layout="placement_lanes"') && topSvg.includes('data-feg-led-placement-slot=')), label: 'multiple LED constructions use per-placement visual lanes without calculator/BOM mutations' }
-    ];
-    return {
-      type: 'feg-stage-pro-project-renderer-2d-smoke-report',
-      version: PROJECT_RENDERER_2D_VERSION,
-      ok: checks.every(row => row.ok),
-      checks,
-      svgLength: topSvg.length,
-      topSvgLength: topSvg.length,
-      frontSvgLength: frontSvg.length,
-      isoSvgLength: isoSvg.length,
-      stageEnabled: Boolean(model.stage && model.stage.enabled),
-      generatedAt: nowIso()
-    };
-  }
-
   const api = {
     PROJECT_RENDERER_2D_VERSION,
     DEFAULT_CELL_PX,
@@ -1340,8 +1301,7 @@
     renderProjectIsoViewSvg,
     renderStageTopViewDataUri,
     renderStageFrontViewDataUri,
-    renderStageIsoViewDataUri,
-    buildRendererSmokeReport
+    renderStageIsoViewDataUri
   };
 
   ROOT.ProjectRenderer2D = api;

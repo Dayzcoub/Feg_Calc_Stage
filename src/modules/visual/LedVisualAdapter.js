@@ -316,30 +316,9 @@
     };
   }
 
-  function buildLedVisualSmokeReport(ledSection, options) {
-    const led = adaptLedSection(ledSection, options || {});
-    const checks = [
-      { key: 'adapter_status', ok: Boolean(led && Object.prototype.hasOwnProperty.call(led, 'enabled')), label: 'LED adapter returns stable block' },
-      { key: 'source_section', ok: !led.enabled || led.sourceSection === 'quote.sections.led', label: 'LED visual model keeps source section link' },
-      { key: 'constructions_array', ok: Array.isArray(led.constructions || []), label: 'LED constructions are normalized as an array' },
-      { key: 'powercon_power_policy_preserved', ok: !led.enabled || led.cables.powerconSchukoWattsPerCable === 3400 || led.cables.powerconSchukoWattsPerCable > 0, label: 'PowerCON visual data mirrors power-based source result' },
-      { key: 'visualizer_boundary', ok: !led.enabled || led.visualizerBoundary.placementReservedForVisualizer === true, label: 'Stage placement stays reserved for future visualizer' },
-      { key: 'protected_flows', ok: !led.enabled || led.protectedFlows.noBomMutation === true && led.protectedFlows.noFormulaMutation === true, label: 'LED adapter is read-only and does not mutate formulas/BOM' }
-    ];
-    return {
-      type: 'feg-stage-pro-led-visual-smoke-report',
-      version: VISUAL_LED_ADAPTER_VERSION,
-      ok: checks.every(row => row.ok),
-      checks,
-      led,
-      generatedAt: nowIso()
-    };
-  }
-
   const api = {
     VISUAL_LED_ADAPTER_VERSION,
-    adaptLedSection,
-    buildLedVisualSmokeReport
+    adaptLedSection
   };
 
   ROOT.LedVisualAdapter = api;

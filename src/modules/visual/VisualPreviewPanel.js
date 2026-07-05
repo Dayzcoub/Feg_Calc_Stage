@@ -373,38 +373,6 @@
     return state;
   }
 
-  function buildVisualPreviewPanelSmokeReport(source, options) {
-    let pack = null;
-    let error = '';
-    try {
-      const quote = source || {};
-      const q = getBuilderModule() && getBuilderModule().attachVisualModelToQuote
-        ? getBuilderModule().attachVisualModelToQuote(quote, { source: 'visual-preview-panel-smoke' })
-        : quote;
-      pack = makeExportPack(q, Object.assign({ cellPx: 40, fileBase: 'visual-preview-smoke' }, options || {}));
-    } catch (err) {
-      error = err && err.message ? err.message : String(err || 'unknown error');
-    }
-    const checks = [
-      { key: 'visual_preview_panel_version', ok: VISUAL_PREVIEW_PANEL_VERSION.includes('3.16.20'), label: 'VisualPreviewPanel version is v3.16.20' },
-      { key: 'manual_preview_policy', ok: true, label: 'preview is manual and never render-on-input; noAutomaticRenderOnInput' },
-      { key: 'export_pack_ready', ok: Boolean(pack && pack.type === 'feg-stage-pro-visual-export-pack' && pack.itemCount === 3), label: 'panel can build top/front/iso export pack' },
-      { key: 'svg_items_ready', ok: Boolean(pack && toArray(pack.items).every(item => item.content && item.content.includes('<svg'))), label: 'panel receives SVG content for each mode' },
-      { key: 'protected_flows', ok: Boolean(pack && pack.performancePolicy && pack.performancePolicy.noBomMutation && pack.performancePolicy.noWarehouseMutation && pack.performancePolicy.noBackendWrite && pack.performancePolicy.noLegacyMutation), label: 'preview does not mutate protected flows' },
-      { key: 'led_placement_visual_only', ok: true, label: 'LED placement controls are visualizer-only and do not write LED calculator placement meta' },
-      { key: 'led_placement_project_scope', ok: VISUAL_PREVIEW_PANEL_VERSION.includes('project-scope') && typeof getLedPlacementScopeId === 'function', label: 'LED placement controls are scoped by project/draft and do not leak between quotes' }
-    ];
-    return {
-      type: 'feg-stage-pro-visual-preview-panel-smoke-report',
-      version: VISUAL_PREVIEW_PANEL_VERSION,
-      ok: checks.every(row => row.ok),
-      checks,
-      packSummary: pack ? { itemCount: pack.itemCount, modes: pack.modes, generatedAt: pack.generatedAt } : null,
-      error,
-      generatedAt: nowIso()
-    };
-  }
-
   const api = {
     VISUAL_PREVIEW_PANEL_VERSION,
     MODES,
@@ -412,8 +380,7 @@
     renderVisualPreviewPanel,
     refreshVisualPreview,
     renderCurrentPreview,
-    markVisualPreviewDirty,
-    buildVisualPreviewPanelSmokeReport
+    markVisualPreviewDirty
   };
 
   ROOT.VisualPreviewPanel = api;

@@ -42,43 +42,13 @@
     return renderer.renderLedIsoOverlay ? renderer.renderLedIsoOverlay(model, context || {}) : '';
   }
 
-  function buildIsoRendererSmokeReport(model, options) {
-    const svg = renderProjectIsoViewSvg(model || {}, options || {});
-    const stageSvg = renderStageIsoViewSvg(model || {}, options || {});
-    const checks = [
-      {
-        key: 'project_iso_svg',
-        ok: svg.includes('<svg') && svg.includes('data-feg-view="stage-iso"'),
-        label: 'project iso SVG renders through dedicated facade'
-      },
-      {
-        key: 'stage_iso_svg',
-        ok: stageSvg.includes('<svg') && stageSvg.includes('feg-stage-iso-side-gradient'),
-        label: 'stage iso SVG preserves ProjectRenderer2D visual contract'
-      },
-      {
-        key: 'no_mutation_boundary',
-        ok: svg.includes('legacy') || svg.includes('BOM') || svg.includes('visualModel'),
-        label: 'iso facade keeps existing read-only visual boundary'
-      }
-    ];
-    return {
-      type: 'feg-stage-pro-project-renderer-iso-smoke-report',
-      version: PROJECT_RENDERER_ISO_VERSION,
-      ok: checks.every(item => item.ok),
-      checks,
-      svgLength: svg.length
-    };
-  }
-
   const api = {
     PROJECT_RENDERER_ISO_VERSION,
     renderStageIsoViewSvg,
     renderProjectIsoViewSvg,
     renderStageIsoViewDataUri,
     renderTrussIsoOverlay,
-    renderLedIsoOverlay,
-    buildIsoRendererSmokeReport
+    renderLedIsoOverlay
   };
 
   ROOT.ProjectRendererIso = api;

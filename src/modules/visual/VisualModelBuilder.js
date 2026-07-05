@@ -137,39 +137,11 @@
     return q;
   }
 
-  function buildVisualModelSmokeReport(quote, options) {
-    const model = buildVisualModel(quote || {}, options || {});
-    const checks = [
-      { key: 'visual_model_type', ok: model.type === 'feg-stage-pro-visual-model', label: 'visualModel has stable type' },
-      { key: 'visual_model_version', ok: model.version === VISUAL_MODEL_VERSION, label: 'visualModel version is v0.1' },
-      { key: 'stage_adapter_ready', ok: Boolean(model.stage && Object.prototype.hasOwnProperty.call(model.stage, 'enabled')), label: 'stage adapter returns stable block' },
-      { key: 'truss_adapter_ready', ok: Boolean(model.truss && Object.prototype.hasOwnProperty.call(model.truss, 'enabled') && Array.isArray(model.truss.blocks || [])), label: 'truss adapter returns stable block' },
-      { key: 'truss_roof_seed_ready', ok: Boolean(model.truss && model.truss.roof && model.truss.roof.engineeringStatus === 'visual_only_no_load_calculation'), label: 'truss roof seed exists without engineering/BOM mutation' },
-      { key: 'led_adapter_ready', ok: Boolean(model.led && Object.prototype.hasOwnProperty.call(model.led, 'enabled') && Array.isArray(model.led.constructions || [])), label: 'LED adapter returns stable block' },
-      { key: 'led_visualizer_boundary_ready', ok: Boolean(model.led && (!model.led.enabled || model.led.visualizerBoundary && model.led.visualizerBoundary.placementReservedForVisualizer === true)), label: 'LED stage placement remains reserved for future visualizer' },
-      { key: 'audio_adapter_ready', ok: Boolean(model.audio && model.audio.sourceSection === 'quote.sections.equipment' && model.audio.renderHints && model.audio.renderHints.placeholderSymbolsReady === true), label: 'audio placeholder adapter returns stable source-linked block' },
-      { key: 'light_adapter_ready', ok: Boolean(model.light && model.light.sourceSection === 'quote.sections.equipment' && model.light.renderHints && model.light.renderHints.placeholderSymbolsReady === true), label: 'light placeholder adapter returns stable source-linked block' },
-      { key: 'audio_light_read_only', ok: Boolean(model.audio && model.light && model.audio.protectedFlows && model.light.protectedFlows && model.audio.protectedFlows.noBomMutation === true && model.light.protectedFlows.noBomMutation === true), label: 'audio/light adapters are read-only placeholders' },
-      { key: 'data_only_no_renderer', ok: model.renderStatus === 'data_only_no_renderer' && model.rendererEnabled === false, label: 'no renderer is executed in foundation release' },
-      { key: 'manual_build_only', ok: model.performancePolicy && model.performancePolicy.manualBuildOnly === true && model.performancePolicy.noHeavyRenderOnInput === true, label: 'manual/lazy visual build policy is preserved' },
-      { key: 'no_mutating_flows', ok: model.performancePolicy && model.performancePolicy.noBomMutation === true && model.performancePolicy.noWarehouseMutation === true && model.performancePolicy.noLegacyMutation === true, label: 'BOM/warehouse/legacy flows are protected' }
-    ];
-    return {
-      type: 'feg-stage-pro-visual-model-smoke-report',
-      version: VISUAL_MODEL_BUILDER_VERSION,
-      ok: checks.every(row => row.ok),
-      checks,
-      model,
-      generatedAt: nowIso()
-    };
-  }
-
   const api = {
     VISUAL_MODEL_VERSION,
     VISUAL_MODEL_BUILDER_VERSION,
     buildVisualModel,
-    attachVisualModelToQuote,
-    buildVisualModelSmokeReport
+    attachVisualModelToQuote
   };
 
   ROOT.VisualModelBuilder = api;

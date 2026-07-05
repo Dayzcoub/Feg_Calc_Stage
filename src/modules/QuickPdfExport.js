@@ -821,24 +821,6 @@
     return false;
   }
 
-  function buildSmokeReport() {
-    return {
-      type: 'feg-stage-pro-quick-pdf-export-smoke-report',
-      version: QUICK_PDF_EXPORT_VERSION,
-      ok: true,
-      checks: [
-        { key:'action_html', ok: renderActionHtml('stage').includes('data-quick-pdf-action="stage"'), label:'stage action button is renderable' },
-        { key:'pdf_builder', ok: buildSectionPdfHtml('truss', { status:'configured', bomRows:[] }).includes('Сводная таблица комплектации'), label:'section PDF html includes summary table block' },
-        { key:'constructor_scheme', ok: buildSectionPdfHtml('stage', { status:'configured', input:{ modules:[{x:0,y:0}], stairs:[] }, result:{ widthMeters:1.2, depthMeters:1.2 }, bomRows:[] }, { schemeSnapshot:{ dataUrl:'data:image/png;base64,AAAA', width:100, height:50 } }).includes('quick-pdf-scheme-svg'), label:'quick PDF uses constructor scheme/fallback, not project visualizer export' },
-        { key:'truss_scheme_fallback', ok: buildSectionPdfHtml('truss', { status:'configured', input:{ items:[{ type:'truss3', x:0, y:0, o:'h' }] }, result:{ physicalBounds:{ width:3, height:0.5 } }, bomRows:[] }).includes('Фермы 3,00 × 0,50 м'), label:'truss PDF has deterministic SVG scheme fallback' },
-        { key:'share_modal', ok: typeof openSectionPreview === 'function' && typeof sharePreparedPdf === 'function', label:'preview/share handlers are exposed' },
-        { key:'modal_backdrop', ok: typeof ensureModalStyles === 'function' && QUICK_PDF_EXPORT_VERSION.includes('truss-scheme'), label:'preview modal is fixed overlay with backdrop' },
-        { key:'pricing_codes_hidden', ok: !buildSectionPdfHtml('truss', { quickPricing:{ enabled:true, visible:true, rows:[{ code:'TRUSS-QPRICE-RENTAL', name:'Фермы · прокат конструкции', qty:1, unit:'компл.', unitPrice:1000, total:1000 }], total:1000 }, bomRows:[] }).includes('TRUSS-QPRICE-RENTAL'), label:'quick PDF hides technical pricing codes in visible tables' },
-        { key:'auto_orientation', ok: resolvePdfOrientation('truss', { bomRows:new Array(24).fill(0).map((_, i) => ({ name:'row '+i, qty:1 })) }) === 'p', label:'long quick PDF table switches to portrait orientation' }
-      ]
-    };
-  }
-
   ROOT.QuickPdfExport = {
     QUICK_PDF_EXPORT_VERSION,
     renderActionHtml,
@@ -849,7 +831,6 @@
     buildSchemeSvgFallback,
     openSectionPreview,
     closePreview,
-    sharePreparedPdf,
-    buildSmokeReport
+    sharePreparedPdf
   };
 })(typeof window !== 'undefined' ? window : globalThis);
