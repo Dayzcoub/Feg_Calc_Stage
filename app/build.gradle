@@ -1,0 +1,45 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.dayzcoub.fegcalcstage'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.dayzcoub.fegcalcstage'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '3.1.101-offline-android'
+    }
+}
+
+// Copy the standalone web app into Android assets so the APK works fully offline.
+tasks.register('syncWebAssets', Copy) {
+    from(rootProject.projectDir) {
+        include 'index.html'
+        include 'manifest.json'
+        include 'sw.js'
+        include 'favicon.png'
+        include 'icon-*.png'
+        include 'stage-deck-texture.png'
+        include 'led-cabinet-texture.png'
+        include 'feg_svg_calibration.json'
+        include 'assets/**'
+        include 'src/**'
+        include 'styles/**'
+        exclude '.git/**'
+        exclude '.github/**'
+        exclude 'app/**'
+        exclude 'node_modules/**'
+        exclude 'test-results/**'
+        exclude 'tests/**'
+        exclude 'scripts/**'
+    }
+    into(layout.projectDirectory.dir('src/main/assets/www'))
+}
+
+tasks.named('preBuild') {
+    dependsOn(tasks.named('syncWebAssets'))
+}
